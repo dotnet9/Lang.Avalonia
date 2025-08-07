@@ -14,6 +14,22 @@ namespace Localization.Main
         public static readonly string CurrentTimeFormat = "Localization.Main.MainView.CurrentTimeFormat";
         public static readonly string ChangeLanguage = "Localization.Main.MainView.ChangeLanguage";
         public static readonly string Exit = "Localization.Main.MainView.Exit";
+        public static readonly string LivePreview = "Localization.Main.MainView.LivePreview";
+        public static readonly string BasicFeatures = "Localization.Main.MainView.BasicFeatures";
+        public static readonly string PluralDemo = "Localization.Main.MainView.PluralDemo";
+        public static readonly string UserCount = "Localization.Main.MainView.UserCount";
+        public static readonly string DateFormatDemo = "Localization.Main.MainView.DateFormatDemo";
+        public static readonly string ShortDate = "Localization.Main.MainView.ShortDate";
+        public static readonly string LongDate = "Localization.Main.MainView.LongDate";
+        public static readonly string FullDateTime = "Localization.Main.MainView.FullDateTime";
+        public static readonly string NumberFormatDemo = "Localization.Main.MainView.NumberFormatDemo";
+        public static readonly string LargeNumber = "Localization.Main.MainView.LargeNumber";
+        public static readonly string Percentage = "Localization.Main.MainView.Percentage";
+        public static readonly string Currency = "Localization.Main.MainView.Currency";
+        public static readonly string LanguageComparison = "Localization.Main.MainView.LanguageComparison";
+        public static readonly string CurrentLanguage = "Localization.Main.MainView.CurrentLanguage";
+        public static readonly string WelcomeMessage = "Localization.Main.MainView.WelcomeMessage";
+        public static readonly string Copyright = "Localization.Main.MainView.Copyright";
     }
 }
 namespace Localization.Main
@@ -22,6 +38,7 @@ namespace Localization.Main
     {
         public static readonly string Title = "Localization.Main.SettingView.Title";
         public static readonly string NoPrompt = "Localization.Main.SettingView.NoPrompt";
+        public static readonly string LanguageSettings = "Localization.Main.SettingView.LanguageSettings";
     }
 }
 namespace Localization.DevelopModule
@@ -30,6 +47,9 @@ namespace Localization.DevelopModule
     {
         public static readonly string Title = "Localization.DevelopModule.Title2SlugView.Title";
         public static readonly string Convert = "Localization.DevelopModule.Title2SlugView.Convert";
+        public static readonly string Description = "Localization.DevelopModule.Title2SlugView.Description";
+        public static readonly string EnterTitle = "Localization.DevelopModule.Title2SlugView.EnterTitle";
+        public static readonly string SlugResult = "Localization.DevelopModule.Title2SlugView.SlugResult";
     }
 }
 namespace Localization.DevelopModule
