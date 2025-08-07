@@ -1,0 +1,20 @@
+<Project>
+
+	<PropertyGroup>
+		<Authors>沙漠尽头的狼</Authors>
+		<Company>CodeWF</Company>
+		<Copyright>Copyright (c) 2025 https://codewf.com</Copyright>
+		<Version>0.0.0.1</Version>
+		<AvaloniaVersion>11.3.3</AvaloniaVersion>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<LangVersion>preview</LangVersion>
+		<PackageProjectUrl>https://github.com/dotnet9/Lang.AvaloniaLang.Avalonia</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/dotnet9/Lang.Avalonia</RepositoryUrl>
+		<PackageTags>Avalonia;AvaloniaUI</PackageTags>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+</Project>
