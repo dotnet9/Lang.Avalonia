@@ -1,5 +1,5 @@
 <UserControl
-    x:Class="Lang.Avalonia.Xml.Demo.Views.MainView"
+    x:Class="Lang.Avalonia.Resx.Demo.Views.MainView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,7 +10,7 @@
     xmlns:mainLangs="clr-namespace:Localization.Main"
     xmlns:developModuleLanguage="clr-namespace:Localization.DevelopModule"
     xmlns:c="https://codewf.com"
-    xmlns:vm="clr-namespace:Lang.Avalonia.Xml.Demo.ViewModels"
+    xmlns:vm="clr-namespace:Lang.Avalonia.Resx.Demo.ViewModels"
     d:DesignHeight="250"
     d:DesignWidth="400" Margin="20"
     prism:ViewModelLocator.AutoWireViewModel="True"

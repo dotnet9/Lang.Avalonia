@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -8,11 +9,15 @@ namespace Lang.Avalonia.Xml;
 
 public class XmlLangPlugin : ILangPlugin
 {
-    public string ResourcePath { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
+    public Dictionary<string, LocalizationLanguage> Resources { get; private set; }
+    public string ResourceFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
 
-    public Dictionary<string, LocalizationLanguage> LoadLanguages()
+
+    public CultureInfo Culture { get; set; }
+
+    public void Load()
     {
-        var resources = new Dictionary<string, LocalizationLanguage>();
+        Resources = new Dictionary<string, LocalizationLanguage>();
 
         LocalizationLanguage ReadLanguage(XElement element)
         {
@@ -24,7 +29,7 @@ public class XmlLangPlugin : ILangPlugin
             };
         }
 
-        var xmlFiles = Directory.GetFiles(ResourcePath, "*.xml", SearchOption.AllDirectories)
+        var xmlFiles = Directory.GetFiles(ResourceFolder, "*.xml", SearchOption.AllDirectories)
             .Where(file =>
             {
                 var doc = XDocument.Load(file);
@@ -40,7 +45,7 @@ public class XmlLangPlugin : ILangPlugin
         if (xmlFiles.Any() != true)
         {
             Console.WriteLine("Please provide the language XML file");
-            return resources;
+            return;
         }
 
         foreach (var xmlFile in xmlFiles)
@@ -48,9 +53,9 @@ public class XmlLangPlugin : ILangPlugin
             var xmlDoc = XDocument.Load(xmlFile);
 
             var language = ReadLanguage(xmlDoc.Root!);
-            if (!resources.ContainsKey(language.CultureName))
+            if (!Resources.ContainsKey(language.CultureName))
             {
-                resources[language.CultureName] = language;
+                Resources[language.CultureName] = language;
             }
 
             var propertyNodes = xmlDoc.Nodes().OfType<XElement>().DescendantsAndSelf()
@@ -59,10 +64,27 @@ public class XmlLangPlugin : ILangPlugin
             {
                 var ancestorsNodeNames = propertyNode.AncestorsAndSelf().Reverse().Select(node => node.Name.LocalName);
                 var key = string.Join(".", ancestorsNodeNames);
-                resources[language.CultureName].Languages[key] = propertyNode.Value;
+                Resources[language.CultureName].Languages[key] = propertyNode.Value;
             }
         }
+    }
 
-        return resources;
+    public List<LocalizationLanguage>? GetLanguages() => Resources.Select(kvp => kvp.Value).ToList();
+
+    public string? GetResource(string key, string? cultureName = null)
+    {
+        var culture = Culture.Name;
+        if (!string.IsNullOrWhiteSpace(cultureName))
+        {
+            culture = cultureName;
+        }
+
+        if (Resources.TryGetValue(culture, out var currentLanguages)
+            && currentLanguages.Languages.TryGetValue(key, out string resource))
+        {
+            return resource;
+        }
+
+        return key;
     }
 }

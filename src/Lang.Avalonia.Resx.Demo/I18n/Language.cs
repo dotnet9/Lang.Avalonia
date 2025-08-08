@@ -5,17 +5,17 @@
 //     the code is regenerated.  
 // </auto-generated>  
 //------------------------------------------------------------------------------
+
 namespace Localization.Main
 {
     public static class MainView
     {
-        public static readonly string Title = "Localization.Main.MainView.Title";
         public static readonly string RunningCountInfo = "Localization.Main.MainView.RunningCountInfo";
+        public static readonly string Title = "Localization.Main.MainView.Title";
         public static readonly string CurrentTimeFormat = "Localization.Main.MainView.CurrentTimeFormat";
         public static readonly string ChangeLanguage = "Localization.Main.MainView.ChangeLanguage";
         public static readonly string Exit = "Localization.Main.MainView.Exit";
     }
-
 
     public static class SettingView
     {
@@ -23,26 +23,21 @@ namespace Localization.Main
         public static readonly string NoPrompt = "Localization.Main.SettingView.NoPrompt";
     }
 
-
 }
-
 
 namespace Localization.DevelopModule
 {
-    public static class Title2SlugView
-    {
-        public static readonly string Title = "Localization.DevelopModule.Title2SlugView.Title";
-        public static readonly string Convert = "Localization.DevelopModule.Title2SlugView.Convert";
-    }
-
-
     public static class SettingView
     {
         public static readonly string Title = "Localization.DevelopModule.SettingView.Title";
         public static readonly string MaxLength = "Localization.DevelopModule.SettingView.MaxLength";
     }
 
+    public static class Title2SlugView
+    {
+        public static readonly string Convert = "Localization.DevelopModule.Title2SlugView.Convert";
+        public static readonly string Title = "Localization.DevelopModule.Title2SlugView.Title";
+    }
 
 }
-
 

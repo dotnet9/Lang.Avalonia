@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Localization language="Chinese (Simplified)" description="Chinese (Simplified)" cultureName="zh-CN">
   <Main>
@@ -8,36 +8,16 @@
       <CurrentTimeFormat>当前时间是 {0}</CurrentTimeFormat>
       <ChangeLanguage>切换语言</ChangeLanguage>
       <Exit>退出程序</Exit>
-      <LivePreview>实时预览</LivePreview>
-      <BasicFeatures>基本功能</BasicFeatures>
-      <PluralDemo>复数形式演示</PluralDemo>
-      <UserCount>有 {0} 个用户在线</UserCount>
-      <DateFormatDemo>日期格式化演示</DateFormatDemo>
-      <ShortDate>短日期: {0}</ShortDate>
-      <LongDate>长日期: {0}</LongDate>
-      <FullDateTime>完整日期时间: {0}</FullDateTime>
-      <NumberFormatDemo>数字格式化演示</NumberFormatDemo>
-      <LargeNumber>大数字: {0}</LargeNumber>
-      <Percentage>百分比: {0}</Percentage>
-      <Currency>货币: {0}</Currency>
-      <LanguageComparison>多语言对比</LanguageComparison>
-      <CurrentLanguage>当前语言</CurrentLanguage>
-      <WelcomeMessage>欢迎使用我们的应用</WelcomeMessage>
-      <Copyright>© 2023 Lang.Avalonia 演示应用</Copyright>
     </MainView>
     <SettingView>
       <Title>设置</Title>
       <NoPrompt>不再提示</NoPrompt>
-      <LanguageSettings>语言设置</LanguageSettings>
     </SettingView>
   </Main>
   <DevelopModule>
     <Title2SlugView>
       <Title>文章标题转URL别名</Title>
       <Convert>转换</Convert>
-      <Description>输入文章标题，转换为适合URL的格式</Description>
-      <EnterTitle>输入标题...</EnterTitle>
-      <SlugResult>生成的别名: {0}</SlugResult>
     </Title2SlugView>
     <SettingView>
       <Title>设置</Title>

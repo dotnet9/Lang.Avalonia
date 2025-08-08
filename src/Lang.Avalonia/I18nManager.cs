@@ -9,15 +9,15 @@ namespace Lang.Avalonia;
 
 public class I18nManager : INotifyPropertyChanged
 {
+    private ILangPlugin? _langPlugin;
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public Dictionary<string, LocalizationLanguage> Resources { get; private set; }
     public static I18nManager Instance { get; } = new();
 
     // 加载指定目录下的所有语言文件（XML格式）
     private I18nManager()
     {
-        _culture = CultureInfo.InvariantCulture;
     }
 
     public bool Register(ILangPlugin plugin, out string? error)
@@ -25,7 +25,9 @@ public class I18nManager : INotifyPropertyChanged
         error = null;
         try
         {
-            Resources = plugin.LoadLanguages();
+            _langPlugin = plugin;
+            plugin.Load();
+            Culture = CultureInfo.InvariantCulture;
             return true;
         }
         catch (Exception ex)
@@ -36,19 +38,17 @@ public class I18nManager : INotifyPropertyChanged
     }
 
 
-    private CultureInfo _culture;
-
-    public CultureInfo Culture
+    public CultureInfo? Culture
     {
-        get => _culture;
+        get => _langPlugin?.Culture;
         set
         {
-            if (Equals(_culture, value))
+            if (_langPlugin == null || Equals(_langPlugin?.Culture, value))
             {
                 return;
             }
 
-            _culture = value;
+            _langPlugin!.Culture = value;
             Thread.CurrentThread.CurrentCulture = value;
             Thread.CurrentThread.CurrentUICulture = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Culture)));
@@ -56,26 +56,7 @@ public class I18nManager : INotifyPropertyChanged
         }
     }
 
-    public event EventHandler<EventArgs>? CultureChanged;
-
-    public List<LocalizationLanguage>? GetLanguages() => Resources.Select(kvp => kvp.Value).ToList();
-
-    public string? GetResource(string key, string? cultureName = null)
-    {
-        var culture = Culture.Name;
-        if (!string.IsNullOrWhiteSpace(cultureName))
-        {
-            culture = cultureName;
-        }
-
-        if (Instance.Resources.TryGetValue(culture, out var currentLanguages)
-            && currentLanguages.Languages.TryGetValue(key, out string resource))
-        {
-            return resource;
-        }
-
-        return key;
-    }
+    public List<LocalizationLanguage>? GetLanguages() => _langPlugin?.GetLanguages();
 
     public List<CultureInfo> GetAvailableCultures()
     {
@@ -87,4 +68,8 @@ public class I18nManager : INotifyPropertyChanged
 
         return availableCultures;
     }
+
+    public string? GetResource(string key, string? cultureName = null) => _langPlugin?.GetResource(key, cultureName);
+
+    public event EventHandler<EventArgs>? CultureChanged;
 }

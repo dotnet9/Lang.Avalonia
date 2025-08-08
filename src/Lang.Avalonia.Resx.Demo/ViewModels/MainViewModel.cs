@@ -7,13 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lang.Avalonia.Xml.Demo.ViewModels;
+namespace Lang.Avalonia.Resx.Demo.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
     public MainViewModel()
     {
-        Languages = I18nManager.Instance.GetLanguages();
+        Languages = new List<LocalizationLanguage>()
+        {
+            new(){ CultureName = "en-US", Description = "English", Language = "English"},
+            new(){ CultureName = "zh-CN", Description = "Chinese (Simplified)", Language = "Chinese (Simplified)"},
+            new(){ CultureName = "zh-Hant", Description = "Chinese (Traditional)", Language = "Chinese (Traditional)"},
+            new(){ CultureName = "ja-JP", Description = "Japanese", Language = "Japanese"}
+
+        };
         SelectLanguage = Languages?.FirstOrDefault(l => l.CultureName == I18nManager.Instance.Culture.Name);
 
         AllCultures = new ObservableCollection<CultureInfo>(I18nManager.Instance.GetAvailableCultures());

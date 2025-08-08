@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Localization language="English" description="English" cultureName="en-US">
   <Main>
@@ -8,36 +8,16 @@
       <CurrentTimeFormat>The current time is {0}</CurrentTimeFormat>
       <ChangeLanguage>Switch language</ChangeLanguage>
       <Exit>Exit the program</Exit>
-      <LivePreview>Live Preview</LivePreview>
-      <BasicFeatures>Basic Features</BasicFeatures>
-      <PluralDemo>Plural Form Demo</PluralDemo>
-      <UserCount>There {1} {0} user{1} online</UserCount>
-      <DateFormatDemo>Date Format Demo</DateFormatDemo>
-      <ShortDate>Short Date: {0}</ShortDate>
-      <LongDate>Long Date: {0}</LongDate>
-      <FullDateTime>Full Date Time: {0}</FullDateTime>
-      <NumberFormatDemo>Number Format Demo</NumberFormatDemo>
-      <LargeNumber>Large Number: {0}</LargeNumber>
-      <Percentage>Percentage: {0}</Percentage>
-      <Currency>Currency: {0}</Currency>
-      <LanguageComparison>Language Comparison</LanguageComparison>
-      <CurrentLanguage>Current Language</CurrentLanguage>
-      <WelcomeMessage>Welcome to our application</WelcomeMessage>
-      <Copyright>© 2023 Lang.Avalonia Demo Application</Copyright>
     </MainView>
     <SettingView>
       <Title>Settings</Title>
       <NoPrompt>Don't prompt again</NoPrompt>
-      <LanguageSettings>Language Settings</LanguageSettings>
     </SettingView>
   </Main>
   <DevelopModule>
     <Title2SlugView>
       <Title>Convert article title to URL slug</Title>
       <Convert>Convert</Convert>
-      <Description>Enter article title to convert to URL-friendly format</Description>
-      <EnterTitle>Enter title...</EnterTitle>
-      <SlugResult>Generated slug: {0}</SlugResult>
     </Title2SlugView>
     <SettingView>
       <Title>Settings</Title>
