@@ -6,6 +6,7 @@
 		<Copyright>Copyright (c) 2025 https://codewf.com</Copyright>
 		<Version>0.0.0.2</Version>
 		<AvaloniaVersion>11.3.3</AvaloniaVersion>
+		<CodeAnalysisVersion>5.0.0-1.25277.114</CodeAnalysisVersion>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<LangVersion>preview</LangVersion>

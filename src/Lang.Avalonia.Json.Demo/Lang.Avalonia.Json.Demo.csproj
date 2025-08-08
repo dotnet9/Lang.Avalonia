@@ -35,7 +35,6 @@
 		<PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
 		<PackageReference Include="System.Memory" Version="4.6.3" />
 		<PackageReference Include="YY-Thunks" Version="1.1.8-Beta4" />
-		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>
