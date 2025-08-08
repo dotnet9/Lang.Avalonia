@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Folder Include="Models\"/>
+        <AvaloniaResource Include="Assets\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="Semi.Avalonia" Version="11.2.1.9" />
+        <PackageReference Include="Irihi.Ursa" Version="1.12.0" />
+        <PackageReference Include="Irihi.Ursa.PrismExtension" Version="9.0.1" />
+        <PackageReference Include="Irihi.Ursa.Themes.Semi" Version="1.12.0" />
+        <PackageReference Include="Prism.Avalonia" Version="9.0.537.11300-pre" />
+        <PackageReference Include="Prism.DryIoc.Avalonia" Version="9.0.537.11300-pre" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
+        <PackageReference Include="System.Memory" Version="4.6.3" />
+        <PackageReference Include="YY-Thunks" Version="1.1.8-Beta4" />
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Lang.Avalonia.Json\Lang.Avalonia.Json.csproj" />
+      <ProjectReference Include="..\Lang.Avalonia\Lang.Avalonia.csproj" />
+      <ProjectReference Include="..\Lang.Avalonia.Analysis\Lang.Avalonia.Analysis.csproj" OutputItemType="Analyzer" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="I18n\*.json" />
+      <None Update="I18n\en-US.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="I18n\ja-JP.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="I18n\zh-CN.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="I18n\zh-Hant.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+    
+</Project>

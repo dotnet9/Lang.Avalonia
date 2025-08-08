@@ -1,0 +1,30 @@
+﻿{
+  "language": "Japanese",
+  "description": "Japanese",
+  "cultureName": "ja-JP",
+  "Localization": {
+    "Main": {
+      "MainView": {
+        "Title": "Jsonを使って国際化を実現する",
+        "RunningCountInfo": "実行中 {0} オペレーティングシステム,{1}",
+        "CurrentTimeFormat": "現在の時間は {0} です。",
+        "ChangeLanguage": "言語の切り替え",
+        "Exit": "プログラムを終了する"
+      },
+      "SettingView": {
+        "Title": "設定",
+        "NoPrompt": "もうメッセージを表示しない"
+      }
+    },
+    "DevelopModule": {
+      "Title2SlugView": {
+        "Title": "記事のタイトルをURLのエイリアスに変換する",
+        "Convert": "変換する"
+      },
+      "SettingView": {
+        "Title": "設定",
+        "MaxLength": "最大長さ"
+      }
+    }
+  }
+}

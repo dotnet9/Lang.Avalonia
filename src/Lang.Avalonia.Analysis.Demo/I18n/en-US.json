@@ -1,0 +1,30 @@
+﻿{
+  "language": "English",
+  "description": "English",
+  "cultureName": "en-US",
+  "Localization": {
+    "Main": {
+      "MainView": {
+        "Title": "Implement internationalization using Json",
+        "RunningCountInfo": "Running {0} operating system, {1}",
+        "CurrentTimeFormat": "The current time is {0}",
+        "ChangeLanguage": "Switch language",
+        "Exit": "Exit the program"
+      },
+      "SettingView": {
+        "Title": "Settings",
+        "NoPrompt": "Don't prompt again"
+      }
+    },
+    "DevelopModule": {
+      "Title2SlugView": {
+        "Title": "Convert article title to URL slug",
+        "Convert": "Convert"
+      },
+      "SettingView": {
+        "Title": "Settings",
+        "MaxLength": "Maximum length"
+      }
+    }
+  }
+}
