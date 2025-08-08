@@ -1,0 +1,71 @@
+<UserControl
+    x:Class="Lang.Avalonia.Json.Demo.Views.MainView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:globalization="clr-namespace:System.Globalization;assembly=mscorlib"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:u="https://irihi.tech/ursa"
+    xmlns:mainLangs="clr-namespace:Localization.Main"
+    xmlns:developModuleLanguage="clr-namespace:Localization.DevelopModule"
+    xmlns:c="https://codewf.com"
+    xmlns:vm="clr-namespace:Lang.Avalonia.Json.Demo.ViewModels"
+    d:DesignHeight="250"
+    d:DesignWidth="400" Margin="20"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    x:DataType="vm:MainViewModel"
+    mc:Ignorable="d">
+	<Grid RowDefinitions="Auto Auto Auto *">
+		<StackPanel Orientation="Horizontal">
+			<SelectableTextBlock Text="{c:I18n {x:Static mainLangs:MainView.ChangeLanguage}}"
+                                 VerticalAlignment="Center" />
+			<ComboBox ItemsSource="{Binding Languages}"
+                      SelectedItem="{Binding SelectLanguage}"
+                      DisplayMemberBinding="{Binding Language}"
+                      Margin="20 0" />
+
+			<ComboBox ItemsSource="{Binding AllCultures}">
+				<ComboBox.ItemTemplate>
+					<DataTemplate DataType="globalization:CultureInfo">
+						<Label Content="{Binding DisplayName}" VerticalAlignment="Center" />
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+		</StackPanel>
+		<TabControl Grid.Row="1" TabStripPlacement="Left" Margin="0 20 0 0">
+			<TabItem Header="{c:I18n {x:Static mainLangs:MainView.Title}}">
+				<StackPanel>
+					<SelectableTextBlock
+                        Text="{c:I18n {x:Static mainLangs:MainView.RunningCountInfo}, Windows 11, x64}" />
+					<SelectableTextBlock
+                        Text="{c:I18n {x:Static mainLangs:MainView.CurrentTimeFormat}, {Binding CurrentTime}}" />
+					<SelectableTextBlock Text="{c:I18n {x:Static mainLangs:MainView.Exit}}" />
+					<SelectableTextBlock Text="{c:I18n {x:Static mainLangs:SettingView.Title}}" />
+				</StackPanel>
+			</TabItem>
+			<TabItem Header="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}}">
+				<StackPanel>
+					<SelectableTextBlock Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}}" />
+					<SelectableTextBlock Text="{c:I18n {x:Static developModuleLanguage:SettingView.MaxLength}}" />
+					<SelectableTextBlock Text="{c:I18n {x:Static developModuleLanguage:SettingView.Title}}" />
+					<SelectableTextBlock Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Convert}}" />
+				</StackPanel>
+			</TabItem>
+			<TabItem Header="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}}">
+				<u:Form LabelPosition="Left" LabelWidth="*">
+					<SelectableTextBlock u:FormItem.Label="Current Thread"
+                                         Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}}" />
+					<SelectableTextBlock u:FormItem.Label="en-US"
+                                         Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}, CultureName=en-US}" />
+					<SelectableTextBlock u:FormItem.Label="ja-JP"
+                                         Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}, CultureName=ja-JP}" />
+					<SelectableTextBlock u:FormItem.Label="zh-CN"
+                                         Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}, CultureName=zh-CN}" />
+					<SelectableTextBlock u:FormItem.Label="zh-Hant"
+                                         Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}, CultureName=zh-Hant}" />
+				</u:Form>
+			</TabItem>
+		</TabControl>
+	</Grid>
+</UserControl>

@@ -1,0 +1,30 @@
+﻿{
+  "language": "Chinese (Traditional)",
+  "description": "Chinese (Traditional)",
+  "cultureName": "zh-Hant",
+  "Localization": {
+    "Main": {
+      "MainView": {
+        "Title": "使用Json實現國際化",
+        "RunningCountInfo": "正在運行 {0} 作業系統,{1}",
+        "CurrentTimeFormat": "當前時間是 {0}",
+        "ChangeLanguage": "切換語言",
+        "Exit": "退出程式"
+      },
+      "SettingView": {
+        "Title": "設定",
+        "NoPrompt": "不再提示"
+      }
+    },
+    "DevelopModule": {
+      "Title2SlugView": {
+        "Title": "文章標題轉換為URL別名",
+        "Convert": "轉換"
+      },
+      "SettingView": {
+        "Title": "設定",
+        "MaxLength": "最大長度"
+      }
+    }
+  }
+}

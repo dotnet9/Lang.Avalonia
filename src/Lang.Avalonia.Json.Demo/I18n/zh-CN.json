@@ -1,0 +1,30 @@
+﻿{
+  "language": "Chinese (Simplified)",
+  "description": "Chinese (Simplified)",
+  "cultureName": "zh-CN",
+  "Localization": {
+    "Main": {
+      "MainView": {
+        "Title": "使用Json实现国际化",
+        "RunningCountInfo": "正在运行 {0} 操作系统,{1}",
+        "CurrentTimeFormat": "当前时间是 {0}",
+        "ChangeLanguage": "切换语言",
+        "Exit": "退出程序"
+      },
+      "SettingView": {
+        "Title": "设置",
+        "NoPrompt": "不再提示"
+      }
+    },
+    "DevelopModule": {
+      "Title2SlugView": {
+        "Title": "文章标题转URL别名",
+        "Convert": "转换"
+      },
+      "SettingView": {
+        "Title": "设置",
+        "MaxLength": "最大长度"
+      }
+    }
+  }
+}
