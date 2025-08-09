@@ -16,10 +16,12 @@ public class JsonLangPlugin : ILangPlugin
 
     public Dictionary<string, LocalizationLanguage> Resources { get; private set; }= new();
     public string ResourceFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
+    private CultureInfo _defaultCulture;
     public CultureInfo Culture { get; set; }
 
     public void Load(CultureInfo cultureInfo)
     {
+        _defaultCulture = cultureInfo;
         Culture = cultureInfo;
 
         // 获取所有JSON文件并筛选有效语言文件
@@ -133,6 +135,11 @@ public class JsonLangPlugin : ILangPlugin
 
         if (Resources?.TryGetValue(culture, out var currentLanguages) == true
             && currentLanguages.Languages.TryGetValue(key, out string resource))
+        {
+            return resource;
+        }
+        if (Resources?.TryGetValue(_defaultCulture.Name, out currentLanguages) == true
+            && currentLanguages.Languages.TryGetValue(key, out resource))
         {
             return resource;
         }

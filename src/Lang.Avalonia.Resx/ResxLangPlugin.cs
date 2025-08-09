@@ -14,6 +14,7 @@ public class ResxLangPlugin : ILangPlugin
     public string Mark { get; set; } = "i18n";
     private Dictionary<Type, ResourceManager>? _resourceManagers;
 
+    private CultureInfo _defaultCulture;
 
     public CultureInfo Culture
     {
@@ -27,6 +28,7 @@ public class ResxLangPlugin : ILangPlugin
 
     public void Load(CultureInfo cultureInfo)
     {
+        _defaultCulture = cultureInfo;
         Culture = cultureInfo;
         _resourceManagers = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(assembly =>
@@ -101,6 +103,13 @@ public class ResxLangPlugin : ILangPlugin
         }
 
         Sync(new CultureInfo(cultureName));
+        resource = GetResource();
+        if (!string.IsNullOrWhiteSpace(resource))
+        {
+            return resource;
+        }
+
+        cultureName = _defaultCulture.Name;
         resource = GetResource();
         if (!string.IsNullOrWhiteSpace(resource))
         {
