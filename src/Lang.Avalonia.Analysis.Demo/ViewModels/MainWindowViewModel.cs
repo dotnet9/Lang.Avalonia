@@ -15,6 +15,10 @@ public class MainWindowViewModel : ViewModelBase
         Languages = I18nManager.Instance.GetLanguages();
         SelectLanguage = Languages?.FirstOrDefault(l => l.CultureName == I18nManager.Instance.Culture.Name);
 
+        var titleCurrentCulture = I18nManager.Instance.GetResource(Localization.Main.MainView.Title);
+        var titleZhCN = I18nManager.Instance.GetResource(Localization.Main.MainView.Title, "zh-CN");
+        var titleEnUS = I18nManager.Instance.GetResource(Localization.Main.MainView.Title, "en-US");
+
         Task.Run(async () =>
         {
             while (true)

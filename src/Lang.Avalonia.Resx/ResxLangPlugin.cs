@@ -10,7 +10,7 @@ namespace Lang.Avalonia.Resx;
 
 public class ResxLangPlugin : ILangPlugin
 {
-    public Dictionary<string, string> Resources { get; } = new();
+    public Dictionary<string, LocalizationLanguage> Resources { get; } = new();
     public string Mark { get; set; } = "i18n";
     private Dictionary<Type, ResourceManager>? _resourceManagers;
 
@@ -21,13 +21,13 @@ public class ResxLangPlugin : ILangPlugin
         set
         {
             field = value;
-            Sync();
+            Sync(value);
         }
     }
 
-    public void Load()
+    public void Load(CultureInfo cultureInfo)
     {
-        Culture = CultureInfo.InvariantCulture;
+        Culture = cultureInfo;
         _resourceManagers = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(assembly =>
                 assembly.GetTypes()
@@ -40,7 +40,7 @@ public class ResxLangPlugin : ILangPlugin
             )
             .Where(pair => pair.Value != null)
             .ToDictionary(pair => pair.Key, pair => pair.Value!);
-        Sync();
+        Sync(Culture);
     }
 
     public void AddResource(params Assembly[] assemblies)
@@ -67,7 +67,7 @@ public class ResxLangPlugin : ILangPlugin
             }
         }
 
-        Sync();
+        Sync(Culture);
     }
 
     public List<LocalizationLanguage>? GetLanguages() =>
@@ -76,22 +76,42 @@ public class ResxLangPlugin : ILangPlugin
     public string? GetResource(string key, string? cultureName = null)
     {
         var culture = Culture.Name;
+
+        string? GetResource()
+        {
+            if (Resources.TryGetValue(culture, out var currentLanguages)
+                && currentLanguages.Languages.TryGetValue(key, out string resource))
+            {
+                return resource;
+            }
+
+            return default;
+        }
+
         if (!string.IsNullOrWhiteSpace(cultureName))
         {
             culture = cultureName;
         }
 
-
-        if (Resources.TryGetValue(key, out var resource) && resource is string result)
+        bool isFirst = true;
+        var resource = GetResource();
+        if (!string.IsNullOrWhiteSpace(resource))
         {
-            return result;
+            return resource;
+        }
+
+        Sync(new CultureInfo(cultureName));
+        resource = GetResource();
+        if (!string.IsNullOrWhiteSpace(resource))
+        {
+            return resource;
         }
 
         return key;
     }
 
 
-    private void Sync()
+    private void Sync(CultureInfo cultureInfo)
     {
         if (_resourceManagers == null || _resourceManagers.Count == 0)
         {
@@ -102,7 +122,7 @@ public class ResxLangPlugin : ILangPlugin
         {
             var baseEntries = resourceManager.GetResourceSet(CultureInfo.InvariantCulture, true, true)
                 ?.OfType<DictionaryEntry>();
-            var cultureEntries = resourceManager.GetResourceSet(Culture, true, true)?.OfType<DictionaryEntry>();
+            var cultureEntries = resourceManager.GetResourceSet(cultureInfo, true, true)?.OfType<DictionaryEntry>();
             if (cultureEntries == null || baseEntries == null)
             {
                 yield break;
@@ -117,15 +137,31 @@ public class ResxLangPlugin : ILangPlugin
             }
         }
 
-        Resources.Clear();
+        var cultureName = cultureInfo.Name;
+        LocalizationLanguage? currentLanResources;
+        if (Resources.ContainsKey(cultureName))
+        {
+            currentLanResources = Resources[cultureName];
+        }
+        else
+        {
+            currentLanResources = new LocalizationLanguage()
+            {
+                Language = cultureInfo.DisplayName,
+                Description = cultureInfo.DisplayName,
+                CultureName = cultureName
+            };
+            Resources[cultureName] = currentLanResources;
+        }
+
         foreach (var pair in _resourceManagers)
         {
-            pair.Key.GetProperty("Culture", BindingFlags.Public | BindingFlags.Static)?.SetValue(null, Culture);
+            pair.Key.GetProperty("Culture", BindingFlags.Public | BindingFlags.Static)?.SetValue(null, cultureInfo);
             foreach (var entry in GetResources(pair.Value))
             {
-                if (entry.Value is string value)
+                if (entry.Key is string key && entry.Value is string value)
                 {
-                    Resources[entry.Key.ToString()] = value;
+                    currentLanResources.Languages[key] = value;
                 }
             }
         }

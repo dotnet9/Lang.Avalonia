@@ -9,15 +9,15 @@ namespace Lang.Avalonia.Xml;
 
 public class XmlLangPlugin : ILangPlugin
 {
-    public Dictionary<string, LocalizationLanguage> Resources { get; private set; }
+    public Dictionary<string, LocalizationLanguage> Resources { get;  } = new();
     public string ResourceFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
 
 
     public CultureInfo Culture { get; set; }
 
-    public void Load()
+    public void Load(CultureInfo cultureInfo)
     {
-        Resources = new Dictionary<string, LocalizationLanguage>();
+        Culture = cultureInfo;
 
         LocalizationLanguage ReadLanguage(XElement element)
         {

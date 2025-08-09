@@ -20,14 +20,15 @@ public class I18nManager : INotifyPropertyChanged
     {
     }
 
-    public bool Register(ILangPlugin plugin, out string? error)
+    public bool Register(ILangPlugin plugin, CultureInfo cultureInfo, out string? error)
     {
         error = null;
         try
         {
             _langPlugin = plugin;
-            plugin.Load();
-            Culture = CultureInfo.InvariantCulture;
+            
+            plugin.Load(cultureInfo);
+            Culture = cultureInfo;
             return true;
         }
         catch (Exception ex)

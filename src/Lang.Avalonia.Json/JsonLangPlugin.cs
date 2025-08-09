@@ -14,13 +14,13 @@ public class JsonLangPlugin : ILangPlugin
         PropertyNameCaseInsensitive = true
     };
 
-    public Dictionary<string, LocalizationLanguage> Resources { get; private set; }
+    public Dictionary<string, LocalizationLanguage> Resources { get; private set; }= new();
     public string ResourceFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
     public CultureInfo Culture { get; set; }
 
-    public void Load()
+    public void Load(CultureInfo cultureInfo)
     {
-        Resources = new Dictionary<string, LocalizationLanguage>();
+        Culture = cultureInfo;
 
         // 获取所有JSON文件并筛选有效语言文件
         var jsonFiles = Directory.GetFiles(ResourceFolder, "*.json", SearchOption.AllDirectories)

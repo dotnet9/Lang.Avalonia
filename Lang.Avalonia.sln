@@ -6,7 +6,10 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9FA3D6BD-1EC1-3BA5-80CB-CE02773A58D5}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
+		README.json.md = README.json.md
 		README.md = README.md
+		README.resx.md = README.resx.md
+		README.xml.md = README.xml.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lang.Avalonia", "src\Lang.Avalonia\Lang.Avalonia.csproj", "{39A9FCEA-4ADB-4C79-9A62-93B8E895FAB3}"

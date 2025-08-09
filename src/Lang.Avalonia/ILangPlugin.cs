@@ -5,7 +5,7 @@ namespace Lang.Avalonia;
 
 public interface ILangPlugin
 {
-    void Load();
+    void Load(CultureInfo cultureInfo);
     public CultureInfo Culture { get; set; }
     List<LocalizationLanguage>? GetLanguages();
     string? GetResource(string key, string? cultureName = null);
