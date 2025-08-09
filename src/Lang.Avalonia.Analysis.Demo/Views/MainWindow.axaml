@@ -28,14 +28,6 @@
                       SelectedItem="{Binding SelectLanguage}"
                       DisplayMemberBinding="{Binding Language}"
                       Margin="20 0" />
-
-            <ComboBox ItemsSource="{Binding AllCultures}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate DataType="globalization:CultureInfo">
-                        <Label Content="{Binding DisplayName}" VerticalAlignment="Center" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
         </StackPanel>
         <TabControl Grid.Row="1" TabStripPlacement="Left" Margin="0 20 0 0">
             <TabItem Header="{c:I18n {x:Static mainLangs:MainView.Title}}">

@@ -58,16 +58,6 @@ public class I18nManager : INotifyPropertyChanged
 
     public List<LocalizationLanguage>? GetLanguages() => _langPlugin?.GetLanguages();
 
-    public List<CultureInfo> GetAvailableCultures()
-    {
-        var availableCultures = CultureInfo.GetCultures(CultureTypes.AllCultures)
-            .Where(culture => !CultureInfo.InvariantCulture.Equals(culture))
-            //.Except(existingLanguages)
-            .OrderBy(culture => culture.DisplayName)
-            .ToList();
-
-        return availableCultures;
-    }
 
     public string? GetResource(string key, string? cultureName = null) => _langPlugin?.GetResource(key, cultureName);
 
