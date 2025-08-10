@@ -12,8 +12,7 @@ public partial class App : PrismApplication
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-        var resxPlugin = new ResxLangPlugin();
-        I18nManager.Instance.Register(resxPlugin, new CultureInfo("zh-CN"), out _);
+        I18nManager.Instance.Register(new ResxLangPlugin(), new CultureInfo("zh-CN"), out _);
         base.Initialize(); // <-- Required
     }
 

@@ -10,7 +10,7 @@
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<LangVersion>preview</LangVersion>
-		<PackageProjectUrl>https://github.com/dotnet9/Lang.AvaloniaLang.Avalonia</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/dotnet9/Lang.Avalonia</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/dotnet9/Lang.Avalonia</RepositoryUrl>
 		<PackageTags>Avalonia;AvaloniaUI</PackageTags>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
