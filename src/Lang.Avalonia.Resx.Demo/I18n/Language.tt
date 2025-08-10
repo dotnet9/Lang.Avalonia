@@ -32,13 +32,33 @@
     foreach (var fullKey in resourceKeys)
     {
         var parts = fullKey.Split('.');
-        if (parts.Length < 3) continue; // 确保至少有三级结构（命名空间.类.字段）
+        string namespaceName;
+        string className;
+        string fieldName;
 
-        // 解析命名空间、类名和字段名
-        var namespaceParts = parts.Take(parts.Length - 2).ToArray();
-        var namespaceName = string.Join(".", namespaceParts);
-        var className = parts[parts.Length - 2];
-        var fieldName = parts[parts.Length - 1];
+        // 根据不同层级处理命名空间和类名
+        if (parts.Length == 1)
+        {
+            // 单层结构：默认命名空间Localization，类Language
+            namespaceName = "Localization";
+            className = "Language";
+            fieldName = parts[0];
+        }
+        else if (parts.Length == 2)
+        {
+            // 双层结构：默认命名空间Localization，类为第一部分
+            namespaceName = "Localization";
+            className = parts[0];
+            fieldName = parts[1];
+        }
+        else
+        {
+            // 三层及以上：前n-2部分为命名空间，第n-2部分为类名
+            var namespaceParts = parts.Take(parts.Length - 2).ToArray();
+            namespaceName = string.Join(".", namespaceParts);
+            className = parts[parts.Length - 2];
+            fieldName = parts[parts.Length - 1];
+        }
 
         // 初始化命名空间分组
         if (!namespaceGroups.ContainsKey(namespaceName))
