@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
+using System.Reflection;
 using System.Threading;
 
 namespace Lang.Avalonia;
@@ -15,7 +15,6 @@ public class I18nManager : INotifyPropertyChanged
 
     public static I18nManager Instance { get; } = new();
 
-    // 加载指定目录下的所有语言文件（XML格式）
     private I18nManager()
     {
     }
@@ -26,7 +25,7 @@ public class I18nManager : INotifyPropertyChanged
         try
         {
             _langPlugin = plugin;
-            
+
             plugin.Load(defaultCulture);
             Culture = defaultCulture;
             return true;
@@ -36,6 +35,11 @@ public class I18nManager : INotifyPropertyChanged
             error = ex.ToString();
             return false;
         }
+    }
+
+    public void AddResource(params Assembly[] assemblies)
+    {
+        _langPlugin?.AddResource(assemblies);
     }
 
 

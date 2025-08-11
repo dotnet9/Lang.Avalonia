@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Linq;
 
 namespace Lang.Avalonia.Xml;
@@ -68,6 +69,11 @@ public class XmlLangPlugin : ILangPlugin
                 Resources[language.CultureName].Languages[key] = propertyNode.Value;
             }
         }
+    }
+
+    public void AddResource(params Assembly[] assemblies)
+    {
+        throw new NotImplementedException(nameof(AddResource));
     }
 
     public List<LocalizationLanguage>? GetLanguages() => Resources.Select(kvp => kvp.Value).ToList();

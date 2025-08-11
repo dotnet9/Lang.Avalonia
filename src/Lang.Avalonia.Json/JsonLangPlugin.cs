@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 
 namespace Lang.Avalonia.Json;
@@ -64,6 +65,11 @@ public class JsonLangPlugin : ILangPlugin
                 }
             }
         }
+    }
+
+    public void AddResource(params Assembly[] assemblies)
+    {
+        throw new NotImplementedException(nameof(AddResource));
     }
 
     // 验证JSON文件是否包含必要的根属性

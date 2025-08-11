@@ -1,14 +1,14 @@
 # Lang.Avalonia.Xml
 
-## °²×°
+## å®‰è£…
 
 ```shell
 Install-Package Lang.Avalonia.Xml
 ```
 
-## ´´½¨ÓïÑÔÎÄ¼ş
+## åˆ›å»ºè¯­è¨€æ–‡ä»¶
 
-²Î¿¼Ê¾ÀıÏîÄ¿´´½¨XMLÓïÑÔÎÄ¼ş
+å‚è€ƒç¤ºä¾‹é¡¹ç›®åˆ›å»ºXMLè¯­è¨€æ–‡ä»¶
 
 ```shell
 i18n/en-US.xml
@@ -17,19 +17,19 @@ i18n/zh-Hant.xml
 i18n/ja-JP.xml
 ```
 
-## ´´½¨T4ÎÄ¼ş
+## åˆ›å»ºT4æ–‡ä»¶
 
-¿ÉÖ±½Ó¸´ÖÆÊ¾ÀıT4ÎÄ¼şÊ¹ÓÃ£¬ÓÃÓÚ¸ù¾İÓïÑÔÎÄ¼şÉú³ÉC#µÄ³£Á¿ÓïÑÔKey£¬·½±ãÊ¹ÓÃÊ±ÒıÓÃ
+å¯ç›´æ¥å¤åˆ¶ç¤ºä¾‹T4æ–‡ä»¶ä½¿ç”¨ï¼Œç”¨äºæ ¹æ®è¯­è¨€æ–‡ä»¶ç”ŸæˆC#çš„å¸¸é‡è¯­è¨€Keyï¼Œæ–¹ä¾¿ä½¿ç”¨æ—¶å¼•ç”¨
 
-## Ê¹ÓÃ
+## ä½¿ç”¨
 
-³õÊ¼»¯
+åˆå§‹åŒ–
 
 ```csharp
 I18nManager.Instance.Register(new XmlLangPlugin(), new CultureInfo("zh-CN"), out _);
 ```
 
-Ç°Ì¨Ê¹ÓÃ
+å‰å°ä½¿ç”¨
 
 ```xml
 xmlns:c="https://codewf.com"
@@ -40,7 +40,7 @@ xmlns:developModuleLanguage="clr-namespace:Localization.DevelopModule"
 <SelectableTextBlock Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}, CultureName=zh-CN}" 
 ```
 
-ºóÌ¨Ê¹ÓÃ
+åå°ä½¿ç”¨
 
 ```csharp
 var titleCurrentCulture = I18nManager.Instance.GetResource(Localization.Main.MainView.Title);
