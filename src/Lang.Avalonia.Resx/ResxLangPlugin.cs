@@ -102,14 +102,14 @@ public class ResxLangPlugin : ILangPlugin
             return resource;
         }
 
-        Sync(new CultureInfo(cultureName));
+        Sync(new CultureInfo(culture));
         resource = GetResource();
         if (!string.IsNullOrWhiteSpace(resource))
         {
             return resource;
         }
 
-        cultureName = _defaultCulture.Name;
+        culture = _defaultCulture.Name;
         resource = GetResource();
         if (!string.IsNullOrWhiteSpace(resource))
         {
