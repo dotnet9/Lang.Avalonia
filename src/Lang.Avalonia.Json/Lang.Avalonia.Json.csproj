@@ -32,11 +32,11 @@
 
 	<ItemGroup>
 		<None Include="..\..\README.json.md" Pack="true" PackagePath="README.md" />
-		<None Include="..\..\logo.png" Pack="true" PackagePath="" />
+		<None Include="..\..\logo.png" Pack="true" PackagePath="logo.png" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="System.Text.Json" Version="10.0.0-preview.6.25358.103" />
+	  <PackageReference Include="System.Text.Json" Version="10.0.0" />
 	</ItemGroup>
 
 </Project>
