@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/Demo/">
+    <Project Path="src/Lang.Avalonia.Analysis.Demo/Lang.Avalonia.Analysis.Demo.csproj" />
+    <Project Path="src/Lang.Avalonia.Json.Demo/Lang.Avalonia.Json.Demo.csproj" />
+    <Project Path="src/Lang.Avalonia.Resx.Demo/Lang.Avalonia.Resx.Demo.csproj" />
+    <Project Path="src/Lang.Avalonia.Xml.Demo/Lang.Avalonia.Xml.Demo.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="README.json.md" />
+    <File Path="README.md" />
+    <File Path="README.resx.md" />
+    <File Path="README.xml.md" />
+  </Folder>
+  <Project Path="src/Lang.Avalonia.Analysis/Lang.Avalonia.Analysis.csproj" />
+  <Project Path="src/Lang.Avalonia.Json/Lang.Avalonia.Json.csproj" />
+  <Project Path="src/Lang.Avalonia.Resx/Lang.Avalonia.Resx.csproj" />
+  <Project Path="src/Lang.Avalonia.Xml/Lang.Avalonia.Xml.csproj" />
+  <Project Path="src/Lang.Avalonia/Lang.Avalonia.csproj" />
+
+</Solution>
