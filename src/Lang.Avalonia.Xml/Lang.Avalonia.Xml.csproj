@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<Title>Lang.Avalonia.Xml</Title>
-		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;net8.0;net9.0;net10.0</TargetFrameworks>
 		<OutputType>Library</OutputType>
 		<IsPackable>true</IsPackable>
 		<Description>Avalonia UI 国际化解决方案的 XML 插件，提供 XML 格式的多语言资源加载支持</Description>
@@ -12,6 +12,7 @@
 		<RepositoryType>git</RepositoryType>
 		<GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">true</GeneratePackageOnBuild>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<IsAotCompatible>true</IsAotCompatible>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">

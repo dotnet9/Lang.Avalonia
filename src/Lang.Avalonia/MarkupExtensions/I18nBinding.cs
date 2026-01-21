@@ -1,10 +1,12 @@
-﻿using Avalonia.Data;
+using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Lang.Avalonia.Converters;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Lang.Avalonia.MarkupExtensions;
 
+[RequiresUnreferencedCode(nameof(Binding))]
 public class I18nBinding : MultiBindingExtensionBase
 {
     public I18nBinding(object key)
@@ -35,7 +37,7 @@ public class I18nBinding : MultiBindingExtensionBase
             return;
         }
 
-        foreach (object arg in args)
+        foreach (var arg in args)
         {
             Args.Add(arg);
         }

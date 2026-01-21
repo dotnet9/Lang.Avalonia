@@ -1,16 +1,14 @@
-﻿using Avalonia.Markup.Xaml;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using Avalonia.Markup.Xaml;
 
 namespace Lang.Avalonia.MarkupExtensions;
 
-public class I18nExtension : MarkupExtension
-{
-    public I18nExtension(object key)
-    {
-        Key = key;
-    }
 
+[RequiresUnreferencedCode(nameof(I18nBinding))]
+public class I18nExtension(object key) : MarkupExtension
+{
     public I18nExtension(object key, object arg0) : this(key)
     {
         Args.Add(arg0);
@@ -82,8 +80,11 @@ public class I18nExtension : MarkupExtension
         Args.Add(arg7);
     }
 
-    public object Key { get; }
-    public List<object> Args { get; } = new();
+    public object Key { get; } = key;
+
+    public List<object> Args { get; } = [];
+    
     public string? CultureName { get; set; }
+
     public override object ProvideValue(IServiceProvider serviceProvider) => new I18nBinding(Key, CultureName, Args);
 }

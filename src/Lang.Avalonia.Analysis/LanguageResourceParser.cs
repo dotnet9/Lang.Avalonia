@@ -18,23 +18,15 @@ public static class LanguageResourceParser
             using var doc = JsonDocument.Parse(content);
             var root = doc.RootElement;
 
-            if (!IsValidJsonLanguageFile(root))
-                return result;
-
-            var cultureName = root.GetProperty("cultureName").GetString();
-            if (string.IsNullOrEmpty(cultureName))
+            if (GetPropertyString(root, Consts.LanguageKey) is null
+                || GetPropertyString(root, Consts.DescriptionKey) is null
+                || GetPropertyString(root, Consts.CultureNameKey) is not { } cultureName)
                 return result;
 
             var allProperties = new Dictionary<string, string>();
             CollectJsonProperties(root, "", allProperties);
 
-            var excludeKeys = new[] { "language", "description", "cultureName" };
-            var filteredProperties = allProperties
-                .Where(kvp => !excludeKeys.Any(k => kvp.Key.Equals(k, StringComparison.OrdinalIgnoreCase)))
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-            if (!string.IsNullOrEmpty(cultureName))
-                result[cultureName] = filteredProperties;
+            result[cultureName] = allProperties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
         catch
         {
@@ -42,6 +34,14 @@ public static class LanguageResourceParser
         }
 
         return result;
+
+        static string? GetPropertyString(JsonElement element, string propertyName)
+        {
+            if (!element.TryGetProperty(propertyName, out var languageProp))
+                return null;
+            var value = languageProp.GetString();
+            return string.IsNullOrWhiteSpace(value) ? null : value;
+        }
     }
 
     public static Dictionary<string, Dictionary<string, string>> ParseXmlFile(string filePath, string content)
@@ -52,17 +52,15 @@ public static class LanguageResourceParser
         {
             var doc = XDocument.Parse(content);
             var root = doc.Root;
-            
-            if (root == null || !IsValidXmlLanguageFile(root))
-                return result;
 
-            var cultureName = root.Attribute("cultureName")?.Value;
-            if (string.IsNullOrEmpty(cultureName))
+            if (GetAttributeString(root, Consts.LanguageKey) is null
+                || GetAttributeString(root, Consts.DescriptionKey) is null
+                || GetAttributeString(root, Consts.CultureNameKey) is not { } cultureName)
                 return result;
 
             var properties = new Dictionary<string, string>();
             var propertyNodes = doc.Nodes().OfType<XElement>().DescendantsAndSelf()
-                .Where(e => e.Descendants().Any() != true).ToList();
+                .Where(e => !e.HasElements);
                 
             foreach (var propertyNode in propertyNodes)
             {
@@ -71,8 +69,7 @@ public static class LanguageResourceParser
                 properties[key] = propertyNode.Value;
             }
 
-            if (!string.IsNullOrEmpty(cultureName))
-                result[cultureName] = properties;
+            result[cultureName] = properties;
         }
         catch
         {
@@ -80,6 +77,12 @@ public static class LanguageResourceParser
         }
 
         return result;
+
+        static string? GetAttributeString(XElement? element, string attributeName)
+        {
+            var value = element?.Attribute(attributeName)?.Value;
+            return string.IsNullOrWhiteSpace(value) ? null : value;
+        }
     }
 
     public static Dictionary<string, Dictionary<string, string>> ParseResxFile(string filePath, string content)
@@ -99,7 +102,7 @@ public static class LanguageResourceParser
                 
                 if (!string.IsNullOrEmpty(name) && valueElement != null)
                 {
-                    properties[name] = valueElement.Value ?? string.Empty;
+                    properties[name!] = valueElement.Value ?? string.Empty;
                 }
             }
 
@@ -115,20 +118,6 @@ public static class LanguageResourceParser
         }
 
         return result;
-    }
-
-    private static bool IsValidJsonLanguageFile(JsonElement root)
-    {
-        return root.TryGetProperty("language", out _) &&
-               root.TryGetProperty("description", out _) &&
-               root.TryGetProperty("cultureName", out _);
-    }
-
-    private static bool IsValidXmlLanguageFile(XElement root)
-    {
-        return root.Attribute("language") != null &&
-               root.Attribute("description") != null &&
-               root.Attribute("cultureName") != null;
     }
 
     private static void CollectJsonProperties(JsonElement element, string currentPath, Dictionary<string, string> result)
@@ -147,7 +136,7 @@ public static class LanguageResourceParser
                 break;
 
             case JsonValueKind.Array:
-                int index = 0;
+                var index = 0;
                 foreach (var item in element.EnumerateArray())
                 {
                     var newPath = $"{currentPath}[{index}]";
@@ -161,6 +150,13 @@ public static class LanguageResourceParser
             case JsonValueKind.True:
             case JsonValueKind.False:
             case JsonValueKind.Null:
+
+                // 过滤掉根节点的元数据属性
+                if (Consts.LanguageKey.Equals(currentPath, StringComparison.OrdinalIgnoreCase)
+                    || Consts.DescriptionKey.Equals(currentPath, StringComparison.OrdinalIgnoreCase)
+                    || Consts.CultureNameKey.Equals(currentPath, StringComparison.OrdinalIgnoreCase))
+                    return;
+
                 result[currentPath] = element.ToString();
                 break;
         }
@@ -201,4 +197,13 @@ public enum LanguageFileType
     Json,
     Xml,
     Resx
+}
+
+static file class Consts
+{
+    public const string LanguageKey = "language";
+
+    public const string DescriptionKey = "description";
+
+    public const string CultureNameKey = "cultureName";
 }

@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,93 +12,89 @@ namespace Lang.Avalonia.Xml;
 public class XmlLangPlugin : ILangPlugin
 {
     public Dictionary<string, LocalizationLanguage> Resources { get; } = new();
+
     public string ResourceFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
 
-    private CultureInfo _defaultCulture;
-    public CultureInfo Culture { get; set; }
+    private LocalizationLanguage _defaultLanguage = null!;
 
+    public CultureInfo Culture { get; set; } = null!;
+
+    [MemberNotNull(nameof(Culture), nameof(_defaultLanguage))]
     public void Load(CultureInfo cultureInfo)
     {
-        _defaultCulture = cultureInfo;
         Culture = cultureInfo;
 
-        LocalizationLanguage ReadLanguage(XElement element)
-        {
-            return new LocalizationLanguage
-            {
-                Language = element!.Attribute(Consts.LanguageKey)!.Value,
-                Description = element.Attribute("description")!.Value,
-                CultureName = element.Attribute("cultureName")!.Value
-            };
-        }
-
-        var xmlFiles = Directory.GetFiles(ResourceFolder, "*.xml", SearchOption.AllDirectories)
-            .Where(file =>
-            {
-                var doc = XDocument.Load(file);
-                var root = doc.Root;
-                var language = root?.Attribute(Consts.LanguageKey)?.Value;
-                var description = root?.Attribute(Consts.DescriptionKey)?.Value;
-                var cultureName = root?.Attribute(Consts.CultureNameKey)?.Value;
-                return !string.IsNullOrWhiteSpace(language)
-                       && !string.IsNullOrWhiteSpace(description)
-                       && !string.IsNullOrWhiteSpace(cultureName);
-            }).ToList();
-
-        if (xmlFiles.Any() != true)
-        {
-            Console.WriteLine("Please provide the language XML file");
-            return;
-        }
+        var xmlFiles = Directory.GetFiles(ResourceFolder, "*.xml", SearchOption.AllDirectories);
 
         foreach (var xmlFile in xmlFiles)
         {
-            var xmlDoc = XDocument.Load(xmlFile);
-
-            var language = ReadLanguage(xmlDoc.Root!);
-            if (!Resources.ContainsKey(language.CultureName))
+            XDocument xmlDoc;
+            LocalizationLanguage localizationLanguage;
+            try
             {
-                Resources[language.CultureName] = language;
+                xmlDoc = XDocument.Load(xmlFile);
+
+                var root = xmlDoc.Root;
+
+                if (GetAttributeString(root, Consts.LanguageKey) is not { } language
+                    || GetAttributeString(root, Consts.DescriptionKey) is not { } description
+                    || GetAttributeString(root, Consts.CultureNameKey) is not { } cultureName)
+                    continue;
+
+                localizationLanguage = new()
+                {
+                    Language = language,
+                    Description = description,
+                    CultureName = cultureName
+                };
+            }
+            catch
+            {
+                continue;
             }
 
+            Resources.TryAdd(localizationLanguage.CultureName, localizationLanguage);
+
+            if (localizationLanguage.CultureName == cultureInfo.Name)
+                _defaultLanguage = localizationLanguage;
+
             var propertyNodes = xmlDoc.Nodes().OfType<XElement>().DescendantsAndSelf()
-                .Where(e => e.Descendants().Any() != true).ToList();
+                .Where(e => !e.HasElements);
+
             foreach (var propertyNode in propertyNodes)
             {
                 var ancestorsNodeNames = propertyNode.AncestorsAndSelf().Reverse().Select(node => node.Name.LocalName);
-                var key = string.Join(".", ancestorsNodeNames);
-                Resources[language.CultureName].Languages[key] = propertyNode.Value;
+                var key = string.Join('.', ancestorsNodeNames);
+                Resources[localizationLanguage.CultureName].Languages[key] = propertyNode.Value;
             }
         }
+
+        if (_defaultLanguage is null)
+            throw new InvalidDataException("Missing default culture resources");
+
+        return;
+
+        static string? GetAttributeString(XElement? element, string attributeName)
+        {
+            var value = element?.Attribute(attributeName)?.Value;
+            return string.IsNullOrWhiteSpace(value) ? null : value;
+        }
     }
 
-    public void AddResource(params Assembly[] assemblies)
+    public void AddResource(params IEnumerable<Assembly> assemblies) => throw new NotSupportedException(nameof(AddResource));
+
+    public IReadOnlyCollection<LocalizationLanguage> GetLanguages() => Resources.Values;
+
+    public string GetResource(string key, string? cultureName = null)
     {
-        throw new NotImplementedException(nameof(AddResource));
-    }
+        ((ILangPlugin) this).EnsureLoaded();
 
-    public List<LocalizationLanguage>? GetLanguages() => Resources.Select(kvp => kvp.Value).ToList();
+        if (string.IsNullOrWhiteSpace(cultureName))
+            cultureName = Culture.Name;
 
-    public string? GetResource(string key, string? cultureName = null)
-    {
-        var culture = Culture.Name;
-        if (!string.IsNullOrWhiteSpace(cultureName))
-        {
-            culture = cultureName;
-        }
-
-        if (Resources.TryGetValue(culture, out var currentLanguages)
-            && currentLanguages.Languages.TryGetValue(key, out string resource))
-        {
+        if (((ILangPlugin) this).GetResourceInternal(cultureName, key, out var resource))
             return resource;
-        }
 
-        if (Resources?.TryGetValue(_defaultCulture.Name, out currentLanguages) == true
-            && currentLanguages.Languages.TryGetValue(key, out resource))
-        {
-            return resource;
-        }
-
-        return key;
+        return _defaultLanguage.Languages.GetValueOrDefault(key, key);
     }
 }

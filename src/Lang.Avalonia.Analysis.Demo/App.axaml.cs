@@ -12,7 +12,7 @@ public partial class App : Application
 {
     public override void Initialize()
     {
-        I18nManager.Instance.Register(new JsonLangPlugin(), new CultureInfo("zh-CN"), out _);
+        I18nManager.Instance.Register(new JsonLangPlugin(), new CultureInfo("zh-CN"));
         base.Initialize(); // <-- Required
         AvaloniaXamlLoader.Load(this);
     }
