@@ -28,11 +28,9 @@ public class XmlLangPlugin : ILangPlugin
 
         foreach (var xmlFile in xmlFiles)
         {
-            XDocument xmlDoc;
-            LocalizationLanguage localizationLanguage;
             try
             {
-                xmlDoc = XDocument.Load(xmlFile);
+                var xmlDoc = XDocument.Load(xmlFile);
 
                 var root = xmlDoc.Root;
 
@@ -41,31 +39,31 @@ public class XmlLangPlugin : ILangPlugin
                     || GetAttributeString(root, Consts.CultureNameKey) is not { } cultureName)
                     continue;
 
-                localizationLanguage = new()
+                var localizationLanguage = new LocalizationLanguage
                 {
                     Language = language,
                     Description = description,
                     CultureName = cultureName
                 };
+
+                Resources.TryAdd(localizationLanguage.CultureName, localizationLanguage);
+
+                if (localizationLanguage.CultureName == cultureInfo.Name)
+                    _defaultLanguage = localizationLanguage;
+
+                var propertyNodes = xmlDoc.Nodes().OfType<XElement>().DescendantsAndSelf()
+                    .Where(e => !e.HasElements);
+
+                foreach (var propertyNode in propertyNodes)
+                {
+                    var ancestorsNodeNames = propertyNode.AncestorsAndSelf().Reverse().Select(node => node.Name.LocalName);
+                    var key = string.Join('.', ancestorsNodeNames);
+                    Resources[localizationLanguage.CultureName].Languages[key] = propertyNode.Value;
+                }
             }
             catch
             {
-                continue;
-            }
-
-            Resources.TryAdd(localizationLanguage.CultureName, localizationLanguage);
-
-            if (localizationLanguage.CultureName == cultureInfo.Name)
-                _defaultLanguage = localizationLanguage;
-
-            var propertyNodes = xmlDoc.Nodes().OfType<XElement>().DescendantsAndSelf()
-                .Where(e => !e.HasElements);
-
-            foreach (var propertyNode in propertyNodes)
-            {
-                var ancestorsNodeNames = propertyNode.AncestorsAndSelf().Reverse().Select(node => node.Name.LocalName);
-                var key = string.Join('.', ancestorsNodeNames);
-                Resources[localizationLanguage.CultureName].Languages[key] = propertyNode.Value;
+                // ignored
             }
         }
 

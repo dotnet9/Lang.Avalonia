@@ -28,12 +28,10 @@ public class JsonLangPlugin : ILangPlugin
 
         foreach (var jsonFile in jsonFiles)
         {
-            JsonElement root;
-            LocalizationLanguage localizationLanguage;
             try
             {
                 using var doc = JsonDocument.Parse(File.ReadAllText(jsonFile));
-                root = doc.RootElement;
+                var root = doc.RootElement;
 
                 if (GetPropertyString(root, Consts.LanguageKey) is not { } language
                     || GetPropertyString(root, Consts.DescriptionKey) is not { } description
@@ -41,25 +39,25 @@ public class JsonLangPlugin : ILangPlugin
                     continue;
 
                 // 解析根节点的元数据
-                localizationLanguage = new()
+                var localizationLanguage = new LocalizationLanguage
                 {
                     Language = language,
                     Description = description,
                     CultureName = cultureName,
                 };
+
+                Resources.TryAdd(localizationLanguage.CultureName, localizationLanguage);
+
+                if (localizationLanguage.CultureName == cultureInfo.Name)
+                    _defaultLanguage = localizationLanguage;
+
+                // 递归收集所有键值对（排除根节点的三个元数据属性）
+                CollectJsonProperties(root, "", localizationLanguage.Languages);
             }
             catch
             {
-                continue;
+                // ignored
             }
-
-            Resources.TryAdd(localizationLanguage.CultureName, localizationLanguage);
-
-            if (localizationLanguage.CultureName == cultureInfo.Name)
-                _defaultLanguage = localizationLanguage;
-
-            // 递归收集所有键值对（排除根节点的三个元数据属性）
-            CollectJsonProperties(root, "", localizationLanguage.Languages);
         }
 
         if (_defaultLanguage is null)

@@ -12,19 +12,7 @@
 		<RepositoryType>git</RepositoryType>
 		<GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">true</GeneratePackageOnBuild>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<IsAotCompatible>false</IsAotCompatible>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
-		<IsAotCompatible>true</IsAotCompatible>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))">
-		<IsAotCompatible>true</IsAotCompatible>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))">
-		<IsAotCompatible>true</IsAotCompatible>
+		<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">false</IsAotCompatible>
 	</PropertyGroup>
 
 	<ItemGroup>

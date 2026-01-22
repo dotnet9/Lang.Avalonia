@@ -81,7 +81,7 @@ public class I18nManager : INotifyPropertyChanged
         return _langPlugin.GetLanguages();
     }
 
-    public string? GetResource(string key, string? cultureName = null)
+    public string GetResource(string key, string? cultureName = null)
     {
         EnsureRegistered();
         return _langPlugin.GetResource(key, cultureName);
