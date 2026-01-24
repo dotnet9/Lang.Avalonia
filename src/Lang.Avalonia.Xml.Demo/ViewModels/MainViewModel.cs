@@ -29,7 +29,7 @@ public class MainViewModel : ViewModelBase
         });
     }
 
-    public List<LocalizationLanguage>? Languages { get; set; }
+    public IReadOnlyCollection<LocalizationLanguage>? Languages { get; set; }
     public LocalizationLanguage? _selectLanguage;
 
     public LocalizationLanguage? SelectLanguage

@@ -1,4 +1,4 @@
-﻿using ReactiveUI;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,7 +29,7 @@ public class MainWindowViewModel : ViewModelBase
         });
     }
 
-    public List<LocalizationLanguage>? Languages { get; set; }
+    public IReadOnlyCollection<LocalizationLanguage>? Languages { get; set; }
     public LocalizationLanguage? _selectLanguage;
 
     public LocalizationLanguage? SelectLanguage

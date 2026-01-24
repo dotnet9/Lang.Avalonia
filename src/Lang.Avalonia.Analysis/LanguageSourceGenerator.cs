@@ -49,11 +49,8 @@ public class LanguageSourceGenerator : IIncrementalGenerator
 
             var allResources = new Dictionary<string, Dictionary<string, string>>();
 
-            foreach (var file in files)
+            foreach (var (filePath, content) in files)
             {
-                var filePath = file.Path;
-                var content = file.Content;
-                
                 if (string.IsNullOrEmpty(content))
                     continue;
 

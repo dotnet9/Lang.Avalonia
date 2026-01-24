@@ -1,4 +1,4 @@
-﻿using Avalonia.Data;
+using Avalonia.Data;
 using Avalonia.Data.Converters;
 using System;
 
@@ -11,12 +11,10 @@ public abstract class MultiBindingExtensionBase : MultiBinding
         get => base.Converter;
         protected set
         {
-            if (base.Converter != null)
-            {
+            if (base.Converter is null)
+                base.Converter = value;
+            else
                 throw new InvalidOperationException($"The {GetType().Name}.Converter property is readonly.");
-            }
-
-            base.Converter = value;
         }
     }
 }

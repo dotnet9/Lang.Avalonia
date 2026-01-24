@@ -11,14 +11,33 @@ public class MainViewModel : ViewModelBase
 {
     public MainViewModel()
     {
-        Languages = new List<LocalizationLanguage>()
-        {
-            new(){ CultureName = "en-US", Description = "English", Language = "English"},
-            new(){ CultureName = "zh-CN", Description = "Chinese (Simplified)", Language = "Chinese (Simplified)"},
-            new(){ CultureName = "zh-Hant", Description = "Chinese (Traditional)", Language = "Chinese (Traditional)"},
-            new(){ CultureName = "ja-JP", Description = "Japanese", Language = "Japanese"}
-
-        };
+        Languages =
+        [
+            new()
+            {
+                CultureName = "en-US",
+                Description = "English",
+                Language = "English"
+            },
+            new()
+            {
+                CultureName = "zh-CN",
+                Description = "Chinese (Simplified)",
+                Language = "Chinese (Simplified)"
+            },
+            new()
+            {
+                CultureName = "zh-Hant",
+                Description = "Chinese (Traditional)",
+                Language = "Chinese (Traditional)"
+            },
+            new()
+            {
+                CultureName = "ja-JP",
+                Description = "Japanese",
+                Language = "Japanese"
+            }
+        ];
         SelectLanguage = Languages?.FirstOrDefault(l => l.CultureName == I18nManager.Instance.Culture.Name);
 
         var titleCurrentCulture = I18nManager.Instance.GetResource(Localization.Main.MainView.Title);

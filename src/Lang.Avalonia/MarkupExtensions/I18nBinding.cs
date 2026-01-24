@@ -1,53 +1,78 @@
-﻿using Avalonia.Data;
-using Avalonia.Data.Converters;
-using Lang.Avalonia.Converters;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
+using Avalonia.Data.Core;
+using Avalonia.Markup.Xaml.MarkupExtensions;
+using Avalonia.Markup.Xaml.MarkupExtensions.CompiledBindings;
+using Lang.Avalonia.Converters;
 
 namespace Lang.Avalonia.MarkupExtensions;
 
+[EditorBrowsable(EditorBrowsableState.Never)]
 public class I18nBinding : MultiBindingExtensionBase
 {
     public I18nBinding(object key)
     {
         Mode = BindingMode.OneWay;
-        Converter = new I18nConverter(this);
+        Converter = new I18nConverter();
+        ConverterParameter = this;
         KeyConverter = new I18nKeyConverter();
-        ValueConverter = new I18nValueConverter();
-        Args = new ArgCollection(this);
+        Key = key;
 
-        var cultureBinding = new Binding { Source = I18nManager.Instance, Path = nameof(I18nManager.Culture) };
+        var cultureBinding = new CompiledBindingExtension
+        {
+            Source = I18nManager.Instance,
+            Mode = BindingMode.OneWay,
+            Path = new CompiledBindingPathBuilder()
+                .Property(
+                    new ClrPropertyInfo(
+                        nameof(I18nManager.Culture),
+                        target => ((I18nManager) target).Culture,
+                        (target, value) => ((I18nManager) target).Culture = new CultureInfo((string) (value ?? throw new ArgumentNullException(nameof(value)))),
+                        typeof(CultureInfo)),
+                    PropertyInfoAccessorFactory.CreateInpcPropertyAccessor)
+                .Build()
+        };
+
         Bindings.Add(cultureBinding);
 
-        Key = key;
-        if (Key is not BindingBase keyBinding)
-        {
-            keyBinding = new Binding { Source = key };
-        }
+        if (key is not BindingBase keyBinding)
+            keyBinding = new CompiledBindingExtension { Source = key };
 
         Bindings.Add(keyBinding);
     }
 
-    public I18nBinding(object key, string? cultureName, List<object> args) : this(key)
+    public I18nBinding(object key, string? cultureName, IReadOnlyCollection<object> args) : this(key)
     {
         CultureName = cultureName;
-        if (args is not { Count: > 0 })
-        {
-            return;
-        }
 
-        foreach (object arg in args)
+        foreach (var arg in args)
         {
-            Args.Add(arg);
+            if (arg is IBinding binding)
+            {
+                Indexes.Add((true, Bindings.Count));
+                Bindings.Add(binding);
+            }
+            else
+            {
+                Indexes.Add((false, Args.Count));
+                Args.Add(arg);
+            }
         }
     }
+
+    internal List<(bool IsBinding, int Index)> Indexes { get; } = [];
 
     public object Key { get; }
 
     public string? CultureName { get; set; }
 
-    public ArgCollection Args { get; }
+    internal List<object> Args { get; } = [];
 
-    public IValueConverter KeyConverter { get; set; }
+    public IValueConverter? KeyConverter { get; set; }
 
-    public IValueConverter ValueConverter { get; set; }
+    public IValueConverter? ValueConverter { get; set; }
 }

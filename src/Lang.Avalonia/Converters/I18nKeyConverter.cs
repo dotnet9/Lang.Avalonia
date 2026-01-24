@@ -1,12 +1,14 @@
-﻿using Avalonia.Data.Converters;
 using System;
+using System.ComponentModel;
 using System.Globalization;
+using Avalonia.Data.Converters;
 
 namespace Lang.Avalonia.Converters;
 
+[EditorBrowsable(EditorBrowsableState.Never)]
 public class I18nKeyConverter : IValueConverter
 {
-    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         return Get(value);
     }
@@ -16,7 +18,7 @@ public class I18nKeyConverter : IValueConverter
         throw new NotSupportedException();
     }
 
-    public static string? Get(object? value)
+    public static string Get(object? value)
     {
         return value switch
         {

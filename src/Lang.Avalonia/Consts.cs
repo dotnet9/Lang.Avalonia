@@ -1,8 +1,10 @@
-﻿namespace Lang.Avalonia;
+namespace Lang.Avalonia;
 
-public static class Consts
+internal static class Consts
 {
     public const string LanguageKey = "language";
+
     public const string DescriptionKey = "description";
+
     public const string CultureNameKey = "cultureName";
 }

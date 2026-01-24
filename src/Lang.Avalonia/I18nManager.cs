@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Threading;
@@ -17,6 +18,14 @@ public class I18nManager : INotifyPropertyChanged
 
     private I18nManager()
     {
+    }
+
+    public void Register(ILangPlugin plugin, CultureInfo? defaultCulture = null)
+    {
+        ArgumentNullException.ThrowIfNull(plugin);
+        _langPlugin = plugin;
+        Culture = defaultCulture ?? CultureInfo.CurrentUICulture;
+        plugin.Load(Culture);
     }
 
     public bool Register(ILangPlugin plugin, CultureInfo defaultCulture, out string? error)
@@ -37,34 +46,53 @@ public class I18nManager : INotifyPropertyChanged
         }
     }
 
-    public void AddResource(params Assembly[] assemblies)
+    public void AddResource(params IEnumerable<Assembly> assemblies)
     {
-        _langPlugin?.AddResource(assemblies);
+        EnsureRegistered();
+        ArgumentNullException.ThrowIfNull(assemblies);
+        _langPlugin.AddResource(assemblies);
     }
 
-
-    public CultureInfo? Culture
+    public CultureInfo Culture
     {
-        get => _langPlugin?.Culture;
+        get
+        {
+            EnsureRegistered();
+            return _langPlugin.Culture;
+        }
         set
         {
-            if (_langPlugin == null || Equals(_langPlugin?.Culture, value))
-            {
+            EnsureRegistered();
+            ArgumentNullException.ThrowIfNull(value);
+            if (Equals(_langPlugin.Culture, value))
                 return;
-            }
 
-            _langPlugin!.Culture = value;
+            _langPlugin.Culture = value;
             Thread.CurrentThread.CurrentCulture = value;
             Thread.CurrentThread.CurrentUICulture = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Culture)));
+            PropertyChanged?.Invoke(this, new(nameof(Culture)));
             CultureChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
-    public List<LocalizationLanguage>? GetLanguages() => _langPlugin?.GetLanguages();
+    public IReadOnlyCollection<LocalizationLanguage> GetLanguages()
+    {
+        EnsureRegistered();
+        return _langPlugin.GetLanguages();
+    }
 
-
-    public string? GetResource(string key, string? cultureName = null) => _langPlugin?.GetResource(key, cultureName);
+    public string GetResource(string key, string? cultureName = null)
+    {
+        EnsureRegistered();
+        return _langPlugin.GetResource(key, cultureName);
+    }
 
     public event EventHandler<EventArgs>? CultureChanged;
+
+    [MemberNotNull(nameof(_langPlugin))]
+    private void EnsureRegistered()
+    {
+        if (_langPlugin is null)
+            throw new InvalidOperationException($"{nameof(I18nManager)} is not registered. Please register a language plugin before using it.");
+    }
 }

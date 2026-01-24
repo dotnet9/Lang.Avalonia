@@ -12,7 +12,7 @@ public partial class App : PrismApplication
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-        I18nManager.Instance.Register(new JsonLangPlugin(), new CultureInfo("zh-CN"), out _);
+        I18nManager.Instance.Register(new JsonLangPlugin(), new CultureInfo("zh-CN"));
         base.Initialize(); // <-- Required
     }
 

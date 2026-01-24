@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 
@@ -10,93 +10,85 @@ namespace Lang.Avalonia.Json;
 
 public class JsonLangPlugin : ILangPlugin
 {
-    private readonly JsonSerializerOptions _jsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
+    public Dictionary<string, LocalizationLanguage> Resources { get; } = new();
 
-    public Dictionary<string, LocalizationLanguage> Resources { get; private set; }= new();
     public string ResourceFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
-    private CultureInfo _defaultCulture;
-    public CultureInfo Culture { get; set; }
 
+    private LocalizationLanguage _defaultLanguage = null!;
+
+    public CultureInfo Culture { get; set; } = null!;
+
+    [MemberNotNull(nameof(Culture), nameof(_defaultLanguage))]
     public void Load(CultureInfo cultureInfo)
     {
-        _defaultCulture = cultureInfo;
         Culture = cultureInfo;
 
         // 获取所有JSON文件并筛选有效语言文件
-        var jsonFiles = Directory.GetFiles(ResourceFolder, "*.json", SearchOption.AllDirectories)
-            .Where(IsValidLanguageFile)
-            .ToList();
-
-        if (!jsonFiles.Any())
-        {
-            Console.WriteLine("Please provide valid language JSON files");
-            return;
-        }
+        var jsonFiles = Directory.GetFiles(ResourceFolder, "*.json", SearchOption.AllDirectories);
 
         foreach (var jsonFile in jsonFiles)
         {
-            using var doc = JsonDocument.Parse(File.ReadAllText(jsonFile));
-            var root = doc.RootElement;
-
-            // 解析根节点的元数据
-            var language = new LocalizationLanguage
+            try
             {
-                Language = root.GetProperty("language").GetString()!,
-                Description = root.GetProperty("description").GetString()!,
-                CultureName = root.GetProperty("cultureName").GetString()!,
-            };
+                using var doc = JsonDocument.Parse(File.ReadAllText(jsonFile));
+                var root = doc.RootElement;
 
-            Resources.TryAdd(language.CultureName, language);
+                if (GetPropertyString(root, Consts.LanguageKey) is not { } language
+                    || GetPropertyString(root, Consts.DescriptionKey) is not { } description
+                    || GetPropertyString(root, Consts.CultureNameKey) is not { } cultureName)
+                    continue;
 
-            // 递归收集所有键值对（排除根节点的三个元数据属性）
-            var allProperties = new Dictionary<string, string>();
-            CollectJsonProperties(root, "", allProperties);
-
-            // 过滤掉根节点的元数据属性
-            var excludeKeys = new[] { "language", "description", "cultureName" };
-            foreach (var (key, value) in allProperties)
-            {
-                if (!excludeKeys.Any(k => key.Equals(k, StringComparison.OrdinalIgnoreCase)))
+                // 解析根节点的元数据
+                var localizationLanguage = new LocalizationLanguage
                 {
-                    Resources[language.CultureName].Languages[key] = value;
-                }
+                    Language = language,
+                    Description = description,
+                    CultureName = cultureName,
+                };
+
+                Resources.TryAdd(localizationLanguage.CultureName, localizationLanguage);
+
+                if (localizationLanguage.CultureName == cultureInfo.Name)
+                    _defaultLanguage = localizationLanguage;
+
+                // 递归收集所有键值对（排除根节点的三个元数据属性）
+                CollectJsonProperties(root, "", localizationLanguage.Languages);
+            }
+            catch
+            {
+                // ignored
             }
         }
-    }
 
-    public void AddResource(params Assembly[] assemblies)
-    {
-        throw new NotImplementedException(nameof(AddResource));
-    }
+        if (_defaultLanguage is null)
+            throw new InvalidDataException("Missing default culture resources");
 
-    // 验证JSON文件是否包含必要的根属性
-    private bool IsValidLanguageFile(string filePath)
-    {
-        try
+        return;
+
+        static string? GetPropertyString(JsonElement element, string propertyName)
         {
-            using var doc = JsonDocument.Parse(File.ReadAllText(filePath));
-            var root = doc.RootElement;
-
-            return root.TryGetProperty("language", out _)
-                && root.TryGetProperty("description", out _)
-                && root.TryGetProperty("cultureName", out _);
-        }
-        catch
-        {
-            return false;
+            if (!element.TryGetProperty(propertyName, out var languageProp))
+                return null;
+            var value = languageProp.GetString();
+            return string.IsNullOrWhiteSpace(value) ? null : value;
         }
     }
 
-    // 递归遍历JSON元素，收集所有键值对（生成类似XML的层级键）
-    private void CollectJsonProperties(JsonElement element, string currentPath, Dictionary<string, string> result)
+    public void AddResource(params IEnumerable<Assembly> assemblies) =>
+        throw new NotSupportedException(nameof(AddResource));
+
+    /// <summary>
+    /// 递归遍历JSON元素，收集所有键值对（生成类似XML的层级键）
+    /// </summary>
+    /// <param name="element"></param>
+    /// <param name="currentPath"></param>
+    /// <param name="result"></param>
+    private static void CollectJsonProperties(JsonElement element, string currentPath, Dictionary<string, string> result)
     {
         switch (element.ValueKind)
         {
+            // 遍历对象的所有属性
             case JsonValueKind.Object:
-                // 遍历对象的所有属性
                 foreach (var property in element.EnumerateObject())
                 {
                     var newPath = string.IsNullOrEmpty(currentPath)
@@ -107,9 +99,9 @@ public class JsonLangPlugin : ILangPlugin
                 }
                 break;
 
+            // 处理数组（按索引拼接键名）
             case JsonValueKind.Array:
-                // 处理数组（按索引拼接键名）
-                int index = 0;
+                var index = 0;
                 foreach (var item in element.EnumerateArray())
                 {
                     var newPath = $"{currentPath}[{index}]";
@@ -118,38 +110,36 @@ public class JsonLangPlugin : ILangPlugin
                 }
                 break;
 
+            // 处理基本类型值
             case JsonValueKind.String:
             case JsonValueKind.Number:
             case JsonValueKind.True:
             case JsonValueKind.False:
             case JsonValueKind.Null:
-                // 处理基本类型值
+
+                // 过滤掉根节点的元数据属性
+                if (Consts.LanguageKey.Equals(currentPath, StringComparison.OrdinalIgnoreCase)
+                    || Consts.DescriptionKey.Equals(currentPath, StringComparison.OrdinalIgnoreCase)
+                    || Consts.CultureNameKey.Equals(currentPath, StringComparison.OrdinalIgnoreCase))
+                    return;
+
                 result[currentPath] = element.ToString();
                 break;
         }
     }
 
-    public List<LocalizationLanguage>? GetLanguages() => Resources?.Select(kvp => kvp.Value).ToList();
+    public IReadOnlyCollection<LocalizationLanguage> GetLanguages() => Resources.Values;
 
-    public string? GetResource(string key, string? cultureName = null)
+    public string GetResource(string key, string? cultureName = null)
     {
-        var culture = Culture?.Name ?? string.Empty;
-        if (!string.IsNullOrWhiteSpace(cultureName))
-        {
-            culture = cultureName;
-        }
+        ((ILangPlugin) this).EnsureLoaded();
 
-        if (Resources?.TryGetValue(culture, out var currentLanguages) == true
-            && currentLanguages.Languages.TryGetValue(key, out string resource))
-        {
-            return resource;
-        }
-        if (Resources?.TryGetValue(_defaultCulture.Name, out currentLanguages) == true
-            && currentLanguages.Languages.TryGetValue(key, out resource))
-        {
-            return resource;
-        }
+        if (string.IsNullOrWhiteSpace(cultureName))
+            cultureName = Culture.Name;
 
-        return key;
+        if (((ILangPlugin) this).GetResourceInternal(cultureName, key, out var resource))
+            return resource;
+
+        return _defaultLanguage.Languages.GetValueOrDefault(key, key);
     }
 }

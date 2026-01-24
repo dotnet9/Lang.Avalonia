@@ -18,7 +18,6 @@ public class MainViewModel : ViewModelBase
         var titleCurrentCulture = I18nManager.Instance.GetResource(Localization.Main.MainView.Title);
         var titleZhCN = I18nManager.Instance.GetResource(Localization.Main.MainView.Title, "zh-CN");
         var titleEnUS = I18nManager.Instance.GetResource(Localization.Main.MainView.Title, "en-US");
-
         Task.Run(async () =>
         {
             while (true)
@@ -29,7 +28,7 @@ public class MainViewModel : ViewModelBase
         });
     }
 
-    public List<LocalizationLanguage>? Languages { get; set; }
+    public IReadOnlyCollection<LocalizationLanguage>? Languages { get; set; }
     public LocalizationLanguage? _selectLanguage;
 
     public LocalizationLanguage? SelectLanguage
