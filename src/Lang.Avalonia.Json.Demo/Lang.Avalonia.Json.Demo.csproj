@@ -34,7 +34,7 @@
 		<PackageReference Include="Prism.DryIoc.Avalonia" Version="9.0.537.11300-pre" />
 		<PackageReference Include="ReactiveUI.Avalonia" Version="11.3.8" />
 		<PackageReference Include="System.Memory" Version="4.6.3" />
-		<PackageReference Include="YY-Thunks" Version="1.1.9-Beta4" />
+		<PackageReference Include="YY-Thunks" Version="1.1.10-Beta3" />
 	</ItemGroup>
 
 	<ItemGroup>

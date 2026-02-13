@@ -4,8 +4,8 @@
 		<Authors>沙漠尽头的狼</Authors>
 		<Company>CodeWF</Company>
 		<Copyright>Copyright (c) 2025 https://codewf.com</Copyright>
-		<Version>11.3.9</Version>
-		<AvaloniaVersion>11.3.9</AvaloniaVersion>
+		<Version>11.3.12.1</Version>
+		<AvaloniaVersion>11.3.12</AvaloniaVersion>
 		<CodeAnalysisVersion>5.0.0-1.25277.114</CodeAnalysisVersion>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
