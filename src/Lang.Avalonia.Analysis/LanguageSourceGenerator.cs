@@ -35,18 +35,6 @@ public class LanguageSourceGenerator : IIncrementalGenerator
     {
         try
         {
-            // 添加调试信息
-            var debugDescriptor = new DiagnosticDescriptor(
-                "LAA002",
-                "Language Analysis Debug",
-                "Processing {0} files: {1}",
-                "Lang.Avalonia.Analysis",
-                DiagnosticSeverity.Info,
-                isEnabledByDefault: true);
-            
-            var filesInfo = string.Join(", ", files.Select(f => f.Path));
-            context.ReportDiagnostic(Diagnostic.Create(debugDescriptor, Location.None, files.Length, filesInfo));
-
             var allResources = new Dictionary<string, Dictionary<string, string>>();
 
             foreach (var file in files)

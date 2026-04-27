@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="620" viewBox="0 0 1080 620" role="img" aria-labelledby="title desc">
+  <title id="title">Resource resolution and fallback</title>
+  <desc id="desc">Flow chart for resolving localized text by current culture, default culture, and key fallback.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      .title{font:700 26px "Segoe UI",Arial,sans-serif;fill:#0f172a}
+      .label{font:700 17px "Segoe UI",Arial,sans-serif;fill:#0f172a}
+      .text{font:14px "Segoe UI",Arial,sans-serif;fill:#334155}
+      .node{fill:#ffffff;stroke:#94a3b8;stroke-width:2;rx:10}
+      .decision{fill:#fef9c3;stroke:#ca8a04;stroke-width:2}
+      .ok{fill:#dcfce7;stroke:#16a34a;stroke-width:2;rx:10}
+      .fallback{fill:#fee2e2;stroke:#dc2626;stroke-width:2;rx:10}
+      .line{stroke:#334155;stroke-width:2.2;fill:none;marker-end:url(#arrow)}
+      .caption{font:13px "Segoe UI",Arial,sans-serif;fill:#475569}
+    </style>
+  </defs>
+  <rect width="1080" height="620" fill="#f8fafc"/>
+  <text x="48" y="58" class="title">资源解析与 Fallback</text>
+  <text x="48" y="86" class="text">所有插件对外保持同一解析顺序：指定文化优先，其次当前文化，再回退到默认文化，最终返回 Key。</text>
+
+  <rect x="410" y="122" width="260" height="70" class="node"/>
+  <text x="446" y="164" class="label">输入 key + CultureName?</text>
+  <path d="M540 192 V238" class="line"/>
+
+  <polygon points="540,238 672,314 540,390 408,314" class="decision"/>
+  <text x="472" y="310" class="label">指定文化或当前文化</text>
+  <text x="488" y="334" class="text">是否命中资源？</text>
+
+  <path d="M672 314 H824" class="line"/>
+  <text x="708" y="300" class="caption">命中</text>
+  <rect x="824" y="278" width="190" height="72" class="ok"/>
+  <text x="878" y="322" class="label">返回翻译</text>
+
+  <path d="M540 390 V438" class="line"/>
+  <text x="558" y="420" class="caption">未命中</text>
+
+  <polygon points="540,438 672,514 540,590 408,514" class="decision"/>
+  <text x="480" y="510" class="label">默认文化资源</text>
+  <text x="500" y="534" class="text">是否命中？</text>
+
+  <path d="M672 514 H824" class="line"/>
+  <text x="710" y="500" class="caption">命中</text>
+  <rect x="824" y="478" width="190" height="72" class="ok"/>
+  <text x="860" y="522" class="label">返回默认翻译</text>
+
+  <path d="M408 514 H222" class="line"/>
+  <text x="304" y="500" class="caption">未命中</text>
+  <rect x="66" y="478" width="156" height="72" class="fallback"/>
+  <text x="104" y="522" class="label">返回 key</text>
+
+  <rect x="74" y="196" width="250" height="110" class="node"/>
+  <text x="98" y="234" class="label">格式化参数</text>
+  <text x="98" y="264" class="text">资源命中后按 Args</text>
+  <text x="98" y="288" class="text">执行 string.Format</text>
+  <path d="M324 252 H436" class="line"/>
+</svg>

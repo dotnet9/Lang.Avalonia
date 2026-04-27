@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="620" viewBox="0 0 1080 620" role="img" aria-labelledby="title desc">
+  <title id="title">Plugin contract</title>
+  <desc id="desc">Diagram showing the ILangPlugin contract and responsibilities of JSON, XML, and RESX plugins.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      .title{font:700 26px "Segoe UI",Arial,sans-serif;fill:#0f172a}
+      .label{font:700 18px "Segoe UI",Arial,sans-serif;fill:#0f172a}
+      .text{font:14px "Segoe UI",Arial,sans-serif;fill:#334155}
+      .core{fill:#e0f2fe;stroke:#0284c7;stroke-width:2;rx:10}
+      .plugin{fill:#ecfdf5;stroke:#059669;stroke-width:2;rx:10}
+      .note{fill:#ffffff;stroke:#94a3b8;stroke-width:2;rx:10}
+      .line{stroke:#334155;stroke-width:2.2;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1080" height="620" fill="#f8fafc"/>
+  <text x="48" y="58" class="title">插件契约</text>
+  <text x="48" y="86" class="text">核心库只依赖 ILangPlugin，格式差异封装在插件内，保证 UI 和业务代码不关心资源来源。</text>
+
+  <rect x="392" y="124" width="296" height="184" class="core"/>
+  <text x="424" y="162" class="label">ILangPlugin</text>
+  <text x="424" y="196" class="text">Load(CultureInfo defaultCulture)</text>
+  <text x="424" y="222" class="text">AddResource(params Assembly[])</text>
+  <text x="424" y="248" class="text">Culture { get; set; }</text>
+  <text x="424" y="274" class="text">GetLanguages / GetResource</text>
+
+  <rect x="72" y="388" width="250" height="126" class="plugin"/>
+  <text x="104" y="426" class="label">JsonLangPlugin</text>
+  <text x="104" y="458" class="text">扫描 ResourceFolder</text>
+  <text x="104" y="482" class="text">支持嵌入 JSON 资源</text>
+
+  <rect x="414" y="388" width="250" height="126" class="plugin"/>
+  <text x="446" y="426" class="label">XmlLangPlugin</text>
+  <text x="446" y="458" class="text">解析 XML 叶子节点</text>
+  <text x="446" y="482" class="text">支持嵌入 XML 资源</text>
+
+  <rect x="756" y="388" width="250" height="126" class="plugin"/>
+  <text x="788" y="426" class="label">ResxLangPlugin</text>
+  <text x="788" y="458" class="text">发现 ResourceManager</text>
+  <text x="788" y="482" class="text">按 Culture 同步缓存</text>
+
+  <path d="M472 308 C360 352 286 352 197 388" class="line"/>
+  <path d="M540 308 V388" class="line"/>
+  <path d="M608 308 C720 352 794 352 881 388" class="line"/>
+
+  <rect x="78" y="152" width="230" height="112" class="note"/>
+  <text x="104" y="190" class="label">I18nManager</text>
+  <text x="104" y="222" class="text">注册插件</text>
+  <text x="104" y="246" class="text">同步线程 Culture</text>
+  <path d="M308 208 H392" class="line"/>
+
+  <rect x="772" y="152" width="230" height="112" class="note"/>
+  <text x="798" y="190" class="label">消费者</text>
+  <text x="798" y="222" class="text">XAML 标记扩展</text>
+  <text x="798" y="246" class="text">后台 API 调用</text>
+  <path d="M772 208 H688" class="line"/>
+</svg>

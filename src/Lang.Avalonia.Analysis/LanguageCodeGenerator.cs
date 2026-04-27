@@ -47,11 +47,11 @@ public static class LanguageCodeGenerator
                 stringBuilder.AppendLine("    {");
 
                 // 生成属性
-                foreach (var property in properties.OrderBy(p => p))
+                var usedNames = new HashSet<string>();
+                foreach (var property in properties.OrderBy(p => p.PropertyName))
                 {
-                    var sanitizedPropertyName = SanitizeName(property);
-                    var fullKey = $"{namespaceName}.{className}.{sanitizedPropertyName}";
-                    stringBuilder.AppendLine($"        public static readonly string {sanitizedPropertyName} = \"{fullKey}\";");
+                    var propertyName = GetUniqueName(SanitizeName(property.PropertyName), usedNames);
+                    stringBuilder.AppendLine($"        public static readonly string {propertyName} = \"{EscapeStringLiteral(property.ResourceKey)}\";");
                 }
 
                 stringBuilder.AppendLine("    }");
@@ -65,9 +65,9 @@ public static class LanguageCodeGenerator
         return stringBuilder.ToString();
     }
 
-    private static Dictionary<string, Dictionary<string, List<string>>> AnalyzeResourceStructure(IEnumerable<string> resourceKeys)
+    private static Dictionary<string, Dictionary<string, List<(string PropertyName, string ResourceKey)>>> AnalyzeResourceStructure(IEnumerable<string> resourceKeys)
     {
-        var result = new Dictionary<string, Dictionary<string, List<string>>>();
+        var result = new Dictionary<string, Dictionary<string, List<(string PropertyName, string ResourceKey)>>>();
 
         foreach (var key in resourceKeys)
         {
@@ -86,12 +86,12 @@ public static class LanguageCodeGenerator
             var fullNamespace = $"{namespacePart}.{modulePart}";
 
             if (!result.ContainsKey(fullNamespace))
-                result[fullNamespace] = new Dictionary<string, List<string>>();
+                result[fullNamespace] = new Dictionary<string, List<(string PropertyName, string ResourceKey)>>();
 
             if (!result[fullNamespace].ContainsKey(classPart))
-                result[fullNamespace][classPart] = new List<string>();
+                result[fullNamespace][classPart] = new List<(string PropertyName, string ResourceKey)>();
 
-            result[fullNamespace][classPart].Add(propertyPart);
+            result[fullNamespace][classPart].Add((propertyPart, key));
         }
 
         return result;
@@ -110,6 +110,25 @@ public static class LanguageCodeGenerator
             sanitized = "_" + sanitized;
 
         return sanitized.Length == 0 ? "Unnamed" : sanitized;
+    }
+
+    private static string GetUniqueName(string name, HashSet<string> usedNames)
+    {
+        if (usedNames.Add(name))
+            return name;
+
+        var index = 2;
+        while (!usedNames.Add($"{name}{index}"))
+        {
+            index++;
+        }
+
+        return $"{name}{index}";
+    }
+
+    private static string EscapeStringLiteral(string value)
+    {
+        return value.Replace("\\", "\\\\").Replace("\"", "\\\"");
     }
 
     public static string GenerateUsings()

@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -10,18 +11,20 @@ namespace Lang.Avalonia.Resx;
 
 public class ResxLangPlugin : ILangPlugin
 {
-    public Dictionary<string, LocalizationLanguage> Resources { get; } = new();
-    public string Mark { get; set; } = "i18n";
-    private Dictionary<Type, ResourceManager>? _resourceManagers;
+    private CultureInfo _culture = CultureInfo.InvariantCulture;
+    private CultureInfo _defaultCulture = CultureInfo.InvariantCulture;
+    private Dictionary<Type, ResourceManager> _resourceManagers = new();
 
-    private CultureInfo _defaultCulture;
+    public Dictionary<string, LocalizationLanguage> Resources { get; } = new();
+
+    public string Mark { get; set; } = "i18n";
 
     public CultureInfo Culture
     {
-        get;
+        get => _culture;
         set
         {
-            field = value;
+            _culture = value;
             Sync(value);
         }
     }
@@ -29,89 +32,50 @@ public class ResxLangPlugin : ILangPlugin
     public void Load(CultureInfo cultureInfo)
     {
         _defaultCulture = cultureInfo;
+        _resourceManagers = FindResourceManagers(AppDomain.CurrentDomain.GetAssemblies());
+        Resources.Clear();
         Culture = cultureInfo;
-        _resourceManagers = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(assembly =>
-                assembly.GetTypes()
-                    .Where(type => type.FullName.Contains(Mark, StringComparison.OrdinalIgnoreCase))
-                    .ToDictionary(
-                        type => type,
-                        type => type.GetProperty(nameof(ResourceManager),
-                                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
-                            ?.GetValue(null, null) as ResourceManager)
-            )
-            .Where(pair => pair.Value != null)
-            .ToDictionary(pair => pair.Key, pair => pair.Value!);
-        Sync(Culture);
     }
 
     public void AddResource(params Assembly[] assemblies)
     {
-        var dicts = assemblies.SelectMany(assembly =>
-                assembly.GetTypes()
-                    .Where(type => type.FullName.Contains(Mark, StringComparison.OrdinalIgnoreCase))
-                    .ToDictionary(
-                        type => type,
-                        type => type.GetProperty(nameof(ResourceManager),
-                                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
-                            ?.GetValue(null, null) as ResourceManager)
-            )
-            .Where(pair => pair.Value != null)
-            .ToDictionary(pair => pair.Key, pair => pair.Value!);
-        if (dicts.Count != 0)
+        var managers = FindResourceManagers(assemblies);
+        foreach (var pair in managers)
         {
-            foreach (KeyValuePair<Type, ResourceManager> pair in dicts)
-            {
-                if (!_resourceManagers.ContainsKey(pair.Key))
-                {
-                    _resourceManagers.Add(pair.Key, pair.Value);
-                }
-            }
+            _resourceManagers.TryAdd(pair.Key, pair.Value);
         }
 
         Sync(Culture);
     }
 
-    public List<LocalizationLanguage>? GetLanguages() =>
-        throw new NotSupportedException("This plugin does not support the current interface for the time being.");
+    public List<LocalizationLanguage>? GetLanguages() => Resources.Select(kvp => kvp.Value).ToList();
 
     public string? GetResource(string key, string? cultureName = null)
     {
-        var culture = Culture.Name;
-
-        string? GetResource()
+        var culture = Culture;
+        if (!string.IsNullOrWhiteSpace(cultureName) && !TryCreateCulture(cultureName, out culture))
         {
-            if (Resources.TryGetValue(culture, out var currentLanguages)
-                && currentLanguages.Languages.TryGetValue(key, out string resource))
-            {
-                return resource;
-            }
-
-            return default;
+            return key;
         }
 
-        if (!string.IsNullOrWhiteSpace(cultureName))
-        {
-            culture = cultureName;
-        }
-
-        bool isFirst = true;
-        var resource = GetResource();
-        if (!string.IsNullOrWhiteSpace(resource))
+        if (TryGetCachedResource(culture.Name, key, out var resource))
         {
             return resource;
         }
 
-        Sync(new CultureInfo(culture));
-        resource = GetResource();
-        if (!string.IsNullOrWhiteSpace(resource))
+        Sync(culture);
+        if (TryGetCachedResource(culture.Name, key, out resource))
         {
             return resource;
         }
 
-        culture = _defaultCulture.Name;
-        resource = GetResource();
-        if (!string.IsNullOrWhiteSpace(resource))
+        if (TryGetCachedResource(_defaultCulture.Name, key, out resource))
+        {
+            return resource;
+        }
+
+        Sync(_defaultCulture);
+        if (TryGetCachedResource(_defaultCulture.Name, key, out resource))
         {
             return resource;
         }
@@ -119,60 +83,121 @@ public class ResxLangPlugin : ILangPlugin
         return key;
     }
 
-
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "RESX plugin discovers generated resource properties by convention; trimmed apps should root resource designer types.")]
     private void Sync(CultureInfo cultureInfo)
     {
-        if (_resourceManagers == null || _resourceManagers.Count == 0)
+        if (_resourceManagers.Count == 0)
         {
             return;
         }
 
-        IEnumerable<DictionaryEntry> GetResources(ResourceManager resourceManager)
-        {
-            var baseEntries = resourceManager.GetResourceSet(CultureInfo.InvariantCulture, true, true)
-                ?.OfType<DictionaryEntry>();
-            var cultureEntries = resourceManager.GetResourceSet(cultureInfo, true, true)?.OfType<DictionaryEntry>();
-            if (cultureEntries == null || baseEntries == null)
-            {
-                yield break;
-            }
-
-            foreach (var entry in cultureEntries
-                         .Concat(baseEntries)
-                         .GroupBy(entry => entry.Key)
-                         .Select(entries => entries.First()))
-            {
-                yield return entry;
-            }
-        }
-
         var cultureName = cultureInfo.Name;
-        LocalizationLanguage? currentLanResources;
-        if (Resources.ContainsKey(cultureName))
+        if (!Resources.TryGetValue(cultureName, out var currentLanguageResources))
         {
-            currentLanResources = Resources[cultureName];
-        }
-        else
-        {
-            currentLanResources = new LocalizationLanguage()
+            currentLanguageResources = new LocalizationLanguage
             {
                 Language = cultureInfo.DisplayName,
                 Description = cultureInfo.DisplayName,
                 CultureName = cultureName
             };
-            Resources[cultureName] = currentLanResources;
+            Resources[cultureName] = currentLanguageResources;
         }
 
         foreach (var pair in _resourceManagers)
         {
-            pair.Key.GetProperty("Culture", BindingFlags.Public | BindingFlags.Static)?.SetValue(null, cultureInfo);
-            foreach (var entry in GetResources(pair.Value))
+            pair.Key.GetProperty("Culture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
+                ?.SetValue(null, cultureInfo);
+
+            foreach (var entry in GetResources(pair.Value, cultureInfo))
             {
                 if (entry.Key is string key && entry.Value is string value)
                 {
-                    currentLanResources.Languages[key] = value;
+                    currentLanguageResources.Languages[key] = value;
                 }
             }
+        }
+    }
+
+    private bool TryGetCachedResource(string cultureName, string key, out string? resource)
+    {
+        resource = null;
+        return Resources.TryGetValue(cultureName, out var currentLanguages)
+            && currentLanguages.Languages.TryGetValue(key, out resource)
+            && !string.IsNullOrWhiteSpace(resource);
+    }
+
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "RESX plugin discovers generated ResourceManager properties by convention.")]
+    private Dictionary<Type, ResourceManager> FindResourceManagers(IEnumerable<Assembly> assemblies)
+    {
+        var resourceManagers = new Dictionary<Type, ResourceManager>();
+        foreach (var type in assemblies
+                     .Where(assembly => assembly != null)
+                     .Distinct()
+                     .SelectMany(GetLoadableTypes)
+                     .Where(type => type.FullName?.Contains(Mark, StringComparison.OrdinalIgnoreCase) == true))
+        {
+            var manager = type.GetProperty(nameof(ResourceManager),
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
+                ?.GetValue(null, null) as ResourceManager;
+            if (manager != null)
+            {
+                resourceManagers[type] = manager;
+            }
+        }
+
+        return resourceManagers;
+    }
+
+    private static IEnumerable<DictionaryEntry> GetResources(ResourceManager resourceManager, CultureInfo cultureInfo)
+    {
+        IEnumerable<DictionaryEntry> baseEntries = [];
+        IEnumerable<DictionaryEntry> cultureEntries = [];
+
+        try
+        {
+            baseEntries = resourceManager.GetResourceSet(CultureInfo.InvariantCulture, true, true)
+                ?.OfType<DictionaryEntry>() ?? [];
+            cultureEntries = resourceManager.GetResourceSet(cultureInfo, true, true)
+                ?.OfType<DictionaryEntry>() ?? [];
+        }
+        catch (MissingManifestResourceException)
+        {
+        }
+
+        return cultureEntries
+            .Concat(baseEntries)
+            .GroupBy(entry => entry.Key)
+            .Select(entries => entries.First());
+    }
+
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "RESX plugin scans loaded assemblies to find generated resource designer types by convention.")]
+    private static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
+    {
+        try
+        {
+            return assembly.GetTypes();
+        }
+        catch (ReflectionTypeLoadException ex)
+        {
+            return ex.Types.Where(type => type != null)!;
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    private static bool TryCreateCulture(string cultureName, out CultureInfo culture)
+    {
+        try
+        {
+            culture = new CultureInfo(cultureName);
+            return true;
+        }
+        catch (CultureNotFoundException)
+        {
+            culture = CultureInfo.InvariantCulture;
+            return false;
         }
     }
 }

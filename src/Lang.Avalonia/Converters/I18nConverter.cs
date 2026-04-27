@@ -1,9 +1,11 @@
-﻿using Avalonia.Data.Converters;
+using Avalonia;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
+using Lang.Avalonia.MarkupExtensions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Lang.Avalonia.MarkupExtensions;
 
 namespace Lang.Avalonia.Converters;
 
@@ -11,26 +13,51 @@ public class I18nConverter(I18nBinding owner) : IMultiValueConverter
 {
     public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (values[0] is not CultureInfo _)
+        if (values.Count < 2 || values[0] is not CultureInfo || IsUnsetValue(values[1]))
         {
-            return default;
+            return BindingOperations.DoNothing;
         }
 
         var value = values[1];
-        if (owner.KeyConverter.Convert(value, null, null, culture) is not string key)
+        if (owner.KeyConverter.Convert(value, typeof(string), null, culture) is not string key)
         {
             return value;
         }
 
         value = I18nManager.Instance.GetResource(key, owner.CultureName) ?? key;
 
-        if (value is string format)
+        if (value is string format && owner.Args.Indexes.Count > 0)
         {
-            value = string.Format(format, owner.Args.Indexes
+            if (owner.Args.Indexes.Any(item => item.IsBinding && item.Index >= values.Count))
+            {
+                return BindingOperations.DoNothing;
+            }
+
+            var args = owner.Args.Indexes
                 .Select(item => item.IsBinding ? values[item.Index] : owner.Args[item.Index])
-                .ToArray());
+                .ToArray();
+
+            if (args.Any(IsUnsetValue))
+            {
+                return BindingOperations.DoNothing;
+            }
+
+            try
+            {
+                value = string.Format(culture, format, args);
+            }
+            catch (FormatException)
+            {
+                value = format;
+            }
         }
 
-        return owner.ValueConverter.Convert(value, null, null, culture);
+        return owner.ValueConverter.Convert(value, targetType, null, culture);
+    }
+
+    private static bool IsUnsetValue(object? value)
+    {
+        return ReferenceEquals(value, AvaloniaProperty.UnsetValue)
+            || ReferenceEquals(value, BindingOperations.DoNothing);
     }
 }

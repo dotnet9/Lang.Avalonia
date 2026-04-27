@@ -2,11 +2,13 @@
 using Avalonia.Data.Converters;
 using Lang.Avalonia.Converters;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Lang.Avalonia.MarkupExtensions;
 
 public class I18nBinding : MultiBindingExtensionBase
 {
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "I18nBinding intentionally accepts runtime Avalonia bindings for dynamic localization keys.")]
     public I18nBinding(object key)
     {
         Mode = BindingMode.OneWay;

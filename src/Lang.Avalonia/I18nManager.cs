@@ -22,16 +22,18 @@ public class I18nManager : INotifyPropertyChanged
     public bool Register(ILangPlugin plugin, CultureInfo defaultCulture, out string? error)
     {
         error = null;
+        var previousPlugin = _langPlugin;
+
         try
         {
-            _langPlugin = plugin;
-
             plugin.Load(defaultCulture);
-            Culture = defaultCulture;
+            _langPlugin = plugin;
+            SetCulture(defaultCulture, notify: true);
             return true;
         }
         catch (Exception ex)
         {
+            _langPlugin = previousPlugin;
             error = ex.ToString();
             return false;
         }
@@ -48,16 +50,12 @@ public class I18nManager : INotifyPropertyChanged
         get => _langPlugin?.Culture;
         set
         {
-            if (_langPlugin == null || Equals(_langPlugin?.Culture, value))
+            if (_langPlugin == null || value == null || Equals(_langPlugin.Culture, value))
             {
                 return;
             }
 
-            _langPlugin!.Culture = value;
-            Thread.CurrentThread.CurrentCulture = value;
-            Thread.CurrentThread.CurrentUICulture = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Culture)));
-            CultureChanged?.Invoke(this, EventArgs.Empty);
+            SetCulture(value, notify: true);
         }
     }
 
@@ -67,4 +65,26 @@ public class I18nManager : INotifyPropertyChanged
     public string? GetResource(string key, string? cultureName = null) => _langPlugin?.GetResource(key, cultureName);
 
     public event EventHandler<EventArgs>? CultureChanged;
+
+    private void SetCulture(CultureInfo culture, bool notify)
+    {
+        if (_langPlugin == null)
+        {
+            return;
+        }
+
+        _langPlugin.Culture = culture;
+        Thread.CurrentThread.CurrentCulture = culture;
+        Thread.CurrentThread.CurrentUICulture = culture;
+        CultureInfo.DefaultThreadCurrentCulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
+
+        if (!notify)
+        {
+            return;
+        }
+
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Culture)));
+        CultureChanged?.Invoke(this, EventArgs.Empty);
+    }
 }

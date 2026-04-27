@@ -33,8 +33,7 @@ public static class LanguageResourceParser
                 .Where(kvp => !excludeKeys.Any(k => kvp.Key.Equals(k, StringComparison.OrdinalIgnoreCase)))
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            if (!string.IsNullOrEmpty(cultureName))
-                result[cultureName] = filteredProperties;
+            result[cultureName!] = filteredProperties;
         }
         catch
         {
@@ -71,8 +70,7 @@ public static class LanguageResourceParser
                 properties[key] = propertyNode.Value;
             }
 
-            if (!string.IsNullOrEmpty(cultureName))
-                result[cultureName] = properties;
+            result[cultureName!] = properties;
         }
         catch
         {
@@ -99,7 +97,7 @@ public static class LanguageResourceParser
                 
                 if (!string.IsNullOrEmpty(name) && valueElement != null)
                 {
-                    properties[name] = valueElement.Value ?? string.Empty;
+                    properties[name!] = valueElement.Value;
                 }
             }
 

@@ -11,8 +11,8 @@ public class MainViewModel : ViewModelBase
 {
     public MainViewModel()
     {
-        Languages = I18nManager.Instance.GetLanguages();
-        SelectLanguage = Languages?.FirstOrDefault(l => l.CultureName == I18nManager.Instance.Culture.Name);
+        Languages = I18nManager.Instance.GetLanguages() ?? [];
+        SelectLanguage = Languages.FirstOrDefault(l => l.CultureName == I18nManager.Instance.Culture?.Name);
 
 
         var titleCurrentCulture = I18nManager.Instance.GetResource(Localization.Main.MainView.Title);
@@ -29,8 +29,8 @@ public class MainViewModel : ViewModelBase
         });
     }
 
-    public List<LocalizationLanguage>? Languages { get; set; }
-    public LocalizationLanguage? _selectLanguage;
+    public List<LocalizationLanguage> Languages { get; }
+    private LocalizationLanguage? _selectLanguage;
 
     public LocalizationLanguage? SelectLanguage
     {
@@ -38,7 +38,10 @@ public class MainViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref _selectLanguage, value);
-            I18nManager.Instance.Culture = new CultureInfo(value.CultureName);
+            if (value != null)
+            {
+                I18nManager.Instance.Culture = new CultureInfo(value.CultureName);
+            }
         }
     }
 
