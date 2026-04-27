@@ -1,27 +1,49 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
-<Localization language="Chinese (Traditional)" description="Chinese (Traditional)" cultureName="zh-Hant">
+<?xml version="1.0" encoding="utf-8"?>
+<Localization language="Chinese (Traditional)" description="中文繁體" cultureName="zh-Hant">
   <Main>
     <MainView>
-      <Title>使用XML實現國際化</Title>
-      <RunningCountInfo>正在運行 {0} 作業系統,{1}</RunningCountInfo>
-      <CurrentTimeFormat>當前時間是 {0}</CurrentTimeFormat>
-      <ChangeLanguage>切換語言</ChangeLanguage>
-      <Exit>退出程式</Exit>
+      <Title>Lang.Avalonia 在地化工作台</Title>
+      <Subtitle>執行期間切換語言，並驗證格式化、固定文化與模組化資源。</Subtitle>
+      <ChangeLanguage>語言</ChangeLanguage>
+      <RuntimeTitle>執行階段內容</RuntimeTitle>
+      <CurrentCulture>目前文化：{0}</CurrentCulture>
+      <CurrentTimeFormat>本地時間：{0:yyyy-MM-dd HH:mm:ss}</CurrentTimeFormat>
+      <RunningCountInfo>執行環境：{0}，{1}</RunningCountInfo>
+      <ResourceKey>範例 Key：{0}</ResourceKey>
+      <ProviderTitle>資源提供器</ProviderTitle>
+      <ProviderDescription>目前外掛透過 ILangPlugin 統一整理不同來源的語言資源。</ProviderDescription>
+      <StorageTitle>資源儲存</StorageTitle>
+      <StorageDescription>檔案或編譯資源會依文化載入並快取於記憶體中。</StorageDescription>
+      <FixedCultureTitle>固定文化預覽</FixedCultureTitle>
+      <EnglishPreview>英文</EnglishPreview>
+      <JapanesePreview>日文</JapanesePreview>
+      <SimplifiedChinesePreview>簡體中文</SimplifiedChinesePreview>
+      <TraditionalChinesePreview>繁體中文</TraditionalChinesePreview>
+      <FallbackTitle>回退策略</FallbackTitle>
+      <FallbackDescription>缺少翻譯時會先返回預設文化文字，仍未命中則返回原始 Key。</FallbackDescription>
+      <BindingRefresh>切換文化會觸發 CultureChanged，並刷新所有 I18n 繫結。</BindingRefresh>
+      <CultureCardTitle>文化</CultureCardTitle>
+      <ClockCardTitle>時鐘</ClockCardTitle>
+      <PlatformCardTitle>平台</PlatformCardTitle>
+      <ResourceCardTitle>資源 Key</ResourceCardTitle>
     </MainView>
-    <SettingView>
-      <Title>設定</Title>
-      <NoPrompt>不再提示</NoPrompt>
-    </SettingView>
   </Main>
   <DevelopModule>
-    <Title2SlugView>
-      <Title>文章標題轉換為URL別名</Title>
-      <Convert>轉換</Convert>
-    </Title2SlugView>
-    <SettingView>
-      <Title>設定</Title>
-      <MaxLength>最大長度</MaxLength>
-    </SettingView>
+    <ResourcePipelineView>
+      <Title>資源流程</Title>
+      <Description>語言檔會被解析為依文化分組的字典，並同時服務 XAML 與 C# 呼叫。</Description>
+      <FormatSupport>JSON、XML 與 RESX 提供器共享同一個公開 API。</FormatSupport>
+      <HotSwitch>文化切換不需要重建視窗即可生效。</HotSwitch>
+      <Fallback>預設文化回退能在缺少翻譯時保持介面可讀。</Fallback>
+      <StrongKeys>產生的常量讓視圖不再手寫資源 Key。</StrongKeys>
+    </ResourcePipelineView>
+    <ValidationView>
+      <Title>品質檢查</Title>
+      <Description>示例涵蓋格式化字串、模組命名空間、固定文化與執行期切換。</Description>
+      <MissingKeyPolicy>未知 Key 會直接顯示為 Key 文字，方便快速定位問題。</MissingKeyPolicy>
+      <ThreadCulture>CurrentCulture 與 CurrentUICulture 會同步到目前執行緒與新執行緒。</ThreadCulture>
+      <EmbeddedResources>外掛可以從額外組件載入語言資源。</EmbeddedResources>
+      <AnalyzerSupport>Analysis 套件可在編譯期產生強型別常量。</AnalyzerSupport>
+    </ValidationView>
   </DevelopModule>
 </Localization>

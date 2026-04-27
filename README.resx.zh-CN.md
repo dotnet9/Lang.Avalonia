@@ -1,19 +1,19 @@
 # Lang.Avalonia.Resx
 
-[简体中文](README.resx.zh-CN.md) | English
+简体中文 | [English](README.resx.md)
 
-RESX resource provider for Lang.Avalonia. It discovers generated `ResourceManager` properties by convention, syncs resources by culture, and exposes them through the same `ILangPlugin` contract used by JSON and XML providers.
+Lang.Avalonia 的 RESX 资源提供器。它按约定发现生成的 `ResourceManager` 属性，按文化同步资源，并通过与 JSON、XML 提供器相同的 `ILangPlugin` 契约对外提供资源。
 
-## Install
+## 安装
 
 ```shell
 dotnet add package Lang.Avalonia
 dotnet add package Lang.Avalonia.Resx
 ```
 
-## Resource Files
+## 资源文件
 
-Use standard .NET RESX naming:
+使用标准 .NET RESX 命名：
 
 ```text
 I18n/Resources.resx
@@ -22,7 +22,7 @@ I18n/Resources.zh-Hant.resx
 I18n/Resources.ja-JP.resx
 ```
 
-Use full resource keys as RESX data names:
+建议使用完整资源 Key 作为 RESX 数据名称：
 
 ```xml
 <data name="Localization.Main.MainView.Title" xml:space="preserve">
@@ -30,9 +30,9 @@ Use full resource keys as RESX data names:
 </data>
 ```
 
-The default `ResxLangPlugin.Mark` value is `i18n`; keep generated resource designer types under a namespace or folder that contains `I18n`, or set `Mark` explicitly.
+`ResxLangPlugin.Mark` 默认值为 `i18n`。请让生成的资源 Designer 类型位于包含 `I18n` 的命名空间或文件夹下，或者显式设置 `Mark`。
 
-## Initialize
+## 初始化
 
 ```csharp
 using Lang.Avalonia;
@@ -42,7 +42,7 @@ using System.Globalization;
 I18nManager.Instance.Register(new ResxLangPlugin(), new CultureInfo("en-US"), out var error);
 ```
 
-Custom mark example:
+自定义标记示例：
 
 ```csharp
 I18nManager.Instance.Register(
@@ -51,7 +51,7 @@ I18nManager.Instance.Register(
     out var error);
 ```
 
-## Use In XAML
+## 在 XAML 中使用
 
 ```xml
 xmlns:c="https://codewf.com"
@@ -61,7 +61,7 @@ xmlns:mainLangs="clr-namespace:Localization.Main"
 <SelectableTextBlock Text="{c:I18n {x:Static mainLangs:MainView.Title}, CultureName=zh-CN}" />
 ```
 
-## Use In C#
+## 在 C# 中使用
 
 ```csharp
 var title = I18nManager.Instance.GetResource(Localization.Main.MainView.Title);

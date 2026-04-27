@@ -49,7 +49,7 @@
                 string moduleName = moduleNode.Name; // 模块名
                 JsonElement moduleElement = moduleNode.Value;
 
-                // 遍历模块下的类节点（MainView、SettingView等）
+                // 遍历模块下的类节点（MainView、ResourcePipelineView 等）
                 foreach (var classNode in moduleElement.EnumerateObject())
                 {
                     string className = classNode.Name; // 类名

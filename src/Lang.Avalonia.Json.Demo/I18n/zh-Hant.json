@@ -1,29 +1,52 @@
-﻿{
+{
   "language": "Chinese (Traditional)",
-  "description": "Chinese (Traditional)",
+  "description": "中文繁體",
   "cultureName": "zh-Hant",
   "Localization": {
     "Main": {
       "MainView": {
-        "Title": "使用Json實現國際化",
-        "RunningCountInfo": "正在運行 {0} 作業系統,{1}",
-        "CurrentTimeFormat": "當前時間是 {0}",
-        "ChangeLanguage": "切換語言",
-        "Exit": "退出程式"
-      },
-      "SettingView": {
-        "Title": "設定",
-        "NoPrompt": "不再提示"
+        "Title": "Lang.Avalonia 在地化工作台",
+        "Subtitle": "執行期間切換語言，並驗證格式化、固定文化與模組化資源。",
+        "ChangeLanguage": "語言",
+        "RuntimeTitle": "執行階段內容",
+        "CurrentCulture": "目前文化：{0}",
+        "CurrentTimeFormat": "本地時間：{0:yyyy-MM-dd HH:mm:ss}",
+        "RunningCountInfo": "執行環境：{0}，{1}",
+        "ResourceKey": "範例 Key：{0}",
+        "ProviderTitle": "資源提供器",
+        "ProviderDescription": "目前外掛透過 ILangPlugin 統一整理不同來源的語言資源。",
+        "StorageTitle": "資源儲存",
+        "StorageDescription": "檔案或編譯資源會依文化載入並快取於記憶體中。",
+        "FixedCultureTitle": "固定文化預覽",
+        "EnglishPreview": "英文",
+        "JapanesePreview": "日文",
+        "SimplifiedChinesePreview": "簡體中文",
+        "TraditionalChinesePreview": "繁體中文",
+        "FallbackTitle": "回退策略",
+        "FallbackDescription": "缺少翻譯時會先返回預設文化文字，仍未命中則返回原始 Key。",
+        "BindingRefresh": "切換文化會觸發 CultureChanged，並刷新所有 I18n 繫結。",
+        "CultureCardTitle": "文化",
+        "ClockCardTitle": "時鐘",
+        "PlatformCardTitle": "平台",
+        "ResourceCardTitle": "資源 Key"
       }
     },
     "DevelopModule": {
-      "Title2SlugView": {
-        "Title": "文章標題轉換為URL別名",
-        "Convert": "轉換"
+      "ResourcePipelineView": {
+        "Title": "資源流程",
+        "Description": "語言檔會被解析為依文化分組的字典，並同時服務 XAML 與 C# 呼叫。",
+        "FormatSupport": "JSON、XML 與 RESX 提供器共享同一個公開 API。",
+        "HotSwitch": "文化切換不需要重建視窗即可生效。",
+        "Fallback": "預設文化回退能在缺少翻譯時保持介面可讀。",
+        "StrongKeys": "產生的常量讓視圖不再手寫資源 Key。"
       },
-      "SettingView": {
-        "Title": "設定",
-        "MaxLength": "最大長度"
+      "ValidationView": {
+        "Title": "品質檢查",
+        "Description": "示例涵蓋格式化字串、模組命名空間、固定文化與執行期切換。",
+        "MissingKeyPolicy": "未知 Key 會直接顯示為 Key 文字，方便快速定位問題。",
+        "ThreadCulture": "CurrentCulture 與 CurrentUICulture 會同步到目前執行緒與新執行緒。",
+        "EmbeddedResources": "外掛可以從額外組件載入語言資源。",
+        "AnalyzerSupport": "Analysis 套件可在編譯期產生強型別常量。"
       }
     }
   }

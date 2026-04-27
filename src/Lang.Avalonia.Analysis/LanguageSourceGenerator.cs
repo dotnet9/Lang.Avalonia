@@ -7,11 +7,15 @@ using System.Text;
 
 namespace Lang.Avalonia.Analysis;
 
-public record struct LanguageFileInfo(string Path, string Content);
+internal record struct LanguageFileInfo(string Path, string Content);
 
+/// <summary>
+/// 根据 AdditionalFiles 中的语言资源生成强类型资源 Key 常量。
+/// </summary>
 [Generator]
 public class LanguageSourceGenerator : IIncrementalGenerator
 {
+    /// <inheritdoc />
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var additionalFiles = context.AdditionalTextsProvider
@@ -41,12 +45,14 @@ public class LanguageSourceGenerator : IIncrementalGenerator
             {
                 var filePath = file.Path;
                 var content = file.Content;
-                
+
                 if (string.IsNullOrEmpty(content))
+                {
                     continue;
+                }
 
                 var fileType = LanguageResourceParser.DetectFileType(filePath);
-                
+
                 var fileResources = fileType switch
                 {
                     LanguageFileType.Json => LanguageResourceParser.ParseJsonFile(filePath, content),
@@ -61,7 +67,9 @@ public class LanguageSourceGenerator : IIncrementalGenerator
                     var resources = cultureResources.Value;
 
                     if (!allResources.ContainsKey(cultureName))
+                    {
                         allResources[cultureName] = new Dictionary<string, string>();
+                    }
 
                     foreach (var resource in resources)
                     {
@@ -71,7 +79,9 @@ public class LanguageSourceGenerator : IIncrementalGenerator
             }
 
             if (!allResources.Any())
+            {
                 return;
+            }
 
             var generatedCode = LanguageCodeGenerator.GenerateLanguageConstants(allResources);
             if (!string.IsNullOrEmpty(generatedCode))

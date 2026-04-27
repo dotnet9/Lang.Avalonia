@@ -8,25 +8,43 @@ using System.Xml.Linq;
 
 namespace Lang.Avalonia.Xml;
 
+/// <summary>
+/// XML 语言资源插件。支持从输出目录扫描 XML 文件，也支持从额外程序集中读取嵌入资源。
+/// </summary>
 public class XmlLangPlugin : ILangPlugin
 {
     private CultureInfo _defaultCulture = CultureInfo.InvariantCulture;
+    private readonly List<string> _loadDiagnostics = new();
 
+    /// <summary>
+    /// 已加载的语言资源缓存，Key 为文化名称。
+    /// </summary>
     public Dictionary<string, LocalizationLanguage> Resources { get; } = new();
 
+    /// <summary>
+    /// XML 文件扫描目录，默认使用应用程序输出目录。
+    /// </summary>
     public string ResourceFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
 
+    /// <summary>
+    /// 最近一次加载资源时产生的诊断信息。
+    /// </summary>
+    public IReadOnlyList<string> LoadDiagnostics => _loadDiagnostics;
+
+    /// <inheritdoc />
     public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
 
+    /// <inheritdoc />
     public void Load(CultureInfo cultureInfo)
     {
         _defaultCulture = cultureInfo;
         Culture = cultureInfo;
         Resources.Clear();
+        _loadDiagnostics.Clear();
 
         if (!Directory.Exists(ResourceFolder))
         {
-            Console.WriteLine($"Language resource folder not found: {ResourceFolder}");
+            _loadDiagnostics.Add($"Language resource folder not found: {ResourceFolder}");
             return;
         }
 
@@ -37,10 +55,11 @@ public class XmlLangPlugin : ILangPlugin
 
         if (Resources.Count == 0)
         {
-            Console.WriteLine("Please provide valid language XML files");
+            _loadDiagnostics.Add("Please provide valid language XML files.");
         }
     }
 
+    /// <inheritdoc />
     public void AddResource(params Assembly[] assemblies)
     {
         foreach (var assembly in assemblies.Where(assembly => assembly != null).Distinct())
@@ -53,8 +72,10 @@ public class XmlLangPlugin : ILangPlugin
         }
     }
 
+    /// <inheritdoc />
     public List<LocalizationLanguage>? GetLanguages() => Resources.Select(kvp => kvp.Value).ToList();
 
+    /// <inheritdoc />
     public string? GetResource(string key, string? cultureName = null)
     {
         var culture = Culture.Name;
@@ -86,6 +107,7 @@ public class XmlLangPlugin : ILangPlugin
         }
         catch
         {
+            _loadDiagnostics.Add($"Invalid language XML file skipped: {filePath}");
             return false;
         }
     }
@@ -104,6 +126,7 @@ public class XmlLangPlugin : ILangPlugin
         }
         catch
         {
+            _loadDiagnostics.Add($"Invalid embedded language XML resource skipped: {assembly.GetName().Name}/{resourceName}");
             return false;
         }
     }

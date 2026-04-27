@@ -1,29 +1,52 @@
-﻿{
+{
   "language": "Japanese",
-  "description": "Japanese",
+  "description": "日本語",
   "cultureName": "ja-JP",
   "Localization": {
     "Main": {
       "MainView": {
-        "Title": "Jsonを使って国際化を実現する",
-        "RunningCountInfo": "実行中 {0} オペレーティングシステム,{1}",
-        "CurrentTimeFormat": "現在の時間は {0} です。",
-        "ChangeLanguage": "言語の切り替え",
-        "Exit": "プログラムを終了する"
-      },
-      "SettingView": {
-        "Title": "設定",
-        "NoPrompt": "もうメッセージを表示しない"
+        "Title": "Lang.Avalonia ローカライズワークスペース",
+        "Subtitle": "実行時にカルチャを切り替え、書式付き文字列、固定カルチャ、モジュール別リソースを確認します。",
+        "ChangeLanguage": "言語",
+        "RuntimeTitle": "実行コンテキスト",
+        "CurrentCulture": "現在のカルチャ: {0}",
+        "CurrentTimeFormat": "ローカル時刻: {0:yyyy-MM-dd HH:mm:ss}",
+        "RunningCountInfo": "実行環境: {0}, {1}",
+        "ResourceKey": "サンプル Key: {0}",
+        "ProviderTitle": "プロバイダー",
+        "ProviderDescription": "現在のプラグインは ILangPlugin の背後でリソースを統一します。",
+        "StorageTitle": "リソース保存",
+        "StorageDescription": "ファイルまたはコンパイル済みリソースはカルチャごとに読み込まれ、キャッシュされます。",
+        "FixedCultureTitle": "固定カルチャのプレビュー",
+        "EnglishPreview": "英語",
+        "JapanesePreview": "日本語",
+        "SimplifiedChinesePreview": "簡体字中国語",
+        "TraditionalChinesePreview": "繁体字中国語",
+        "FallbackTitle": "フォールバック",
+        "FallbackDescription": "翻訳がない場合は既定カルチャの値を返し、それでもない場合は元の Key を返します。",
+        "BindingRefresh": "カルチャ変更で CultureChanged が発行され、すべての I18n バインディングが更新されます。",
+        "CultureCardTitle": "カルチャ",
+        "ClockCardTitle": "時計",
+        "PlatformCardTitle": "プラットフォーム",
+        "ResourceCardTitle": "リソース Key"
       }
     },
     "DevelopModule": {
-      "Title2SlugView": {
-        "Title": "記事のタイトルをURLのエイリアスに変換する",
-        "Convert": "変換する"
+      "ResourcePipelineView": {
+        "Title": "リソースパイプライン",
+        "Description": "言語ファイルはカルチャ別の辞書に解析され、XAML と C# の両方から利用されます。",
+        "FormatSupport": "JSON、XML、RESX プロバイダーは同じ公開 API を共有します。",
+        "HotSwitch": "ウィンドウを作り直さずにカルチャ変更を反映できます。",
+        "Fallback": "既定カルチャへのフォールバックにより、翻訳不足でも UI を読みやすく保てます。",
+        "StrongKeys": "生成された定数により、ビューで手書きのリソース Key が不要になります。"
       },
-      "SettingView": {
-        "Title": "設定",
-        "MaxLength": "最大長さ"
+      "ValidationView": {
+        "Title": "品質チェック",
+        "Description": "サンプルでは書式付き文字列、モジュール名前空間、固定カルチャ、実行時切り替えを確認します。",
+        "MissingKeyPolicy": "不明な Key はそのまま表示され、問題を素早く特定できます。",
+        "ThreadCulture": "CurrentCulture と CurrentUICulture は現在のスレッドと新しいスレッドに同期されます。",
+        "EmbeddedResources": "プラグインは追加アセンブリからリソースを読み込めます。",
+        "AnalyzerSupport": "Analysis パッケージはコンパイル時に強く型付けされた定数を生成できます。"
       }
     }
   }

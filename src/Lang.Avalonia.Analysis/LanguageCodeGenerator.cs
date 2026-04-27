@@ -5,12 +5,14 @@ using System.Text;
 
 namespace Lang.Avalonia.Analysis;
 
-public static class LanguageCodeGenerator
+internal static class LanguageCodeGenerator
 {
-    public static string GenerateLanguageConstants(Dictionary<string, Dictionary<string, string>> allResources)
+    internal static string GenerateLanguageConstants(Dictionary<string, Dictionary<string, string>> allResources)
     {
         if (!allResources.Any())
+        {
             return string.Empty;
+        }
 
         var stringBuilder = new StringBuilder();
 
@@ -72,7 +74,10 @@ public static class LanguageCodeGenerator
         foreach (var key in resourceKeys)
         {
             var parts = key.Split('.');
-            if (parts.Length < 3) continue; // 至少需要 namespace.class.property
+            if (parts.Length < 3)
+            {
+                continue; // 至少需要 namespace.class.property
+            }
 
             // 找到根命名空间（通常是最长的公共前缀）
             var namespacePart = parts[0];
@@ -81,15 +86,21 @@ public static class LanguageCodeGenerator
             var propertyPart = string.Join(".", parts.Skip(3));
 
             if (string.IsNullOrEmpty(propertyPart))
+            {
                 propertyPart = classPart;
+            }
 
             var fullNamespace = $"{namespacePart}.{modulePart}";
 
             if (!result.ContainsKey(fullNamespace))
+            {
                 result[fullNamespace] = new Dictionary<string, List<(string PropertyName, string ResourceKey)>>();
+            }
 
             if (!result[fullNamespace].ContainsKey(classPart))
+            {
                 result[fullNamespace][classPart] = new List<(string PropertyName, string ResourceKey)>();
+            }
 
             result[fullNamespace][classPart].Add((propertyPart, key));
         }
@@ -100,14 +111,18 @@ public static class LanguageCodeGenerator
     private static string SanitizeName(string name)
     {
         if (string.IsNullOrEmpty(name))
+        {
             return "Unnamed";
+        }
 
         // 移除或替换无效字符
         var sanitized = new string(name.Where(c => char.IsLetterOrDigit(c) || c == '_').ToArray());
 
         // 确保不以数字开头
         if (sanitized.Length > 0 && char.IsDigit(sanitized[0]))
+        {
             sanitized = "_" + sanitized;
+        }
 
         return sanitized.Length == 0 ? "Unnamed" : sanitized;
     }
@@ -115,7 +130,9 @@ public static class LanguageCodeGenerator
     private static string GetUniqueName(string name, HashSet<string> usedNames)
     {
         if (usedNames.Add(name))
+        {
             return name;
+        }
 
         var index = 2;
         while (!usedNames.Add($"{name}{index}"))
@@ -129,11 +146,5 @@ public static class LanguageCodeGenerator
     private static string EscapeStringLiteral(string value)
     {
         return value.Replace("\\", "\\\\").Replace("\"", "\\\"");
-    }
-
-    public static string GenerateUsings()
-    {
-        return @"using System;
-";
     }
 }

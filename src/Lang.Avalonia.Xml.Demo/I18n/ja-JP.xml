@@ -1,27 +1,49 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
-<Localization language="Japanese" description="Japanese" cultureName="ja-JP">
+<?xml version="1.0" encoding="utf-8"?>
+<Localization language="Japanese" description="日本語" cultureName="ja-JP">
   <Main>
     <MainView>
-      <Title>XMLを使って国際化を実現する</Title>
-      <RunningCountInfo>実行中 {0} オペレーティングシステム,{1}</RunningCountInfo>
-      <CurrentTimeFormat>現在の時間は {0} です。</CurrentTimeFormat>
-      <ChangeLanguage>言語の切り替え</ChangeLanguage>
-      <Exit>プログラムを終了する</Exit>
+      <Title>Lang.Avalonia ローカライズワークスペース</Title>
+      <Subtitle>実行時にカルチャを切り替え、書式付き文字列、固定カルチャ、モジュール別リソースを確認します。</Subtitle>
+      <ChangeLanguage>言語</ChangeLanguage>
+      <RuntimeTitle>実行コンテキスト</RuntimeTitle>
+      <CurrentCulture>現在のカルチャ: {0}</CurrentCulture>
+      <CurrentTimeFormat>ローカル時刻: {0:yyyy-MM-dd HH:mm:ss}</CurrentTimeFormat>
+      <RunningCountInfo>実行環境: {0}, {1}</RunningCountInfo>
+      <ResourceKey>サンプル Key: {0}</ResourceKey>
+      <ProviderTitle>プロバイダー</ProviderTitle>
+      <ProviderDescription>現在のプラグインは ILangPlugin の背後でリソースを統一します。</ProviderDescription>
+      <StorageTitle>リソース保存</StorageTitle>
+      <StorageDescription>ファイルまたはコンパイル済みリソースはカルチャごとに読み込まれ、キャッシュされます。</StorageDescription>
+      <FixedCultureTitle>固定カルチャのプレビュー</FixedCultureTitle>
+      <EnglishPreview>英語</EnglishPreview>
+      <JapanesePreview>日本語</JapanesePreview>
+      <SimplifiedChinesePreview>簡体字中国語</SimplifiedChinesePreview>
+      <TraditionalChinesePreview>繁体字中国語</TraditionalChinesePreview>
+      <FallbackTitle>フォールバック</FallbackTitle>
+      <FallbackDescription>翻訳がない場合は既定カルチャの値を返し、それでもない場合は元の Key を返します。</FallbackDescription>
+      <BindingRefresh>カルチャ変更で CultureChanged が発行され、すべての I18n バインディングが更新されます。</BindingRefresh>
+      <CultureCardTitle>カルチャ</CultureCardTitle>
+      <ClockCardTitle>時計</ClockCardTitle>
+      <PlatformCardTitle>プラットフォーム</PlatformCardTitle>
+      <ResourceCardTitle>リソース Key</ResourceCardTitle>
     </MainView>
-    <SettingView>
-      <Title>設定</Title>
-      <NoPrompt>もうメッセージを表示しない</NoPrompt>
-    </SettingView>
   </Main>
   <DevelopModule>
-    <Title2SlugView>
-      <Title>記事のタイトルをURLのエイリアスに変換する</Title>
-      <Convert>変換する</Convert>
-    </Title2SlugView>
-    <SettingView>
-      <Title>設定</Title>
-      <MaxLength>最大長さ</MaxLength>
-    </SettingView>
+    <ResourcePipelineView>
+      <Title>リソースパイプライン</Title>
+      <Description>言語ファイルはカルチャ別の辞書に解析され、XAML と C# の両方から利用されます。</Description>
+      <FormatSupport>JSON、XML、RESX プロバイダーは同じ公開 API を共有します。</FormatSupport>
+      <HotSwitch>ウィンドウを作り直さずにカルチャ変更を反映できます。</HotSwitch>
+      <Fallback>既定カルチャへのフォールバックにより、翻訳不足でも UI を読みやすく保てます。</Fallback>
+      <StrongKeys>生成された定数により、ビューで手書きのリソース Key が不要になります。</StrongKeys>
+    </ResourcePipelineView>
+    <ValidationView>
+      <Title>品質チェック</Title>
+      <Description>サンプルでは書式付き文字列、モジュール名前空間、固定カルチャ、実行時切り替えを確認します。</Description>
+      <MissingKeyPolicy>不明な Key はそのまま表示され、問題を素早く特定できます。</MissingKeyPolicy>
+      <ThreadCulture>CurrentCulture と CurrentUICulture は現在のスレッドと新しいスレッドに同期されます。</ThreadCulture>
+      <EmbeddedResources>プラグインは追加アセンブリからリソースを読み込めます。</EmbeddedResources>
+      <AnalyzerSupport>Analysis パッケージはコンパイル時に強く型付けされた定数を生成できます。</AnalyzerSupport>
+    </ValidationView>
   </DevelopModule>
 </Localization>

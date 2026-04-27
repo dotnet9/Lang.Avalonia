@@ -9,16 +9,26 @@ using System.Resources;
 
 namespace Lang.Avalonia.Resx;
 
+/// <summary>
+/// RESX 语言资源插件。通过反射发现生成的 ResourceManager，并将资源同步到统一缓存。
+/// </summary>
 public class ResxLangPlugin : ILangPlugin
 {
     private CultureInfo _culture = CultureInfo.InvariantCulture;
     private CultureInfo _defaultCulture = CultureInfo.InvariantCulture;
     private Dictionary<Type, ResourceManager> _resourceManagers = new();
 
+    /// <summary>
+    /// 已加载的语言资源缓存，Key 为文化名称。
+    /// </summary>
     public Dictionary<string, LocalizationLanguage> Resources { get; } = new();
 
+    /// <summary>
+    /// 用于筛选资源 Designer 类型的命名标记。
+    /// </summary>
     public string Mark { get; set; } = "i18n";
 
+    /// <inheritdoc />
     public CultureInfo Culture
     {
         get => _culture;
@@ -29,6 +39,7 @@ public class ResxLangPlugin : ILangPlugin
         }
     }
 
+    /// <inheritdoc />
     public void Load(CultureInfo cultureInfo)
     {
         _defaultCulture = cultureInfo;
@@ -37,6 +48,7 @@ public class ResxLangPlugin : ILangPlugin
         Culture = cultureInfo;
     }
 
+    /// <inheritdoc />
     public void AddResource(params Assembly[] assemblies)
     {
         var managers = FindResourceManagers(assemblies);
@@ -48,8 +60,10 @@ public class ResxLangPlugin : ILangPlugin
         Sync(Culture);
     }
 
+    /// <inheritdoc />
     public List<LocalizationLanguage>? GetLanguages() => Resources.Select(kvp => kvp.Value).ToList();
 
+    /// <inheritdoc />
     public string? GetResource(string key, string? cultureName = null)
     {
         var culture = Culture;

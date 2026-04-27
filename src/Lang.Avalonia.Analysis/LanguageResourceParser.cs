@@ -7,23 +7,28 @@ using System.Xml.Linq;
 
 namespace Lang.Avalonia.Analysis;
 
-public static class LanguageResourceParser
+internal static class LanguageResourceParser
 {
-    public static Dictionary<string, Dictionary<string, string>> ParseJsonFile(string filePath, string content)
+    internal static Dictionary<string, Dictionary<string, string>> ParseJsonFile(string filePath, string content)
     {
         var result = new Dictionary<string, Dictionary<string, string>>();
-        
+
         try
         {
+            _ = filePath;
             using var doc = JsonDocument.Parse(content);
             var root = doc.RootElement;
 
             if (!IsValidJsonLanguageFile(root))
+            {
                 return result;
+            }
 
             var cultureName = root.GetProperty("cultureName").GetString();
             if (string.IsNullOrEmpty(cultureName))
+            {
                 return result;
+            }
 
             var allProperties = new Dictionary<string, string>();
             CollectJsonProperties(root, "", allProperties);
@@ -43,26 +48,31 @@ public static class LanguageResourceParser
         return result;
     }
 
-    public static Dictionary<string, Dictionary<string, string>> ParseXmlFile(string filePath, string content)
+    internal static Dictionary<string, Dictionary<string, string>> ParseXmlFile(string filePath, string content)
     {
         var result = new Dictionary<string, Dictionary<string, string>>();
-        
+
         try
         {
+            _ = filePath;
             var doc = XDocument.Parse(content);
             var root = doc.Root;
-            
+
             if (root == null || !IsValidXmlLanguageFile(root))
+            {
                 return result;
+            }
 
             var cultureName = root.Attribute("cultureName")?.Value;
             if (string.IsNullOrEmpty(cultureName))
+            {
                 return result;
+            }
 
             var properties = new Dictionary<string, string>();
             var propertyNodes = doc.Nodes().OfType<XElement>().DescendantsAndSelf()
                 .Where(e => e.Descendants().Any() != true).ToList();
-                
+
             foreach (var propertyNode in propertyNodes)
             {
                 var ancestorsNodeNames = propertyNode.AncestorsAndSelf().Reverse().Select(node => node.Name.LocalName);
@@ -80,10 +90,10 @@ public static class LanguageResourceParser
         return result;
     }
 
-    public static Dictionary<string, Dictionary<string, string>> ParseResxFile(string filePath, string content)
+    internal static Dictionary<string, Dictionary<string, string>> ParseResxFile(string filePath, string content)
     {
         var result = new Dictionary<string, Dictionary<string, string>>();
-        
+
         try
         {
             var doc = XDocument.Parse(content);
@@ -94,7 +104,7 @@ public static class LanguageResourceParser
             {
                 var name = dataElement.Attribute("name")?.Value;
                 var valueElement = dataElement.Element("value");
-                
+
                 if (!string.IsNullOrEmpty(name) && valueElement != null)
                 {
                     properties[name!] = valueElement.Value;
@@ -104,7 +114,7 @@ public static class LanguageResourceParser
             // Resx文件没有内置的culture信息，使用文件名推断
             var fileName = Path.GetFileNameWithoutExtension(filePath);
             var cultureName = ExtractCultureFromFileName(fileName);
-            
+
             result[cultureName] = properties;
         }
         catch
@@ -180,7 +190,7 @@ public static class LanguageResourceParser
         return "en-US"; // 默认文化
     }
 
-    public static LanguageFileType DetectFileType(string filePath)
+    internal static LanguageFileType DetectFileType(string filePath)
     {
         var extension = Path.GetExtension(filePath).ToLowerInvariant();
         return extension switch
@@ -193,7 +203,7 @@ public static class LanguageResourceParser
     }
 }
 
-public enum LanguageFileType
+internal enum LanguageFileType
 {
     Unknown,
     Json,

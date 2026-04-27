@@ -17,6 +17,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <!-- Generates a package at build -->
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <!-- Do not include the generator as a lib dependency -->
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
@@ -24,5 +25,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="..\..\README.analysis.md" Pack="true" PackagePath="README.md" />
+    <None Include="..\..\README.analysis.zh-CN.md" Pack="true" PackagePath="README.analysis.zh-CN.md" />
   </ItemGroup>
 </Project>

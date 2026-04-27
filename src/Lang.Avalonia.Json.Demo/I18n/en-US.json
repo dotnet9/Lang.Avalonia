@@ -1,29 +1,52 @@
-﻿{
+{
   "language": "English",
   "description": "English",
   "cultureName": "en-US",
   "Localization": {
     "Main": {
       "MainView": {
-        "Title": "Implement internationalization using Json",
-        "RunningCountInfo": "Running {0} operating system, {1}",
-        "CurrentTimeFormat": "The current time is {0}",
-        "ChangeLanguage": "Switch language",
-        "Exit": "Exit the program"
-      },
-      "SettingView": {
-        "Title": "Settings",
-        "NoPrompt": "Don't prompt again"
+        "Title": "Lang.Avalonia localization workspace",
+        "Subtitle": "Switch cultures at runtime and verify formatted, fixed-culture, and module-scoped resources.",
+        "ChangeLanguage": "Language",
+        "RuntimeTitle": "Runtime context",
+        "CurrentCulture": "Current culture: {0}",
+        "CurrentTimeFormat": "Local time: {0:yyyy-MM-dd HH:mm:ss}",
+        "RunningCountInfo": "Runtime: {0}, {1}",
+        "ResourceKey": "Sample key: {0}",
+        "ProviderTitle": "Provider",
+        "ProviderDescription": "The active plugin normalizes resources behind ILangPlugin.",
+        "StorageTitle": "Resource storage",
+        "StorageDescription": "Files or compiled resources are loaded once and cached by culture.",
+        "FixedCultureTitle": "Fixed-culture preview",
+        "EnglishPreview": "English",
+        "JapanesePreview": "Japanese",
+        "SimplifiedChinesePreview": "Simplified Chinese",
+        "TraditionalChinesePreview": "Traditional Chinese",
+        "FallbackTitle": "Fallback behavior",
+        "FallbackDescription": "Missing translations return the default-culture value first, then the original key.",
+        "BindingRefresh": "Changing the culture raises CultureChanged and refreshes every I18n binding.",
+        "CultureCardTitle": "Culture",
+        "ClockCardTitle": "Clock",
+        "PlatformCardTitle": "Platform",
+        "ResourceCardTitle": "Resource key"
       }
     },
     "DevelopModule": {
-      "Title2SlugView": {
-        "Title": "Convert article title to URL slug",
-        "Convert": "Convert"
+      "ResourcePipelineView": {
+        "Title": "Resource pipeline",
+        "Description": "Language files are parsed into culture dictionaries and shared by XAML and C# callers.",
+        "FormatSupport": "JSON, XML, and RESX providers share one public API.",
+        "HotSwitch": "Culture changes are applied without recreating the window.",
+        "Fallback": "Default culture fallback keeps the UI readable when a translation is missing.",
+        "StrongKeys": "Generated constants remove handwritten resource keys from views."
       },
-      "SettingView": {
-        "Title": "Settings",
-        "MaxLength": "Maximum length"
+      "ValidationView": {
+        "Title": "Quality checks",
+        "Description": "The sample exercises formatted strings, module namespaces, fixed cultures, and runtime switching.",
+        "MissingKeyPolicy": "Unknown keys remain visible as the key text for fast diagnostics.",
+        "ThreadCulture": "CurrentCulture and CurrentUICulture are synchronized for the active thread and new threads.",
+        "EmbeddedResources": "Plugins can load resources from additional assemblies.",
+        "AnalyzerSupport": "The Analysis package can generate constants during compilation."
       }
     }
   }

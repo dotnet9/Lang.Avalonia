@@ -1,19 +1,19 @@
 # Lang.Avalonia.Xml
 
-[简体中文](README.xml.zh-CN.md) | English
+简体中文 | [English](README.xml.md)
 
-XML resource provider for Lang.Avalonia. It scans XML language files from the application output directory and can also load embedded XML resources from additional assemblies.
+Lang.Avalonia 的 XML 资源提供器。它会扫描应用输出目录中的 XML 语言文件，也可以从额外程序集加载嵌入的 XML 资源。
 
-## Install
+## 安装
 
 ```shell
 dotnet add package Lang.Avalonia
 dotnet add package Lang.Avalonia.Xml
 ```
 
-## Resource Files
+## 资源文件
 
-Use one file per culture and copy the files to the output directory:
+每个文化一个文件，并复制到输出目录：
 
 ```text
 I18n/en-US.xml
@@ -28,7 +28,7 @@ I18n/ja-JP.xml
 </ItemGroup>
 ```
 
-Each XML file must include `language`, `description`, and `cultureName` metadata on the root node:
+每个 XML 文件都必须在根节点上包含 `language`、`description`、`cultureName` 元数据：
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -42,9 +42,9 @@ Each XML file must include `language`, `description`, and `cultureName` metadata
 </Localization>
 ```
 
-Leaf-node paths become resource keys. The example above produces `Localization.Main.MainView.Title`.
+叶子节点路径会成为资源 Key。上面的示例会生成 `Localization.Main.MainView.Title`。
 
-## Initialize
+## 初始化
 
 ```csharp
 using Lang.Avalonia;
@@ -54,9 +54,9 @@ using System.Globalization;
 I18nManager.Instance.Register(new XmlLangPlugin(), new CultureInfo("en-US"), out var error);
 ```
 
-`XmlLangPlugin.LoadDiagnostics` contains skipped-file diagnostics if invalid XML files are found.
+如果发现无效 XML 文件，`XmlLangPlugin.LoadDiagnostics` 会包含被跳过文件的诊断信息。
 
-## Use In XAML
+## 在 XAML 中使用
 
 ```xml
 xmlns:c="https://codewf.com"
@@ -66,7 +66,7 @@ xmlns:mainLangs="clr-namespace:Localization.Main"
 <SelectableTextBlock Text="{c:I18n {x:Static mainLangs:MainView.Title}, CultureName=zh-CN}" />
 ```
 
-## Use In C#
+## 在 C# 中使用
 
 ```csharp
 var title = I18nManager.Instance.GetResource(Localization.Main.MainView.Title);

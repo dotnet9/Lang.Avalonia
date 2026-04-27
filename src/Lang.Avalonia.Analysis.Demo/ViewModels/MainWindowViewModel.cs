@@ -1,35 +1,48 @@
+using Avalonia.Threading;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace Lang.Avalonia.Analysis.Demo.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
+    private readonly DispatcherTimer _clockTimer;
+    private DateTime _currentTime;
+    private LocalizationLanguage? _selectLanguage;
+
     public MainWindowViewModel()
     {
         Languages = I18nManager.Instance.GetLanguages() ?? [];
         SelectLanguage = Languages.FirstOrDefault(l => l.CultureName == I18nManager.Instance.Culture?.Name);
 
-        var titleCurrentCulture = I18nManager.Instance.GetResource(Localization.Main.MainView.Title);
-        var titleZhCN = I18nManager.Instance.GetResource(Localization.Main.MainView.Title, "zh-CN");
-        var titleEnUS = I18nManager.Instance.GetResource(Localization.Main.MainView.Title, "en-US");
-
-        Task.Run(async () =>
-        {
-            while (true)
-            {
-                CurrentTime = DateTime.Now;
-                await Task.Delay(TimeSpan.FromSeconds(1));
-            }
-        });
+        CurrentTime = DateTime.Now;
+        _clockTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        _clockTimer.Tick += (_, _) => CurrentTime = DateTime.Now;
+        _clockTimer.Start();
     }
 
     public List<LocalizationLanguage> Languages { get; }
-    private LocalizationLanguage? _selectLanguage;
+
+    public string ProviderName { get; } = "JSON + Source Generator";
+
+    public string ResourceStorage { get; } = "I18n/*.json registered as AdditionalFiles";
+
+    public string ResourcePipeline { get; } = "AdditionalFiles -> Language.g.cs -> runtime JSON cache";
+
+    public string SampleKey { get; } = Localization.Main.MainView.Title;
+
+    public string PlatformName { get; } = RuntimeInformation.OSDescription.Trim();
+
+    public string ProcessArchitecture { get; } = RuntimeInformation.ProcessArchitecture.ToString();
+
+    public string CurrentCultureName => I18nManager.Instance.Culture?.Name ?? CultureInfo.CurrentUICulture.Name;
+
+    public string SelectedLanguageDescription =>
+        SelectLanguage == null ? string.Empty : $"{SelectLanguage.Language} / {SelectLanguage.CultureName}";
 
     public LocalizationLanguage? SelectLanguage
     {
@@ -37,14 +50,16 @@ public class MainWindowViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref _selectLanguage, value);
-            if (value != null)
+            if (value == null)
             {
-                I18nManager.Instance.Culture = new CultureInfo(value.CultureName);
+                return;
             }
+
+            I18nManager.Instance.Culture = new CultureInfo(value.CultureName);
+            this.RaisePropertyChanged(nameof(CurrentCultureName));
+            this.RaisePropertyChanged(nameof(SelectedLanguageDescription));
         }
     }
-
-    private DateTime _currentTime;
 
     public DateTime CurrentTime
     {

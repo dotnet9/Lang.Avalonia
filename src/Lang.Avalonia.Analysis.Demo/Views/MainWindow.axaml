@@ -1,67 +1,116 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:Lang.Avalonia.Analysis.Demo.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:c="https://codewf.com"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="Lang.Avalonia.Analysis.Demo.Views.MainWindow"
-        xmlns:globalization="clr-namespace:System.Globalization;assembly=mscorlib"
-        xmlns:mainLangs="clr-namespace:Localization.Main"
-        x:DataType="vm:MainWindowViewModel"
-        xmlns:u="https://irihi.tech/ursa"
-        xmlns:developModuleLanguage="clr-namespace:Localization.DevelopModule"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="Lang.Avalonia.Analysis.Demo">
-
+<Window
+    x:Class="Lang.Avalonia.Analysis.Demo.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="https://codewf.com"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:developModuleLanguage="clr-namespace:Localization.DevelopModule"
+    xmlns:mainLangs="clr-namespace:Localization.Main"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:Lang.Avalonia.Analysis.Demo.ViewModels"
+    Title="{c:I18n {x:Static mainLangs:MainView.Title}}"
+    Width="1040"
+    Height="760"
+    MinWidth="860"
+    MinHeight="640"
+    Icon="/Assets/avalonia-logo.ico"
+    x:DataType="vm:MainWindowViewModel"
+    mc:Ignorable="d">
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto Auto Auto *">
-        <StackPanel Orientation="Horizontal">
-            <SelectableTextBlock Text="{c:I18n {x:Static mainLangs:MainView.ChangeLanguage}}"
-                                 VerticalAlignment="Center" />
-            <ComboBox ItemsSource="{Binding Languages}"
-                      SelectedItem="{Binding SelectLanguage}"
-                      DisplayMemberBinding="{Binding Language}"
-                      Margin="20 0" />
-        </StackPanel>
-        <TabControl Grid.Row="1" TabStripPlacement="Left" Margin="0 20 0 0">
-            <TabItem Header="{c:I18n {x:Static mainLangs:MainView.Title}}">
+    <ScrollViewer>
+        <Grid Margin="32" RowDefinitions="Auto,Auto,*">
+            <Grid ColumnDefinitions="*,280">
                 <StackPanel>
-                    <SelectableTextBlock
-                        Text="{c:I18n {x:Static mainLangs:MainView.RunningCountInfo}, Windows 11, x64}" />
-                    <SelectableTextBlock
-                        Text="{c:I18n {x:Static mainLangs:MainView.CurrentTimeFormat}, {Binding CurrentTime}}" />
-                    <SelectableTextBlock Text="{c:I18n {x:Static mainLangs:MainView.Exit}}" />
-                    <SelectableTextBlock Text="{c:I18n {x:Static mainLangs:SettingView.Title}}" />
+                    <TextBlock FontSize="28" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.Title}}" TextWrapping="Wrap" />
+                    <TextBlock Margin="0,8,0,0" Foreground="#64748B" Text="{c:I18n {x:Static mainLangs:MainView.Subtitle}}" TextWrapping="Wrap" />
                 </StackPanel>
-            </TabItem>
-            <TabItem Header="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}}">
-                <StackPanel>
-                    <SelectableTextBlock Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}}" />
-                    <SelectableTextBlock Text="{c:I18n {x:Static developModuleLanguage:SettingView.MaxLength}}" />
-                    <SelectableTextBlock Text="{c:I18n {x:Static developModuleLanguage:SettingView.Title}}" />
-                    <SelectableTextBlock Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Convert}}" />
+                <StackPanel Grid.Column="1" Margin="24,0,0,0">
+                    <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#64748B" Text="{c:I18n {x:Static mainLangs:MainView.ChangeLanguage}}" />
+                    <ComboBox Margin="0,8,0,0" HorizontalAlignment="Stretch" DisplayMemberBinding="{Binding Language}" ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectLanguage}" />
+                    <TextBlock Margin="0,8,0,0" Foreground="#64748B" Text="{Binding SelectedLanguageDescription}" TextWrapping="Wrap" />
                 </StackPanel>
-            </TabItem>
-            <TabItem Header="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}}">
-                <u:Form LabelPosition="Left" LabelWidth="*">
-                    <SelectableTextBlock u:FormItem.Label="Current Thread"
-                                         Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}}" />
-                    <SelectableTextBlock u:FormItem.Label="en-US"
-                                         Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}, CultureName=en-US}" />
-                    <SelectableTextBlock u:FormItem.Label="ja-JP"
-                                         Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}, CultureName=ja-JP}" />
-                    <SelectableTextBlock u:FormItem.Label="zh-CN"
-                                         Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}, CultureName=zh-CN}" />
-                    <SelectableTextBlock u:FormItem.Label="zh-Hant"
-                                         Text="{c:I18n {x:Static developModuleLanguage:Title2SlugView.Title}, CultureName=zh-Hant}" />
-                </u:Form>
-            </TabItem>
-        </TabControl>
-    </Grid>
+            </Grid>
+
+            <UniformGrid Grid.Row="1" Margin="-6,24,-6,0" Columns="4">
+                <Border Margin="6" Padding="18" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
+                    <StackPanel>
+                        <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#64748B" Text="{c:I18n {x:Static mainLangs:MainView.CultureCardTitle}}" />
+                        <TextBlock Margin="0,10,0,0" FontSize="18" FontWeight="SemiBold" Text="{Binding CurrentCultureName}" />
+                        <TextBlock Margin="0,8,0,0" Text="{c:I18n {x:Static mainLangs:MainView.CurrentCulture}, {Binding CurrentCultureName}}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+                <Border Margin="6" Padding="18" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
+                    <StackPanel>
+                        <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#64748B" Text="{c:I18n {x:Static mainLangs:MainView.ClockCardTitle}}" />
+                        <TextBlock Margin="0,10,0,0" FontSize="18" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.CurrentTimeFormat}, {Binding CurrentTime}}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+                <Border Margin="6" Padding="18" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
+                    <StackPanel>
+                        <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#64748B" Text="{c:I18n {x:Static mainLangs:MainView.PlatformCardTitle}}" />
+                        <TextBlock Margin="0,10,0,0" Text="{c:I18n {x:Static mainLangs:MainView.RunningCountInfo}, {Binding PlatformName}, {Binding ProcessArchitecture}}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+                <Border Margin="6" Padding="18" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
+                    <StackPanel>
+                        <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#64748B" Text="{c:I18n {x:Static mainLangs:MainView.ResourceCardTitle}}" />
+                        <TextBlock Margin="0,10,0,0" Text="{c:I18n {x:Static mainLangs:MainView.ResourceKey}, {Binding SampleKey}}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <TabControl Grid.Row="2" Margin="0,24,0,0">
+                <TabItem Header="{c:I18n {x:Static mainLangs:MainView.RuntimeTitle}}">
+                    <Grid Margin="0,20,0,0" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
+                        <Border Margin="0,0,12,12" Padding="20" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
+                            <StackPanel>
+                                <TextBlock FontSize="18" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.ProviderTitle}}" />
+                                <TextBlock Margin="0,10,0,0" FontSize="16" FontWeight="SemiBold" Text="{Binding ProviderName}" />
+                                <TextBlock Margin="0,8,0,0" Foreground="#475569" Text="{c:I18n {x:Static mainLangs:MainView.ProviderDescription}}" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" Margin="12,0,0,12" Padding="20" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
+                            <StackPanel>
+                                <TextBlock FontSize="18" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.StorageTitle}}" />
+                                <TextBlock Margin="0,10,0,0" FontSize="16" FontWeight="SemiBold" Text="{Binding ResourceStorage}" TextWrapping="Wrap" />
+                                <TextBlock Margin="0,6,0,0" Foreground="#64748B" Text="{Binding ResourcePipeline}" TextWrapping="Wrap" />
+                                <TextBlock Margin="0,8,0,0" Foreground="#475569" Text="{c:I18n {x:Static mainLangs:MainView.StorageDescription}}" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Row="1" Grid.ColumnSpan="2" Padding="20" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
+                            <StackPanel>
+                                <TextBlock FontSize="18" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.FallbackTitle}}" />
+                                <TextBlock Margin="0,10,0,0" Foreground="#475569" Text="{c:I18n {x:Static mainLangs:MainView.FallbackDescription}}" TextWrapping="Wrap" />
+                                <TextBlock Margin="0,8,0,0" Foreground="#475569" Text="{c:I18n {x:Static mainLangs:MainView.BindingRefresh}}" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.Title}}">
+                    <Grid Margin="0,20,0,0" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto">
+                        <TextBlock Grid.ColumnSpan="2" Margin="0,0,0,18" Foreground="#475569" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.Description}}" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="1" Margin="0,0,16,12" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.FormatSupport}}" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="16,0,0,12" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.HotSwitch}}" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="2" Margin="0,0,16,0" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.Fallback}}" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="16,0,0,0" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.StrongKeys}}" TextWrapping="Wrap" />
+                    </Grid>
+                </TabItem>
+                <TabItem Header="{c:I18n {x:Static mainLangs:MainView.FixedCultureTitle}}">
+                    <Grid Margin="0,20,0,0" ColumnDefinitions="190,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                        <TextBlock FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.EnglishPreview}}" />
+                        <TextBlock Grid.Column="1" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Title}, CultureName=en-US}" />
+                        <TextBlock Grid.Row="1" Margin="0,12,0,0" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.JapanesePreview}}" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,12,0,0" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Title}, CultureName=ja-JP}" />
+                        <TextBlock Grid.Row="2" Margin="0,12,0,0" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.SimplifiedChinesePreview}}" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,12,0,0" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Title}, CultureName=zh-CN}" />
+                        <TextBlock Grid.Row="3" Margin="0,12,0,0" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.TraditionalChinesePreview}}" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Margin="0,12,0,0" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Title}, CultureName=zh-Hant}" />
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </ScrollViewer>
 </Window>

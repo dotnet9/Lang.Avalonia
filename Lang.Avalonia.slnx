@@ -7,10 +7,32 @@
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="Directory.Build.props" />
+    <File Path="Lang.Avalonia.md" />
+    <File Path="Lang.Avalonia.en-US.md" />
+    <File Path="README.analysis.md" />
+    <File Path="README.analysis.zh-CN.md" />
     <File Path="README.json.md" />
+    <File Path="README.json.zh-CN.md" />
     <File Path="README.md" />
+    <File Path="README.zh-CN.md" />
     <File Path="README.resx.md" />
+    <File Path="README.resx.zh-CN.md" />
     <File Path="README.xml.md" />
+    <File Path="README.xml.zh-CN.md" />
+  </Folder>
+  <Folder Name="/Docs/">
+    <File Path="docs/design.md" />
+    <File Path="docs/design.en-US.md" />
+    <File Path="docs/assets/architecture.svg" />
+    <File Path="docs/assets/plugin-contract.svg" />
+    <File Path="docs/assets/resource-resolution.svg" />
+    <File Path="docs/assets/source-generation.svg" />
+    <File Path="docs/assets/usage-flow.svg" />
+    <File Path="docs/assets/en-US/architecture.svg" />
+    <File Path="docs/assets/en-US/plugin-contract.svg" />
+    <File Path="docs/assets/en-US/resource-resolution.svg" />
+    <File Path="docs/assets/en-US/source-generation.svg" />
+    <File Path="docs/assets/en-US/usage-flow.svg" />
   </Folder>
   <Project Path="src/Lang.Avalonia.Analysis/Lang.Avalonia.Analysis.csproj" />
   <Project Path="src/Lang.Avalonia.Json/Lang.Avalonia.Json.csproj" />

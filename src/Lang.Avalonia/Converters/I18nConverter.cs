@@ -9,8 +9,12 @@ using System.Linq;
 
 namespace Lang.Avalonia.Converters;
 
+/// <summary>
+/// 多值绑定转换器：根据当前文化、资源 Key 和格式化参数解析最终文本。
+/// </summary>
 public class I18nConverter(I18nBinding owner) : IMultiValueConverter
 {
+    /// <inheritdoc />
     public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
         if (values.Count < 2 || values[0] is not CultureInfo || IsUnsetValue(values[1]))

@@ -1,110 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -117,37 +12,112 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Localization.Main.MainView.RunningCountInfo" xml:space="preserve">
-    <value>正在运行 {0} 操作系统,{1}</value>
-  </data>
   <data name="Localization.Main.MainView.Title" xml:space="preserve">
-    <value>使用Resx实现国际化</value>
+    <value>Lang.Avalonia 本地化工作台</value>
   </data>
-  <data name="Localization.Main.MainView.CurrentTimeFormat" xml:space="preserve">
-    <value>当前时间是 {0}</value>
+  <data name="Localization.Main.MainView.Subtitle" xml:space="preserve">
+    <value>运行时切换语言，并验证格式化、固定文化和模块化资源。</value>
   </data>
   <data name="Localization.Main.MainView.ChangeLanguage" xml:space="preserve">
-    <value>切换语言</value>
+    <value>语言</value>
   </data>
-  <data name="Localization.Main.MainView.Exit" xml:space="preserve">
-    <value>退出程序</value>
+  <data name="Localization.Main.MainView.RuntimeTitle" xml:space="preserve">
+    <value>运行时上下文</value>
   </data>
-  <data name="Localization.Main.SettingView.Title" xml:space="preserve">
-    <value>设置</value>
+  <data name="Localization.Main.MainView.CurrentCulture" xml:space="preserve">
+    <value>当前文化：{0}</value>
   </data>
-  <data name="Localization.DevelopModule.SettingView.Title" xml:space="preserve">
-    <value>设置</value>
+  <data name="Localization.Main.MainView.CurrentTimeFormat" xml:space="preserve">
+    <value>本地时间：{0:yyyy-MM-dd HH:mm:ss}</value>
   </data>
-  <data name="Localization.DevelopModule.SettingView.MaxLength" xml:space="preserve">
-    <value>最大长度</value>
+  <data name="Localization.Main.MainView.RunningCountInfo" xml:space="preserve">
+    <value>运行环境：{0}，{1}</value>
   </data>
-  <data name="Localization.DevelopModule.Title2SlugView.Convert" xml:space="preserve">
-    <value>转换</value>
+  <data name="Localization.Main.MainView.ResourceKey" xml:space="preserve">
+    <value>示例 Key：{0}</value>
   </data>
-  <data name="Localization.DevelopModule.Title2SlugView.Title" xml:space="preserve">
-    <value>文章标题转URL别名</value>
+  <data name="Localization.Main.MainView.ProviderTitle" xml:space="preserve">
+    <value>资源提供器</value>
   </data>
-  <data name="Localization.Main.SettingView.NoPrompt" xml:space="preserve">
-    <value>不再提示</value>
+  <data name="Localization.Main.MainView.ProviderDescription" xml:space="preserve">
+    <value>当前插件通过 ILangPlugin 统一归一化不同来源的语言资源。</value>
+  </data>
+  <data name="Localization.Main.MainView.StorageTitle" xml:space="preserve">
+    <value>资源存储</value>
+  </data>
+  <data name="Localization.Main.MainView.StorageDescription" xml:space="preserve">
+    <value>文件或编译资源会按文化加载并缓存在内存中。</value>
+  </data>
+  <data name="Localization.Main.MainView.FixedCultureTitle" xml:space="preserve">
+    <value>固定文化预览</value>
+  </data>
+  <data name="Localization.Main.MainView.EnglishPreview" xml:space="preserve">
+    <value>英语</value>
+  </data>
+  <data name="Localization.Main.MainView.JapanesePreview" xml:space="preserve">
+    <value>日语</value>
+  </data>
+  <data name="Localization.Main.MainView.SimplifiedChinesePreview" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="Localization.Main.MainView.TraditionalChinesePreview" xml:space="preserve">
+    <value>繁体中文</value>
+  </data>
+  <data name="Localization.Main.MainView.FallbackTitle" xml:space="preserve">
+    <value>回退策略</value>
+  </data>
+  <data name="Localization.Main.MainView.FallbackDescription" xml:space="preserve">
+    <value>缺失翻译会先返回默认文化文本，仍未命中时返回原始 Key。</value>
+  </data>
+  <data name="Localization.Main.MainView.BindingRefresh" xml:space="preserve">
+    <value>切换文化会触发 CultureChanged，并刷新所有 I18n 绑定。</value>
+  </data>
+  <data name="Localization.Main.MainView.CultureCardTitle" xml:space="preserve">
+    <value>文化</value>
+  </data>
+  <data name="Localization.Main.MainView.ClockCardTitle" xml:space="preserve">
+    <value>时钟</value>
+  </data>
+  <data name="Localization.Main.MainView.PlatformCardTitle" xml:space="preserve">
+    <value>平台</value>
+  </data>
+  <data name="Localization.Main.MainView.ResourceCardTitle" xml:space="preserve">
+    <value>资源 Key</value>
+  </data>
+  <data name="Localization.DevelopModule.ResourcePipelineView.Title" xml:space="preserve">
+    <value>资源流水线</value>
+  </data>
+  <data name="Localization.DevelopModule.ResourcePipelineView.Description" xml:space="preserve">
+    <value>语言文件会被解析为按文化分组的字典，并同时服务于 XAML 和 C# 调用。</value>
+  </data>
+  <data name="Localization.DevelopModule.ResourcePipelineView.FormatSupport" xml:space="preserve">
+    <value>JSON、XML 和 RESX 提供器共享同一个公开 API。</value>
+  </data>
+  <data name="Localization.DevelopModule.ResourcePipelineView.HotSwitch" xml:space="preserve">
+    <value>文化切换无需重建窗口即可生效。</value>
+  </data>
+  <data name="Localization.DevelopModule.ResourcePipelineView.Fallback" xml:space="preserve">
+    <value>默认文化回退能在缺少翻译时保持界面可读。</value>
+  </data>
+  <data name="Localization.DevelopModule.ResourcePipelineView.StrongKeys" xml:space="preserve">
+    <value>生成的常量让视图不再手写资源 Key。</value>
+  </data>
+  <data name="Localization.DevelopModule.ValidationView.Title" xml:space="preserve">
+    <value>质量检查</value>
+  </data>
+  <data name="Localization.DevelopModule.ValidationView.Description" xml:space="preserve">
+    <value>示例覆盖格式化字符串、模块命名空间、固定文化和运行时切换。</value>
+  </data>
+  <data name="Localization.DevelopModule.ValidationView.MissingKeyPolicy" xml:space="preserve">
+    <value>未知 Key 会直接显示为 Key 文本，便于快速定位问题。</value>
+  </data>
+  <data name="Localization.DevelopModule.ValidationView.ThreadCulture" xml:space="preserve">
+    <value>CurrentCulture 与 CurrentUICulture 会同步到当前线程和新线程。</value>
+  </data>
+  <data name="Localization.DevelopModule.ValidationView.EmbeddedResources" xml:space="preserve">
+    <value>插件可以从额外程序集中加载语言资源。</value>
+  </data>
+  <data name="Localization.DevelopModule.ValidationView.AnalyzerSupport" xml:space="preserve">
+    <value>Analysis 包可在编译期生成强类型常量。</value>
   </data>
 </root>
