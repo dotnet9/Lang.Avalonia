@@ -8,7 +8,10 @@
   <Folder Name="/Solution Items/">
     <File Path="Directory.Build.props" />
     <File Path="Lang.Avalonia.md" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
     <File Path="Lang.Avalonia.en-US.md" />
+    <File Path="pack.bat" />
     <File Path="README.analysis.md" />
     <File Path="README.analysis.zh-CN.md" />
     <File Path="README.json.md" />

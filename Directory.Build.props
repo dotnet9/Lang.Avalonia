@@ -4,9 +4,7 @@
 		<Authors>沙漠尽头的狼</Authors>
 		<Company>CodeWF</Company>
 		<Copyright>Copyright (c) 2025 https://codewf.com</Copyright>
-		<Version>11.3.13.0</Version>
-		<AvaloniaVersion>11.3.14</AvaloniaVersion>
-		<CodeAnalysisVersion>5.0.0-1.25277.114</CodeAnalysisVersion>
+		<Version>12.0.2.0</Version>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<LangVersion>preview</LangVersion>
@@ -16,6 +14,8 @@
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 		<Nullable>enable</Nullable>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+		<CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 	</PropertyGroup>
 
 </Project>

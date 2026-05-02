@@ -26,4 +26,24 @@ public class LocalizationLanguage
     /// 语言资源表，Key 为完整资源路径，Value 为翻译文本。
     /// </summary>
     public Dictionary<string, string> Languages { get; } = new();
+
+    /// <summary>
+    /// 供下拉框或列表直接展示的主标题。
+    /// </summary>
+    public string DisplayName => string.IsNullOrWhiteSpace(Language) ? CultureName : Language;
+
+    /// <summary>
+    /// 供界面展示的文化标识。
+    /// </summary>
+    public string DisplayTag => CultureName;
+
+    /// <summary>
+    /// 供界面展示的补充说明。
+    /// </summary>
+    public string DetailText => string.IsNullOrWhiteSpace(Description) ? DisplayName : Description;
+
+    /// <inheritdoc />
+    public override string ToString() => string.IsNullOrWhiteSpace(CultureName)
+        ? DisplayName
+        : $"{DisplayName} ({CultureName})";
 }

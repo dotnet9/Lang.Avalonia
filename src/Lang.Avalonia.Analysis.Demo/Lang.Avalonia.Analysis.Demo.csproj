@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net9.0</TargetFramework>
+	    <TargetFrameworks>net11.0;net11.0-windows</TargetFrameworks>
         <Nullable>enable</Nullable>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -13,19 +13,18 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
-        <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
-        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
-        <PackageReference Include="Semi.Avalonia" Version="11.3.7" />
-        <PackageReference Include="Irihi.Ursa" Version="1.13.0" />
-        <PackageReference Include="Irihi.Ursa.PrismExtension" Version="9.0.1" />
-        <PackageReference Include="Irihi.Ursa.Themes.Semi" Version="1.13.0" />
-        <PackageReference Include="Prism.Avalonia" Version="9.0.537.11300-pre" />
-        <PackageReference Include="Prism.DryIoc.Avalonia" Version="9.0.537.11300-pre" />
-        <PackageReference Include="ReactiveUI.Avalonia" Version="11.3.8" />
-        <PackageReference Include="System.Memory" Version="4.6.3" />
-        <PackageReference Include="YY-Thunks" Version="1.2.1-Beta.6" />
+        <PackageReference Include="Avalonia" />
+        <PackageReference Include="Avalonia.Desktop" />
+        <!--Condition below is needed to remove diagnostics support package from build output in Release configuration.-->
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="AvaloniaUI.DiagnosticsSupport" />
+        <PackageReference Include="Semi.Avalonia" />
+        <PackageReference Include="Irihi.Ursa" />
+        <PackageReference Include="Irihi.Ursa.PrismExtension" />
+        <PackageReference Include="Irihi.Ursa.Themes.Semi" />
+        <PackageReference Include="Prism.Avalonia" />
+        <PackageReference Include="Prism.DryIoc.Avalonia" />
+        <PackageReference Include="ReactiveUI.Avalonia" />
+        <PackageReference Include="YY-Thunks" />
     </ItemGroup>
 
     <ItemGroup>

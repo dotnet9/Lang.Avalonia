@@ -16,8 +16,9 @@ public class MainViewModel : ViewModelBase
 
     public MainViewModel()
     {
-        Languages = I18nManager.Instance.GetLanguages() ?? [];
-        SelectLanguage = Languages.FirstOrDefault(l => l.CultureName == I18nManager.Instance.Culture?.Name);
+        Languages = CreateLanguages(I18nManager.Instance.GetLanguages()?.Select(language => language.CultureName));
+        SelectLanguage = Languages.FirstOrDefault(l => l.CultureName == I18nManager.Instance.Culture?.Name)
+            ?? Languages.FirstOrDefault();
 
         CurrentTime = DateTime.Now;
         _clockTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
@@ -27,11 +28,11 @@ public class MainViewModel : ViewModelBase
 
     public List<LocalizationLanguage> Languages { get; }
 
-    public string ProviderName { get; } = "XML";
+    public string ProviderName { get; } = "Runtime XML Files";
 
-    public string ResourceStorage { get; } = "I18n/*.xml copied to the output directory";
+    public string ResourceStorage { get; } = "Loose XML language packs deployed with the application.";
 
-    public string ResourcePipeline { get; } = "Directory scan -> XML parse -> culture cache";
+    public string ResourcePipeline { get; } = "File scan -> XML parse -> key dictionary -> culture fallback.";
 
     public string SampleKey { get; } = Localization.Main.MainView.Title;
 
@@ -42,7 +43,7 @@ public class MainViewModel : ViewModelBase
     public string CurrentCultureName => I18nManager.Instance.Culture?.Name ?? CultureInfo.CurrentUICulture.Name;
 
     public string SelectedLanguageDescription =>
-        SelectLanguage == null ? string.Empty : $"{SelectLanguage.Language} / {SelectLanguage.CultureName}";
+        SelectLanguage == null ? string.Empty : $"{SelectLanguage.CultureName} · {SelectLanguage.DetailText}";
 
     public LocalizationLanguage? SelectLanguage
     {
@@ -66,4 +67,47 @@ public class MainViewModel : ViewModelBase
         get => _currentTime;
         set => this.RaiseAndSetIfChanged(ref _currentTime, value);
     }
+
+    private static List<LocalizationLanguage> CreateLanguages(IEnumerable<string>? cultureNames)
+    {
+        return (cultureNames ?? [])
+            .Where(cultureName => !string.IsNullOrWhiteSpace(cultureName))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Select(CreateLanguage)
+            .OrderBy(GetSortOrder)
+            .ThenBy(language => language.DisplayName, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private static LocalizationLanguage CreateLanguage(string cultureName)
+    {
+        try
+        {
+            var culture = CultureInfo.GetCultureInfo(cultureName);
+            return new LocalizationLanguage
+            {
+                CultureName = culture.Name,
+                Language = culture.EnglishName,
+                Description = culture.NativeName
+            };
+        }
+        catch (CultureNotFoundException)
+        {
+            return new LocalizationLanguage
+            {
+                CultureName = cultureName,
+                Language = cultureName,
+                Description = cultureName
+            };
+        }
+    }
+
+    private static int GetSortOrder(LocalizationLanguage language) => language.CultureName switch
+    {
+        "zh-CN" => 0,
+        "zh-Hant" => 1,
+        "en-US" => 2,
+        "ja-JP" => 3,
+        _ => 4
+    };
 }

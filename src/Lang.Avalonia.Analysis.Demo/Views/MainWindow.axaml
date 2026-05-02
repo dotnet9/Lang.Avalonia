@@ -5,6 +5,7 @@
     xmlns:c="https://codewf.com"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:developModuleLanguage="clr-namespace:Localization.DevelopModule"
+    xmlns:lang="clr-namespace:Lang.Avalonia;assembly=Lang.Avalonia"
     xmlns:mainLangs="clr-namespace:Localization.Main"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:Lang.Avalonia.Analysis.Demo.ViewModels"
@@ -14,103 +15,352 @@
     MinWidth="860"
     MinHeight="640"
     Icon="/Assets/avalonia-logo.ico"
+    Background="#FFF4F7FB"
     x:DataType="vm:MainWindowViewModel"
     mc:Ignorable="d">
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <ScrollViewer>
-        <Grid Margin="32" RowDefinitions="Auto,Auto,*">
-            <Grid ColumnDefinitions="*,280">
-                <StackPanel>
-                    <TextBlock FontSize="28" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.Title}}" TextWrapping="Wrap" />
-                    <TextBlock Margin="0,8,0,0" Foreground="#64748B" Text="{c:I18n {x:Static mainLangs:MainView.Subtitle}}" TextWrapping="Wrap" />
-                </StackPanel>
-                <StackPanel Grid.Column="1" Margin="24,0,0,0">
-                    <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#64748B" Text="{c:I18n {x:Static mainLangs:MainView.ChangeLanguage}}" />
-                    <ComboBox Margin="0,8,0,0" HorizontalAlignment="Stretch" DisplayMemberBinding="{Binding Language}" ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectLanguage}" />
-                    <TextBlock Margin="0,8,0,0" Foreground="#64748B" Text="{Binding SelectedLanguageDescription}" TextWrapping="Wrap" />
-                </StackPanel>
+    <Window.Resources>
+        <DataTemplate x:Key="LanguageOptionTemplate" x:DataType="lang:LocalizationLanguage">
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                <TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding DisplayName}" />
+                <Border
+                    Grid.Column="1"
+                    Padding="8,3"
+                    Background="#FFF8FAFC"
+                    BorderBrush="#FFD7E2F0"
+                    BorderThickness="1"
+                    CornerRadius="999">
+                    <TextBlock FontSize="11" FontWeight="SemiBold" Foreground="#475569" Text="{Binding DisplayTag}" />
+                </Border>
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Margin="0,6,0,0"
+                    FontSize="12"
+                    Foreground="#64748B"
+                    Text="{Binding DetailText}"
+                    TextWrapping="Wrap" />
             </Grid>
+        </DataTemplate>
 
-            <UniformGrid Grid.Row="1" Margin="-6,24,-6,0" Columns="4">
-                <Border Margin="6" Padding="18" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
-                    <StackPanel>
-                        <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#64748B" Text="{c:I18n {x:Static mainLangs:MainView.CultureCardTitle}}" />
-                        <TextBlock Margin="0,10,0,0" FontSize="18" FontWeight="SemiBold" Text="{Binding CurrentCultureName}" />
-                        <TextBlock Margin="0,8,0,0" Text="{c:I18n {x:Static mainLangs:MainView.CurrentCulture}, {Binding CurrentCultureName}}" TextWrapping="Wrap" />
+        <DataTemplate x:Key="LanguageSelectionTemplate" x:DataType="lang:LocalizationLanguage">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock FontWeight="SemiBold" Text="{Binding DisplayName}" />
+                <TextBlock Foreground="#64748B" Text="{Binding DisplayTag}" />
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Window.Styles>
+        <Style Selector="Border.hero">
+            <Setter Property="Padding" Value="28" />
+            <Setter Property="CornerRadius" Value="24" />
+            <Setter Property="BorderBrush" Value="#FFE2E8F0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#FFFFFBF2" Offset="0" />
+                        <GradientStop Color="#FFF4F7FF" Offset="0.58" />
+                        <GradientStop Color="#FFF7FBFF" Offset="1" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style Selector="Border.surfaceCard">
+            <Setter Property="Padding" Value="20" />
+            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="BorderBrush" Value="#FFD9E2EC" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="#FFFFFFFF" />
+        </Style>
+
+        <Style Selector="Border.miniCard">
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="BorderBrush" Value="#FFE2E8F0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="#FFFBFCFE" />
+        </Style>
+
+        <Style Selector="Border.previewRow">
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="BorderBrush" Value="#FFE2E8F0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="#FFFFFFFF" />
+        </Style>
+
+        <Style Selector="TextBlock.eyebrow">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#0F766E" />
+        </Style>
+
+        <Style Selector="TextBlock.sectionTitle">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#0F172A" />
+        </Style>
+
+        <Style Selector="TextBlock.muted">
+            <Setter Property="Foreground" Value="#475569" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+
+        <Style Selector="TextBlock.metricValue">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#0F172A" />
+        </Style>
+
+        <Style Selector="ComboBox.languagePicker">
+            <Setter Property="MinHeight" Value="48" />
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="MaxDropDownHeight" Value="320" />
+        </Style>
+    </Window.Styles>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="28" Spacing="24">
+            <Border Classes="hero">
+                <Grid ColumnDefinitions="1.7*,1.05*" ColumnSpacing="24">
+                    <StackPanel Spacing="14">
+                        <Border
+                            HorizontalAlignment="Left"
+                            Padding="10,4"
+                            Background="#FFFDE68A"
+                            BorderBrush="#FFFCD34D"
+                            BorderThickness="1"
+                            CornerRadius="999">
+                            <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#92400E" Text="{Binding ProviderName}" />
+                        </Border>
+
+                        <TextBlock
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Foreground="#0F172A"
+                            Text="{c:I18n {x:Static mainLangs:MainView.Title}}"
+                            TextWrapping="Wrap" />
+
+                        <TextBlock
+                            Classes="muted"
+                            FontSize="15"
+                            Text="{c:I18n {x:Static mainLangs:MainView.Subtitle}}" />
+
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border
+                                Padding="10,6"
+                                Background="#FFFFFFFF"
+                                BorderBrush="#FFD7E2F0"
+                                BorderThickness="1"
+                                CornerRadius="999">
+                                <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#334155" Text="{Binding CurrentCultureName}" />
+                            </Border>
+                            <Border
+                                Padding="10,6"
+                                Background="#FFFFFFFF"
+                                BorderBrush="#FFD7E2F0"
+                                BorderThickness="1"
+                                CornerRadius="999">
+                                <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#334155" Text="{Binding SampleKey}" />
+                            </Border>
+                        </StackPanel>
+
+                        <TextBlock Classes="muted" Text="{Binding ResourceStorage}" />
+                    </StackPanel>
+
+                    <Border Grid.Column="1" Classes="surfaceCard">
+                        <StackPanel Spacing="12">
+                            <TextBlock Classes="eyebrow" Text="{c:I18n {x:Static mainLangs:MainView.ChangeLanguage}}" />
+
+                            <ComboBox
+                                Classes="languagePicker"
+                                ItemTemplate="{StaticResource LanguageOptionTemplate}"
+                                ItemsSource="{Binding Languages}"
+                                SelectedItem="{Binding SelectLanguage, Mode=TwoWay}"
+                                SelectionBoxItemTemplate="{StaticResource LanguageSelectionTemplate}" />
+
+                            <TextBlock Classes="muted" Text="{Binding SelectedLanguageDescription}" />
+
+                            <Border Classes="miniCard">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Classes="eyebrow" Text="{c:I18n {x:Static mainLangs:MainView.CultureCardTitle}}" />
+                                    <TextBlock Classes="metricValue" Text="{Binding CurrentCultureName}" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Classes="miniCard">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Classes="eyebrow" Text="{c:I18n {x:Static mainLangs:MainView.ResourceCardTitle}}" />
+                                    <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="#0F172A" Text="{Binding SampleKey}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <UniformGrid Columns="4">
+                <Border Classes="surfaceCard" Margin="0,0,12,0">
+                    <StackPanel Spacing="8">
+                        <TextBlock Classes="eyebrow" Text="{c:I18n {x:Static mainLangs:MainView.CultureCardTitle}}" />
+                        <TextBlock Classes="metricValue" Text="{Binding CurrentCultureName}" />
+                        <TextBlock Classes="muted" Text="{c:I18n {x:Static mainLangs:MainView.CurrentCulture}, {Binding CurrentCultureName}}" />
                     </StackPanel>
                 </Border>
-                <Border Margin="6" Padding="18" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
-                    <StackPanel>
-                        <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#64748B" Text="{c:I18n {x:Static mainLangs:MainView.ClockCardTitle}}" />
-                        <TextBlock Margin="0,10,0,0" FontSize="18" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.CurrentTimeFormat}, {Binding CurrentTime}}" TextWrapping="Wrap" />
+
+                <Border Classes="surfaceCard" Margin="4,0,8,0">
+                    <StackPanel Spacing="8">
+                        <TextBlock Classes="eyebrow" Text="{c:I18n {x:Static mainLangs:MainView.ClockCardTitle}}" />
+                        <TextBlock Classes="metricValue" Text="{Binding CurrentTime, StringFormat={}{0:HH:mm:ss}}" />
+                        <TextBlock Classes="muted" Text="{c:I18n {x:Static mainLangs:MainView.CurrentTimeFormat}, {Binding CurrentTime}}" />
                     </StackPanel>
                 </Border>
-                <Border Margin="6" Padding="18" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
-                    <StackPanel>
-                        <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#64748B" Text="{c:I18n {x:Static mainLangs:MainView.PlatformCardTitle}}" />
-                        <TextBlock Margin="0,10,0,0" Text="{c:I18n {x:Static mainLangs:MainView.RunningCountInfo}, {Binding PlatformName}, {Binding ProcessArchitecture}}" TextWrapping="Wrap" />
+
+                <Border Classes="surfaceCard" Margin="8,0,4,0">
+                    <StackPanel Spacing="8">
+                        <TextBlock Classes="eyebrow" Text="{c:I18n {x:Static mainLangs:MainView.PlatformCardTitle}}" />
+                        <TextBlock Classes="metricValue" Text="{Binding ProcessArchitecture}" />
+                        <TextBlock Classes="muted" Text="{c:I18n {x:Static mainLangs:MainView.RunningCountInfo}, {Binding PlatformName}, {Binding ProcessArchitecture}}" />
                     </StackPanel>
                 </Border>
-                <Border Margin="6" Padding="18" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
-                    <StackPanel>
-                        <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#64748B" Text="{c:I18n {x:Static mainLangs:MainView.ResourceCardTitle}}" />
-                        <TextBlock Margin="0,10,0,0" Text="{c:I18n {x:Static mainLangs:MainView.ResourceKey}, {Binding SampleKey}}" TextWrapping="Wrap" />
+
+                <Border Classes="surfaceCard" Margin="12,0,0,0">
+                    <StackPanel Spacing="8">
+                        <TextBlock Classes="eyebrow" Text="{c:I18n {x:Static mainLangs:MainView.ResourceCardTitle}}" />
+                        <TextBlock Classes="metricValue" Text="{Binding ProviderName}" />
+                        <TextBlock Classes="muted" Text="{c:I18n {x:Static mainLangs:MainView.ResourceKey}, {Binding SampleKey}}" />
                     </StackPanel>
                 </Border>
             </UniformGrid>
 
-            <TabControl Grid.Row="2" Margin="0,24,0,0">
+            <TabControl>
                 <TabItem Header="{c:I18n {x:Static mainLangs:MainView.RuntimeTitle}}">
-                    <Grid Margin="0,20,0,0" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
-                        <Border Margin="0,0,12,12" Padding="20" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
-                            <StackPanel>
-                                <TextBlock FontSize="18" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.ProviderTitle}}" />
-                                <TextBlock Margin="0,10,0,0" FontSize="16" FontWeight="SemiBold" Text="{Binding ProviderName}" />
-                                <TextBlock Margin="0,8,0,0" Foreground="#475569" Text="{c:I18n {x:Static mainLangs:MainView.ProviderDescription}}" TextWrapping="Wrap" />
+                    <Grid Margin="0,20,0,0" ColumnDefinitions="*,*" ColumnSpacing="24" RowDefinitions="Auto,Auto" RowSpacing="24">
+                        <Border Classes="surfaceCard">
+                            <StackPanel Spacing="10">
+                                <TextBlock Classes="sectionTitle" Text="{c:I18n {x:Static mainLangs:MainView.ProviderTitle}}" />
+                                <TextBlock FontSize="16" FontWeight="SemiBold" Foreground="#0F172A" Text="{Binding ProviderName}" />
+                                <TextBlock Classes="muted" Text="{c:I18n {x:Static mainLangs:MainView.ProviderDescription}}" />
                             </StackPanel>
                         </Border>
-                        <Border Grid.Column="1" Margin="12,0,0,12" Padding="20" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
-                            <StackPanel>
-                                <TextBlock FontSize="18" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.StorageTitle}}" />
-                                <TextBlock Margin="0,10,0,0" FontSize="16" FontWeight="SemiBold" Text="{Binding ResourceStorage}" TextWrapping="Wrap" />
-                                <TextBlock Margin="0,6,0,0" Foreground="#64748B" Text="{Binding ResourcePipeline}" TextWrapping="Wrap" />
-                                <TextBlock Margin="0,8,0,0" Foreground="#475569" Text="{c:I18n {x:Static mainLangs:MainView.StorageDescription}}" TextWrapping="Wrap" />
+
+                        <Border Grid.Column="1" Classes="surfaceCard">
+                            <StackPanel Spacing="10">
+                                <TextBlock Classes="sectionTitle" Text="{c:I18n {x:Static mainLangs:MainView.StorageTitle}}" />
+                                <TextBlock FontSize="16" FontWeight="SemiBold" Foreground="#0F172A" Text="{Binding ResourceStorage}" TextWrapping="Wrap" />
+                                <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="#0F766E" Text="{Binding ResourcePipeline}" TextWrapping="Wrap" />
+                                <TextBlock Classes="muted" Text="{c:I18n {x:Static mainLangs:MainView.StorageDescription}}" />
                             </StackPanel>
                         </Border>
-                        <Border Grid.Row="1" Grid.ColumnSpan="2" Padding="20" Background="#FFFFFFFF" BorderBrush="#D0D7DE" BorderThickness="1" CornerRadius="8">
-                            <StackPanel>
-                                <TextBlock FontSize="18" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.FallbackTitle}}" />
-                                <TextBlock Margin="0,10,0,0" Foreground="#475569" Text="{c:I18n {x:Static mainLangs:MainView.FallbackDescription}}" TextWrapping="Wrap" />
-                                <TextBlock Margin="0,8,0,0" Foreground="#475569" Text="{c:I18n {x:Static mainLangs:MainView.BindingRefresh}}" TextWrapping="Wrap" />
+
+                        <Border Grid.Row="1" Grid.ColumnSpan="2" Classes="surfaceCard">
+                            <StackPanel Spacing="10">
+                                <TextBlock Classes="sectionTitle" Text="{c:I18n {x:Static mainLangs:MainView.FallbackTitle}}" />
+                                <TextBlock Classes="muted" Text="{c:I18n {x:Static mainLangs:MainView.FallbackDescription}}" />
+                                <TextBlock Classes="muted" Text="{c:I18n {x:Static mainLangs:MainView.BindingRefresh}}" />
                             </StackPanel>
                         </Border>
                     </Grid>
                 </TabItem>
+
                 <TabItem Header="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.Title}}">
-                    <Grid Margin="0,20,0,0" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto">
-                        <TextBlock Grid.ColumnSpan="2" Margin="0,0,0,18" Foreground="#475569" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.Description}}" TextWrapping="Wrap" />
-                        <TextBlock Grid.Row="1" Margin="0,0,16,12" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.FormatSupport}}" TextWrapping="Wrap" />
-                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="16,0,0,12" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.HotSwitch}}" TextWrapping="Wrap" />
-                        <TextBlock Grid.Row="2" Margin="0,0,16,0" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.Fallback}}" TextWrapping="Wrap" />
-                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="16,0,0,0" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.StrongKeys}}" TextWrapping="Wrap" />
-                    </Grid>
+                    <StackPanel Margin="0,20,0,0" Spacing="18">
+                        <TextBlock Classes="muted" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.Description}}" />
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="24" RowDefinitions="Auto,Auto" RowSpacing="24">
+                            <Border Classes="surfaceCard">
+                                <StackPanel Spacing="10">
+                                    <TextBlock Classes="eyebrow" Text="01" />
+                                    <TextBlock Classes="muted" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.FormatSupport}}" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Classes="surfaceCard">
+                                <StackPanel Spacing="10">
+                                    <TextBlock Classes="eyebrow" Text="02" />
+                                    <TextBlock Classes="muted" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.HotSwitch}}" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Row="1" Classes="surfaceCard">
+                                <StackPanel Spacing="10">
+                                    <TextBlock Classes="eyebrow" Text="03" />
+                                    <TextBlock Classes="muted" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.Fallback}}" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Row="1" Grid.Column="1" Classes="surfaceCard">
+                                <StackPanel Spacing="10">
+                                    <TextBlock Classes="eyebrow" Text="04" />
+                                    <TextBlock Classes="muted" Text="{c:I18n {x:Static developModuleLanguage:ResourcePipelineView.StrongKeys}}" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
                 </TabItem>
+
                 <TabItem Header="{c:I18n {x:Static mainLangs:MainView.FixedCultureTitle}}">
-                    <Grid Margin="0,20,0,0" ColumnDefinitions="190,*" RowDefinitions="Auto,Auto,Auto,Auto">
-                        <TextBlock FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.EnglishPreview}}" />
-                        <TextBlock Grid.Column="1" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Title}, CultureName=en-US}" />
-                        <TextBlock Grid.Row="1" Margin="0,12,0,0" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.JapanesePreview}}" />
-                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,12,0,0" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Title}, CultureName=ja-JP}" />
-                        <TextBlock Grid.Row="2" Margin="0,12,0,0" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.SimplifiedChinesePreview}}" />
-                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,12,0,0" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Title}, CultureName=zh-CN}" />
-                        <TextBlock Grid.Row="3" Margin="0,12,0,0" FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.TraditionalChinesePreview}}" />
-                        <TextBlock Grid.Row="3" Grid.Column="1" Margin="0,12,0,0" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Title}, CultureName=zh-Hant}" />
-                    </Grid>
+                    <StackPanel Margin="0,20,0,0" Spacing="24">
+                        <Border Classes="surfaceCard">
+                            <StackPanel Spacing="14">
+                                <Border Classes="previewRow">
+                                    <Grid ColumnDefinitions="200,*" ColumnSpacing="16">
+                                        <TextBlock FontWeight="SemiBold" Foreground="#0F172A" Text="{c:I18n {x:Static mainLangs:MainView.EnglishPreview}}" />
+                                        <TextBlock Classes="muted" Grid.Column="1" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Title}, CultureName=en-US}" />
+                                    </Grid>
+                                </Border>
+
+                                <Border Classes="previewRow">
+                                    <Grid ColumnDefinitions="200,*" ColumnSpacing="16">
+                                        <TextBlock FontWeight="SemiBold" Foreground="#0F172A" Text="{c:I18n {x:Static mainLangs:MainView.JapanesePreview}}" />
+                                        <TextBlock Classes="muted" Grid.Column="1" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Title}, CultureName=ja-JP}" />
+                                    </Grid>
+                                </Border>
+
+                                <Border Classes="previewRow">
+                                    <Grid ColumnDefinitions="200,*" ColumnSpacing="16">
+                                        <TextBlock FontWeight="SemiBold" Foreground="#0F172A" Text="{c:I18n {x:Static mainLangs:MainView.SimplifiedChinesePreview}}" />
+                                        <TextBlock Classes="muted" Grid.Column="1" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Title}, CultureName=zh-CN}" />
+                                    </Grid>
+                                </Border>
+
+                                <Border Classes="previewRow">
+                                    <Grid ColumnDefinitions="200,*" ColumnSpacing="16">
+                                        <TextBlock FontWeight="SemiBold" Foreground="#0F172A" Text="{c:I18n {x:Static mainLangs:MainView.TraditionalChinesePreview}}" />
+                                        <TextBlock Classes="muted" Grid.Column="1" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Title}, CultureName=zh-Hant}" />
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="24">
+                            <Border Classes="surfaceCard">
+                                <StackPanel Spacing="10">
+                                    <TextBlock Classes="sectionTitle" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Title}}" />
+                                    <TextBlock Classes="muted" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.Description}}" />
+                                    <TextBlock Classes="muted" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.MissingKeyPolicy}}" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Classes="surfaceCard">
+                                <StackPanel Spacing="10">
+                                    <TextBlock Classes="sectionTitle" Text="{c:I18n {x:Static mainLangs:MainView.ProviderTitle}}" />
+                                    <TextBlock Classes="muted" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.ThreadCulture}}" />
+                                    <TextBlock Classes="muted" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.EmbeddedResources}}" />
+                                    <TextBlock Classes="muted" Text="{c:I18n {x:Static developModuleLanguage:ValidationView.AnalyzerSupport}}" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
                 </TabItem>
             </TabControl>
-        </Grid>
+        </StackPanel>
     </ScrollViewer>
 </Window>

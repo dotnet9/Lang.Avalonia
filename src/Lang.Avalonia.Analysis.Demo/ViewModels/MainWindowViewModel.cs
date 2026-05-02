@@ -16,8 +16,9 @@ public class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel()
     {
-        Languages = I18nManager.Instance.GetLanguages() ?? [];
-        SelectLanguage = Languages.FirstOrDefault(l => l.CultureName == I18nManager.Instance.Culture?.Name);
+        Languages = CreateLanguages(I18nManager.Instance.GetLanguages()?.Select(language => language.CultureName));
+        SelectLanguage = Languages.FirstOrDefault(l => l.CultureName == I18nManager.Instance.Culture?.Name)
+            ?? Languages.FirstOrDefault();
 
         CurrentTime = DateTime.Now;
         _clockTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
@@ -27,11 +28,11 @@ public class MainWindowViewModel : ViewModelBase
 
     public List<LocalizationLanguage> Languages { get; }
 
-    public string ProviderName { get; } = "JSON + Source Generator";
+    public string ProviderName { get; } = "Analyzer + Runtime JSON";
 
-    public string ResourceStorage { get; } = "I18n/*.json registered as AdditionalFiles";
+    public string ResourceStorage { get; } = "JSON language packs plus compile-time generated key constants.";
 
-    public string ResourcePipeline { get; } = "AdditionalFiles -> Language.g.cs -> runtime JSON cache";
+    public string ResourcePipeline { get; } = "AdditionalFiles -> analyzer generation -> runtime JSON lookup.";
 
     public string SampleKey { get; } = Localization.Main.MainView.Title;
 
@@ -42,7 +43,7 @@ public class MainWindowViewModel : ViewModelBase
     public string CurrentCultureName => I18nManager.Instance.Culture?.Name ?? CultureInfo.CurrentUICulture.Name;
 
     public string SelectedLanguageDescription =>
-        SelectLanguage == null ? string.Empty : $"{SelectLanguage.Language} / {SelectLanguage.CultureName}";
+        SelectLanguage == null ? string.Empty : $"{SelectLanguage.CultureName} · {SelectLanguage.DetailText}";
 
     public LocalizationLanguage? SelectLanguage
     {
@@ -66,4 +67,47 @@ public class MainWindowViewModel : ViewModelBase
         get => _currentTime;
         set => this.RaiseAndSetIfChanged(ref _currentTime, value);
     }
+
+    private static List<LocalizationLanguage> CreateLanguages(IEnumerable<string>? cultureNames)
+    {
+        return (cultureNames ?? [])
+            .Where(cultureName => !string.IsNullOrWhiteSpace(cultureName))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Select(CreateLanguage)
+            .OrderBy(GetSortOrder)
+            .ThenBy(language => language.DisplayName, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private static LocalizationLanguage CreateLanguage(string cultureName)
+    {
+        try
+        {
+            var culture = CultureInfo.GetCultureInfo(cultureName);
+            return new LocalizationLanguage
+            {
+                CultureName = culture.Name,
+                Language = culture.EnglishName,
+                Description = culture.NativeName
+            };
+        }
+        catch (CultureNotFoundException)
+        {
+            return new LocalizationLanguage
+            {
+                CultureName = cultureName,
+                Language = cultureName,
+                Description = cultureName
+            };
+        }
+    }
+
+    private static int GetSortOrder(LocalizationLanguage language) => language.CultureName switch
+    {
+        "zh-CN" => 0,
+        "zh-Hant" => 1,
+        "en-US" => 2,
+        "ja-JP" => 3,
+        _ => 4
+    };
 }

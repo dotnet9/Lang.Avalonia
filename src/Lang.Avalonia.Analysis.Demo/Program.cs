@@ -1,5 +1,5 @@
 ﻿using Avalonia;
-using ReactiveUI.Avalonia;
+using Avalonia.ReactiveUI;
 using System;
 
 namespace Lang.Avalonia.Analysis.Demo;
