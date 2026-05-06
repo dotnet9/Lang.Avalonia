@@ -1,0 +1,3 @@
+<linker>
+  <assembly fullname="Lang.Avalonia.Analysis.Demo" preserve="all" />
+</linker>

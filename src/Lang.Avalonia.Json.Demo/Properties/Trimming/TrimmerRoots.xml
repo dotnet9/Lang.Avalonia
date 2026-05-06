@@ -1,0 +1,3 @@
+<linker>
+  <assembly fullname="Lang.Avalonia.Json.Demo" preserve="all" />
+</linker>

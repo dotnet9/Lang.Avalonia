@@ -12,6 +12,9 @@
     <File Path="global.json" />
     <File Path="Lang.Avalonia.en-US.md" />
     <File Path="pack.bat" />
+    <File Path="Publish.Common.pubxml" />
+    <File Path="publishbase.bat" />
+    <File Path="publish_all.bat" />
     <File Path="README.analysis.md" />
     <File Path="README.analysis.zh-CN.md" />
     <File Path="README.json.md" />
@@ -22,6 +25,7 @@
     <File Path="README.resx.zh-CN.md" />
     <File Path="README.xml.md" />
     <File Path="README.xml.zh-CN.md" />
+    <File Path="UpdateAssemblyVersion.ps1" />
   </Folder>
   <Folder Name="/Docs/">
     <File Path="docs/design.md" />
