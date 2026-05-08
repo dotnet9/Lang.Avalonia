@@ -28,6 +28,7 @@
 		<PackageVersion Include="Semi.Avalonia" Version="$(SemiAvaloniaVersion)" />
 		<PackageVersion Include="System.Drawing.Common" Version="$(SystemDrawingCommonVersion)" />
 		<PackageVersion Include="System.Text.Json" Version="$(SystemTextJsonVersion)" />
+		<PackageVersion Include="VC-LTL" Version="5.3.1" />
 		<PackageVersion Include="YY-Thunks" Version="$(YYThunksVersion)" />
 	</ItemGroup>
 </Project>
