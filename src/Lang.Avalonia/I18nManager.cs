@@ -82,7 +82,7 @@ public class I18nManager : INotifyPropertyChanged
     /// <summary>
     /// 按 Key 获取本地化文本。
     /// </summary>
-    public string? GetResource(string key, string? cultureName = null) => _langPlugin?.GetResource(key, cultureName);
+    public string GetResource(string key, string? cultureName = null) => _langPlugin?.GetResource(key, cultureName) ?? key;
 
     /// <summary>
     /// 当前文化变化时触发。

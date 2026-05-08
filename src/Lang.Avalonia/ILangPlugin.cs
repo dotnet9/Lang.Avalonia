@@ -32,5 +32,5 @@ public interface ILangPlugin
     /// <summary>
     /// 获取指定 Key 的语言文本。未命中时由插件决定回退策略。
     /// </summary>
-    string? GetResource(string key, string? cultureName = null);
+    string GetResource(string key, string? cultureName = null);
 }

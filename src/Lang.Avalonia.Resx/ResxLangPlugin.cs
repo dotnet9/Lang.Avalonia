@@ -10,13 +10,36 @@ using System.Resources;
 namespace Lang.Avalonia.Resx;
 
 /// <summary>
-/// RESX 语言资源插件。通过反射发现生成的 ResourceManager，并将资源同步到统一缓存。
+/// RESX 语言资源插件。支持显式注册 ResourceManager，也支持按约定发现生成的 ResourceManager，并将资源同步到统一缓存。
 /// </summary>
 public class ResxLangPlugin : ILangPlugin
 {
     private CultureInfo _culture = CultureInfo.InvariantCulture;
     private CultureInfo _defaultCulture = CultureInfo.InvariantCulture;
-    private Dictionary<Type, ResourceManager> _resourceManagers = new();
+    private readonly List<ResourceManager> _resourceManagers = new();
+
+    /// <summary>
+    /// 创建 RESX 语言资源插件。未显式添加资源时会按 <see cref="Mark"/> 扫描已加载程序集。
+    /// </summary>
+    public ResxLangPlugin()
+    {
+    }
+
+    /// <summary>
+    /// 使用指定的 <see cref="ResourceManager"/> 创建 RESX 语言资源插件。裁剪发布时优先使用该构造函数。
+    /// </summary>
+    public ResxLangPlugin(ResourceManager resourceManager)
+    {
+        AddResource(resourceManager);
+    }
+
+    /// <summary>
+    /// 使用指定的 RESX Designer 类型创建 RESX 语言资源插件。裁剪发布时该类型的静态属性会被保留。
+    /// </summary>
+    public ResxLangPlugin([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] Type resourceType)
+    {
+        AddResourceType(resourceType);
+    }
 
     /// <summary>
     /// 已加载的语言资源缓存，Key 为文化名称。
@@ -43,28 +66,55 @@ public class ResxLangPlugin : ILangPlugin
     public void Load(CultureInfo cultureInfo)
     {
         _defaultCulture = cultureInfo;
-        _resourceManagers = FindResourceManagers(AppDomain.CurrentDomain.GetAssemblies());
         Resources.Clear();
+        if (_resourceManagers.Count == 0)
+        {
+            AddResourceManagers(FindResourceManagers(AppDomain.CurrentDomain.GetAssemblies()));
+        }
+
         Culture = cultureInfo;
     }
 
     /// <inheritdoc />
     public void AddResource(params Assembly[] assemblies)
     {
-        var managers = FindResourceManagers(assemblies);
-        foreach (var pair in managers)
-        {
-            _resourceManagers.TryAdd(pair.Key, pair.Value);
-        }
-
+        AddResourceManagers(FindResourceManagers(assemblies));
         Sync(Culture);
+    }
+
+    /// <summary>
+    /// 从指定 <see cref="ResourceManager"/> 追加 RESX 资源。裁剪发布时优先使用该方法。
+    /// </summary>
+    public void AddResource(params ResourceManager[] resourceManagers)
+    {
+        AddResourceManagers(resourceManagers);
+        Sync(Culture);
+    }
+
+    /// <summary>
+    /// 从指定 RESX Designer 类型追加资源。裁剪发布时该类型的静态属性会被保留。
+    /// </summary>
+    public void AddResourceType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] Type resourceType)
+    {
+        if (TryGetResourceManager(resourceType, out var resourceManager))
+        {
+            AddResource(resourceManager);
+        }
+    }
+
+    /// <summary>
+    /// 从指定 RESX Designer 类型追加资源。裁剪发布时该类型的静态属性会被保留。
+    /// </summary>
+    public void AddResource<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] TResource>()
+    {
+        AddResourceType(typeof(TResource));
     }
 
     /// <inheritdoc />
     public List<LocalizationLanguage>? GetLanguages() => Resources.Select(kvp => kvp.Value).ToList();
 
     /// <inheritdoc />
-    public string? GetResource(string key, string? cultureName = null)
+    public string GetResource(string key, string? cultureName = null)
     {
         var culture = Culture;
         if (!string.IsNullOrWhiteSpace(cultureName) && !TryCreateCulture(cultureName, out culture))
@@ -74,30 +124,29 @@ public class ResxLangPlugin : ILangPlugin
 
         if (TryGetCachedResource(culture.Name, key, out var resource))
         {
-            return resource;
+            return resource!;
         }
 
         Sync(culture);
         if (TryGetCachedResource(culture.Name, key, out resource))
         {
-            return resource;
+            return resource!;
         }
 
         if (TryGetCachedResource(_defaultCulture.Name, key, out resource))
         {
-            return resource;
+            return resource!;
         }
 
         Sync(_defaultCulture);
         if (TryGetCachedResource(_defaultCulture.Name, key, out resource))
         {
-            return resource;
+            return resource!;
         }
 
         return key;
     }
 
-    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "RESX plugin discovers generated resource properties by convention; trimmed apps should root resource designer types.")]
     private void Sync(CultureInfo cultureInfo)
     {
         if (_resourceManagers.Count == 0)
@@ -117,12 +166,9 @@ public class ResxLangPlugin : ILangPlugin
             Resources[cultureName] = currentLanguageResources;
         }
 
-        foreach (var pair in _resourceManagers)
+        foreach (var resourceManager in _resourceManagers)
         {
-            pair.Key.GetProperty("Culture", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
-                ?.SetValue(null, cultureInfo);
-
-            foreach (var entry in GetResources(pair.Value, cultureInfo))
+            foreach (var entry in GetResources(resourceManager, cultureInfo))
             {
                 if (entry.Key is string key && entry.Value is string value)
                 {
@@ -140,26 +186,47 @@ public class ResxLangPlugin : ILangPlugin
             && !string.IsNullOrWhiteSpace(resource);
     }
 
-    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "RESX plugin discovers generated ResourceManager properties by convention.")]
-    private Dictionary<Type, ResourceManager> FindResourceManagers(IEnumerable<Assembly> assemblies)
+    private void AddResourceManagers(IEnumerable<ResourceManager> resourceManagers)
     {
-        var resourceManagers = new Dictionary<Type, ResourceManager>();
+        foreach (var resourceManager in resourceManagers.Where(manager => manager != null).Distinct())
+        {
+            if (!_resourceManagers.Contains(resourceManager))
+            {
+                _resourceManagers.Add(resourceManager);
+            }
+        }
+    }
+
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Default RESX discovery uses reflection for backward compatibility; trimmed apps should pass ResourceManager or AddResourceType explicitly.")]
+    private IEnumerable<ResourceManager> FindResourceManagers(IEnumerable<Assembly> assemblies)
+    {
         foreach (var type in assemblies
                      .Where(assembly => assembly != null)
                      .Distinct()
                      .SelectMany(GetLoadableTypes)
                      .Where(type => type.FullName?.Contains(Mark, StringComparison.OrdinalIgnoreCase) == true))
         {
-            var manager = type.GetProperty(nameof(ResourceManager),
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
-                ?.GetValue(null, null) as ResourceManager;
-            if (manager != null)
+            if (TryGetResourceManagerByConvention(type, out var manager))
             {
-                resourceManagers[type] = manager;
+                yield return manager;
             }
         }
+    }
 
-        return resourceManagers;
+    private static bool TryGetResourceManager([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] Type resourceType, [NotNullWhen(true)] out ResourceManager? resourceManager)
+    {
+        return TryGetResourceManagerByConvention(resourceType, out resourceManager);
+    }
+
+    [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Used only by convention-based RESX discovery; trimmed apps should pass ResourceManager or AddResourceType explicitly.")]
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Used only by convention-based RESX discovery; trimmed apps should pass ResourceManager or AddResourceType explicitly.")]
+    private static bool TryGetResourceManagerByConvention(Type resourceType, [NotNullWhen(true)] out ResourceManager? resourceManager)
+    {
+        resourceManager = resourceType.GetProperty(nameof(ResourceManager),
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
+            ?.GetValue(null, null) as ResourceManager;
+
+        return resourceManager != null;
     }
 
     private static IEnumerable<DictionaryEntry> GetResources(ResourceManager resourceManager, CultureInfo cultureInfo)

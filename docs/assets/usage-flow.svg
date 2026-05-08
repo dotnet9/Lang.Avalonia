@@ -16,14 +16,14 @@
     </style>
   </defs>
   <rect width="1080" height="560" fill="#f8fafc"/>
-  <text x="48" y="58" class="title">使用流程</text>
-  <text x="48" y="86" class="text">从资源文件到运行时切换语言，主流程保持一致，仅插件和资源格式不同。</text>
+  <text x="48" y="58" class="title">Usage Flow</text>
+  <text x="48" y="86" class="text">The main flow is the same for every format. Only the plugin and resource format change.</text>
 
   <g transform="translate(56 142)">
     <rect width="180" height="150" class="card"/>
     <circle cx="34" cy="34" r="20" class="circle"/><text x="27" y="42" class="num">1</text>
-    <text x="24" y="76" class="step">安装包</text>
-    <text x="24" y="108" class="text">Core + 格式插件</text>
+    <text x="24" y="76" class="step">Install</text>
+    <text x="24" y="108" class="text">Core + provider</text>
     <text x="24" y="132" class="text">Json / Xml / Resx</text>
   </g>
   <path d="M236 217 H316" class="line"/>
@@ -31,7 +31,7 @@
   <g transform="translate(316 142)">
     <rect width="180" height="150" class="card"/>
     <circle cx="34" cy="34" r="20" class="circle"/><text x="27" y="42" class="num">2</text>
-    <text x="24" y="76" class="step">创建资源</text>
+    <text x="24" y="76" class="step">Resources</text>
     <text x="24" y="108" class="text">I18n/*.json</text>
     <text x="24" y="132" class="text">I18n/*.xml / *.resx</text>
   </g>
@@ -40,39 +40,39 @@
   <g transform="translate(576 142)">
     <rect width="180" height="150" class="card"/>
     <circle cx="34" cy="34" r="20" class="circle"/><text x="27" y="42" class="num">3</text>
-    <text x="24" y="76" class="step">生成 Key</text>
-    <text x="24" y="108" class="text">T4 或 Analysis</text>
-    <text x="24" y="132" class="text">强类型常量</text>
+    <text x="24" y="76" class="step">Keys</text>
+    <text x="24" y="108" class="text">T4 or Analysis</text>
+    <text x="24" y="132" class="text">Type-safe constants</text>
   </g>
   <path d="M756 217 H836" class="line"/>
 
   <g transform="translate(836 142)">
     <rect width="180" height="150" class="card"/>
     <circle cx="34" cy="34" r="20" class="circle"/><text x="27" y="42" class="num">4</text>
-    <text x="24" y="76" class="step">初始化</text>
+    <text x="24" y="76" class="step">Initialize</text>
     <text x="24" y="108" class="text">Register(plugin)</text>
-    <text x="24" y="132" class="text">设置默认 Culture</text>
+    <text x="24" y="132" class="text">Set default Culture</text>
   </g>
 
   <path d="M926 292 V340 H186 V378" class="line"/>
 
   <g transform="translate(56 378)">
     <rect width="260" height="112" class="card"/>
-    <text x="24" y="42" class="step">绑定界面</text>
+    <text x="24" y="42" class="step">Bind UI</text>
     <text x="24" y="74" class="text">{c:I18n {x:Static ...}}</text>
   </g>
   <path d="M316 434 H418" class="line"/>
 
   <g transform="translate(418 378)">
     <rect width="260" height="112" class="card"/>
-    <text x="24" y="42" class="step">后台读取</text>
+    <text x="24" y="42" class="step">Read In C#</text>
     <text x="24" y="74" class="text">I18nManager.GetResource</text>
   </g>
   <path d="M678 434 H780" class="line"/>
 
   <g transform="translate(780 378)">
     <rect width="244" height="112" class="card"/>
-    <text x="24" y="42" class="step">运行时切换</text>
+    <text x="24" y="42" class="step">Switch Runtime</text>
     <text x="24" y="74" class="text">I18nManager.Culture = ...</text>
   </g>
 </svg>

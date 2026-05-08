@@ -1,6 +1,6 @@
 # Lang.Avalonia
 
-简体中文 | [English](README.md)
+[English](README.md) | 简体中文
 
 Lang.Avalonia 是面向 Avalonia UI 的插件化多语言库。核心包提供 XAML 标记扩展、绑定刷新流程、转换器、`I18nManager` 和 `ILangPlugin` 契约；资源加载由 JSON、XML、RESX 插件实现，也可以使用 Source Generator 生成强类型资源 Key。
 
@@ -35,34 +35,7 @@ Lang.Avalonia 是面向 Avalonia UI 的插件化多语言库。核心包提供 X
 安装核心包和一个资源提供器：
 
 ```shell
-dotnet add package Lang.Avalonia
 dotnet add package Lang.Avalonia.Json
-```
-
-在 `I18n` 目录创建语言文件，并将 JSON/XML 文件复制到输出目录：
-
-```xml
-<ItemGroup>
-  <None Update="I18n\*.json" CopyToOutputDirectory="PreserveNewest" />
-</ItemGroup>
-```
-
-JSON 资源示例：
-
-```json
-{
-  "language": "English",
-  "description": "English resources",
-  "cultureName": "en-US",
-  "Localization": {
-    "Main": {
-      "MainView": {
-        "Title": "Lang.Avalonia localization workspace",
-        "ChangeLanguage": "Language"
-      }
-    }
-  }
-}
 ```
 
 应用启动时注册插件：
@@ -102,6 +75,145 @@ var englishTitle = I18nManager.Instance.GetResource(Localization.Main.MainView.T
 I18nManager.Instance.Culture = new CultureInfo("zh-CN");
 ```
 
+## JSON 提供器
+
+安装：
+
+```shell
+dotnet add package Lang.Avalonia.Json
+```
+
+每个文化一个文件，并将 JSON 文件复制到输出目录：
+
+```text
+I18n/en-US.json
+I18n/zh-CN.json
+I18n/zh-Hant.json
+I18n/ja-JP.json
+```
+
+```xml
+<ItemGroup>
+  <None Update="I18n\*.json" CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+```
+
+每个 JSON 文件都必须包含 `language`、`description`、`cultureName` 元数据：
+
+```json
+{
+  "language": "English",
+  "description": "English resources",
+  "cultureName": "en-US",
+  "Localization": {
+    "Main": {
+      "MainView": {
+        "Title": "Lang.Avalonia localization workspace",
+        "ChangeLanguage": "Language"
+      }
+    }
+  }
+}
+```
+
+如果发现无效 JSON 文件，`JsonLangPlugin.LoadDiagnostics` 会包含被跳过文件的诊断信息。
+
+## XML 提供器
+
+安装：
+
+```shell
+dotnet add package Lang.Avalonia.Xml
+```
+
+每个文化一个文件，并将 XML 文件复制到输出目录：
+
+```text
+I18n/en-US.xml
+I18n/zh-CN.xml
+I18n/zh-Hant.xml
+I18n/ja-JP.xml
+```
+
+```xml
+<ItemGroup>
+  <None Update="I18n\*.xml" CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+```
+
+每个 XML 文件都必须在根节点上包含 `language`、`description`、`cultureName` 元数据：
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<Localization language="English" description="English resources" cultureName="en-US">
+  <Main>
+    <MainView>
+      <Title>Lang.Avalonia localization workspace</Title>
+      <ChangeLanguage>Language</ChangeLanguage>
+    </MainView>
+  </Main>
+</Localization>
+```
+
+叶子节点路径会成为资源 Key。上面的示例会生成 `Localization.Main.MainView.Title`。
+如果发现无效 XML 文件，`XmlLangPlugin.LoadDiagnostics` 会包含被跳过文件的诊断信息。
+
+## RESX 提供器
+
+安装：
+
+```shell
+dotnet add package Lang.Avalonia.Resx
+```
+
+使用标准 .NET RESX 命名：
+
+```text
+I18n/Resources.resx
+I18n/Resources.zh-CN.resx
+I18n/Resources.zh-Hant.resx
+I18n/Resources.ja-JP.resx
+```
+
+建议使用完整资源 Key 作为 RESX 数据名称：
+
+```xml
+<data name="Localization.Main.MainView.Title" xml:space="preserve">
+  <value>Lang.Avalonia localization workspace</value>
+</data>
+```
+
+`ResxLangPlugin` 按文化同步资源，并通过与 JSON、XML 提供器相同的 `ILangPlugin` 契约对外提供资源。裁剪发布时建议显式传入生成的 `ResourceManager`，这样应用不需要为了 Lang.Avalonia.Resx 额外配置链接器 Root 文件：
+
+```csharp
+using MyApp.I18n;
+
+I18nManager.Instance.Register(
+    new ResxLangPlugin(Resources.ResourceManager),
+    new CultureInfo("zh-CN"),
+    out var error);
+```
+
+也可以传入生成的资源 Designer 类型：
+
+```csharp
+I18nManager.Instance.Register(
+    new ResxLangPlugin(typeof(Resources)),
+    new CultureInfo("zh-CN"),
+    out var error);
+```
+
+`ResxLangPlugin.Mark` 默认值为 `i18n`。请让生成的资源 Designer 类型位于包含 `I18n` 的命名空间或文件夹下，或者显式设置 `Mark`：
+
+```csharp
+I18nManager.Instance.Register(
+    new ResxLangPlugin { Mark = "Resources" },
+    new CultureInfo("en-US"),
+    out var error);
+```
+
+按约定扫描保留用于兼容旧用法，但裁剪应用推荐使用显式注册。
+
 ## 强类型 Key
 
 支持两种生成路径：
@@ -109,16 +221,40 @@ I18nManager.Instance.Culture = new CultureInfo("zh-CN");
 - 示例项目中的 T4 模板会从 JSON、XML 或 RESX 资源生成 `I18n/Language.cs`。
 - `Lang.Avalonia.Analysis` 会从 `AdditionalFiles` 在编译期生成 `Language.g.cs`。
 
-Source Generator 示例：
+在应用项目中建议将 `Lang.Avalonia.Analysis` 作为私有构建期分析器：
+
+```xml
+<PackageReference Include="Lang.Avalonia.Analysis" Version="*" PrivateAssets="all" />
+```
+
+将 JSON、XML 或 RESX 语言文件注册为 `AdditionalFiles`：
 
 ```xml
 <ItemGroup>
-  <PackageReference Include="Lang.Avalonia.Analysis" Version="*" PrivateAssets="all" />
   <AdditionalFiles Include="I18n\*.json" />
+  <AdditionalFiles Include="I18n\*.xml" />
+  <AdditionalFiles Include="I18n\*.resx" />
 </ItemGroup>
 ```
 
 生成字段的值会保留原始资源 Key，只有 C# 标识符名称会被清洗。
+
+对于以下资源 Key：
+
+```text
+Localization.Main.MainView.Title
+```
+
+生成器会输出类似常量：
+
+```csharp
+namespace Localization.Main;
+
+public static class MainView
+{
+    public static readonly string Title = "Localization.Main.MainView.Title";
+}
+```
 
 ## 示例和设计说明
 
@@ -131,7 +267,7 @@ Source Generator 示例：
 | `Lang.Avalonia.Resx.Demo` | 通过 `ResourceManager` 加载 RESX 资源 |
 | `Lang.Avalonia.Analysis.Demo` | JSON 资源加 Source Generator 生成 Key |
 
-设计文档和 SVG 图示见 [docs/design.md](https://github.com/dotnet9/Lang.Avalonia/blob/main/docs/design.md)。
+设计文档和 SVG 图示见 [docs/design.zh-CN.md](https://github.com/dotnet9/Lang.Avalonia/blob/main/docs/design.zh-CN.md)。
 
 ## 回退规则
 
@@ -145,5 +281,5 @@ Source Generator 示例：
 
 - JSON 和 XML 提供器默认扫描 `AppDomain.CurrentDomain.BaseDirectory`。
 - JSON 和 XML 提供器也可以通过 `AddResource` 读取嵌入资源。
-- RESX 提供器通过 `ResourceManager` 发现生成的资源 Designer 类型；默认类型过滤标记为 `i18n`。
+- RESX 提供器在显式注册 `ResourceManager` 或资源 Designer 类型时，裁剪发布不需要为 Lang.Avalonia.Resx 配置 Root.xml。
 - 资源 Key 和格式化参数均支持动态 Avalonia Binding。

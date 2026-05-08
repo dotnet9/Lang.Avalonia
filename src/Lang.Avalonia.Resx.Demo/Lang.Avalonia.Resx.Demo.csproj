@@ -30,9 +30,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Lang.Avalonia.Resx\Lang.Avalonia.Resx.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-		<TrimmerRootDescriptor Include="Roots.xml" />
-	</ItemGroup>
 
 	<ItemGroup>
 	  <None Update="I18n\Language.tt">

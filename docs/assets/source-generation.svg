@@ -17,29 +17,29 @@
     </style>
   </defs>
   <rect width="1080" height="560" fill="#f8fafc"/>
-  <text x="48" y="58" class="title">强类型 Key 生成</text>
-  <text x="48" y="86" class="text">示例项目保留 T4 模板，Analysis 包提供编译期 Source Generator，两者都输出可用于 x:Static 的常量。</text>
+  <text x="48" y="58" class="title">Type-Safe Key Generation</text>
+  <text x="48" y="86" class="text">Demos keep T4 templates, and the Analysis package provides a compile-time Source Generator.</text>
 
   <rect x="72" y="150" width="230" height="122" class="box"/>
-  <text x="98" y="188" class="label">资源文件</text>
+  <text x="98" y="188" class="label">Resource files</text>
   <text x="98" y="220" class="text">JSON / XML / RESX</text>
   <text x="98" y="244" class="text">Key: Localization.Main...</text>
 
   <rect x="412" y="112" width="250" height="122" class="gen"/>
-  <text x="438" y="150" class="label">T4 模板</text>
-  <text x="438" y="182" class="text">手动保存触发</text>
-  <text x="438" y="206" class="text">生成 Language.cs</text>
+  <text x="438" y="150" class="label">T4 Template</text>
+  <text x="438" y="182" class="text">Triggered by save</text>
+  <text x="438" y="206" class="text">Generates Language.cs</text>
 
   <rect x="412" y="300" width="250" height="122" class="gen"/>
   <text x="438" y="338" class="label">Source Generator</text>
   <text x="438" y="370" class="text">AdditionalFiles</text>
-  <text x="438" y="394" class="text">编译期生成 Language.g.cs</text>
+  <text x="438" y="394" class="text">Generates Language.g.cs</text>
 
   <rect x="782" y="202" width="230" height="148" class="out"/>
-  <text x="810" y="242" class="label">强类型常量</text>
+  <text x="810" y="242" class="label">Type-safe constants</text>
   <text x="810" y="274" class="text">Localization.Main.MainView</text>
   <text x="810" y="298" class="text">.Title = "..."</text>
-  <text x="810" y="322" class="text">用于 XAML / C#</text>
+  <text x="810" y="322" class="text">Used by XAML / C#</text>
 
   <path d="M302 204 H412" class="line"/>
   <path d="M302 228 C350 228 350 360 412 360" class="dash"/>
@@ -47,6 +47,6 @@
   <path d="M662 360 C720 360 720 308 782 308" class="line"/>
 
   <rect x="82" y="428" width="906" height="72" class="box"/>
-  <text x="110" y="458" class="label">设计约束</text>
-  <text x="110" y="486" class="text">生成器必须保持常量值等于原始资源 Key；字段名只做 C# 标识符清洗，不能改变运行时查找 Key。</text>
+  <text x="110" y="458" class="label">Design constraint</text>
+  <text x="110" y="486" class="text">Generated values must equal original keys. Only C# identifier names may be sanitized.</text>
 </svg>

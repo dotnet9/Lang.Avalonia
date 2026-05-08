@@ -18,43 +18,42 @@
     </style>
   </defs>
   <rect width="1080" height="620" fill="#f8fafc"/>
-  <text x="48" y="58" class="title">Resource Resolution And Fallback</text>
-  <text x="48" y="86" class="text">Plugins expose the same order: explicit or current culture, default culture, then original key.</text>
+  <text x="48" y="58" class="title">资源解析与 Fallback</text>
+  <text x="48" y="86" class="text">所有插件对外保持同一解析顺序：显式文化或当前文化优先，再回退到默认文化，最终返回 Key。</text>
 
   <rect x="410" y="122" width="260" height="70" class="node"/>
-  <text x="446" y="164" class="label">Input key + CultureName?</text>
+  <text x="446" y="164" class="label">输入 key + CultureName?</text>
   <path d="M540 192 V238" class="line"/>
 
   <polygon points="540,238 672,314 540,390 408,314" class="decision"/>
-  <text x="482" y="304" class="label">Selected culture</text>
-  <text x="488" y="328" class="text">explicit or current</text>
-  <text x="500" y="350" class="text">Resource found?</text>
+  <text x="472" y="310" class="label">指定文化或当前文化</text>
+  <text x="488" y="334" class="text">是否命中资源？</text>
 
   <path d="M672 314 H824" class="line"/>
-  <text x="708" y="300" class="caption">found</text>
+  <text x="708" y="300" class="caption">命中</text>
   <rect x="824" y="278" width="190" height="72" class="ok"/>
-  <text x="866" y="322" class="label">Return translation</text>
+  <text x="878" y="322" class="label">返回翻译</text>
 
   <path d="M540 390 V438" class="line"/>
-  <text x="558" y="420" class="caption">missing</text>
+  <text x="558" y="420" class="caption">未命中</text>
 
   <polygon points="540,438 672,514 540,590 408,514" class="decision"/>
-  <text x="486" y="510" class="label">Default culture</text>
-  <text x="500" y="534" class="text">Resource found?</text>
+  <text x="480" y="510" class="label">默认文化资源</text>
+  <text x="500" y="534" class="text">是否命中？</text>
 
   <path d="M672 514 H824" class="line"/>
-  <text x="710" y="500" class="caption">found</text>
+  <text x="710" y="500" class="caption">命中</text>
   <rect x="824" y="478" width="190" height="72" class="ok"/>
-  <text x="842" y="522" class="label">Return default text</text>
+  <text x="860" y="522" class="label">返回默认翻译</text>
 
   <path d="M408 514 H222" class="line"/>
-  <text x="304" y="500" class="caption">missing</text>
+  <text x="304" y="500" class="caption">未命中</text>
   <rect x="66" y="478" width="156" height="72" class="fallback"/>
-  <text x="108" y="522" class="label">Return key</text>
+  <text x="104" y="522" class="label">返回 key</text>
 
   <rect x="74" y="196" width="250" height="110" class="node"/>
-  <text x="98" y="234" class="label">Format arguments</text>
-  <text x="98" y="264" class="text">After resource hit, Args</text>
-  <text x="98" y="288" class="text">use string.Format</text>
+  <text x="98" y="234" class="label">格式化参数</text>
+  <text x="98" y="264" class="text">资源命中后按 Args</text>
+  <text x="98" y="288" class="text">执行 string.Format</text>
   <path d="M324 252 C362 252 374 314 408 314" class="line"/>
 </svg>

@@ -23,13 +23,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\README.json.md" Pack="true" PackagePath="README.md" />
-		<None Include="..\..\README.json.zh-CN.md" Pack="true" PackagePath="README.json.zh-CN.md" />
+		<None Include="..\..\README.md" Pack="true" PackagePath="README.md" />
+		<None Include="..\..\README.zh-CN.md" Pack="true" PackagePath="README.zh-CN.md" />
 		<None Include="..\..\logo.png" Pack="true" PackagePath="logo.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Include="System.Text.Json" />
 	</ItemGroup>
 
 </Project>

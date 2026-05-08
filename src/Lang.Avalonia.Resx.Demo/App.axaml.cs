@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using Prism.DryIoc;
 using Prism.Ioc;
 using System.Globalization;
+using DemoResources = Lang.Avalonia.Resx.Demo.I18n.Resources;
 
 namespace Lang.Avalonia.Resx.Demo;
 
@@ -12,7 +13,7 @@ public partial class App : PrismApplication
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-        I18nManager.Instance.Register(new ResxLangPlugin(), new CultureInfo("zh-CN"), out _);
+        I18nManager.Instance.Register(new ResxLangPlugin(DemoResources.ResourceManager), new CultureInfo("zh-CN"), out _);
         base.Initialize(); // <-- Required
     }
 

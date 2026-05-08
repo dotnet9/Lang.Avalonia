@@ -76,7 +76,7 @@ public class XmlLangPlugin : ILangPlugin
     public List<LocalizationLanguage>? GetLanguages() => Resources.Select(kvp => kvp.Value).ToList();
 
     /// <inheritdoc />
-    public string? GetResource(string key, string? cultureName = null)
+    public string GetResource(string key, string? cultureName = null)
     {
         var culture = Culture.Name;
         if (!string.IsNullOrWhiteSpace(cultureName))

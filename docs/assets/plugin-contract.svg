@@ -16,8 +16,8 @@
     </style>
   </defs>
   <rect width="1080" height="620" fill="#f8fafc"/>
-  <text x="48" y="58" class="title">插件契约</text>
-  <text x="48" y="86" class="text">核心库只依赖 ILangPlugin，格式差异封装在插件内，保证 UI 和业务代码不关心资源来源。</text>
+  <text x="48" y="58" class="title">Plugin Contract</text>
+  <text x="48" y="86" class="text">The core depends only on ILangPlugin. Format-specific behavior stays inside plugins.</text>
 
   <rect x="392" y="124" width="296" height="184" class="core"/>
   <text x="424" y="162" class="label">ILangPlugin</text>
@@ -28,18 +28,18 @@
 
   <rect x="72" y="388" width="250" height="126" class="plugin"/>
   <text x="104" y="426" class="label">JsonLangPlugin</text>
-  <text x="104" y="458" class="text">扫描 ResourceFolder</text>
-  <text x="104" y="482" class="text">支持嵌入 JSON 资源</text>
+  <text x="104" y="458" class="text">Scans ResourceFolder</text>
+  <text x="104" y="482" class="text">Loads embedded JSON</text>
 
   <rect x="414" y="388" width="250" height="126" class="plugin"/>
   <text x="446" y="426" class="label">XmlLangPlugin</text>
-  <text x="446" y="458" class="text">解析 XML 叶子节点</text>
-  <text x="446" y="482" class="text">支持嵌入 XML 资源</text>
+  <text x="446" y="458" class="text">Parses XML leaf nodes</text>
+  <text x="446" y="482" class="text">Loads embedded XML</text>
 
   <rect x="756" y="388" width="250" height="126" class="plugin"/>
   <text x="788" y="426" class="label">ResxLangPlugin</text>
-  <text x="788" y="458" class="text">发现 ResourceManager</text>
-  <text x="788" y="482" class="text">按 Culture 同步缓存</text>
+  <text x="788" y="458" class="text">Discovers ResourceManager</text>
+  <text x="788" y="482" class="text">Syncs cache by culture</text>
 
   <path d="M472 308 C360 352 286 352 197 388" class="line"/>
   <path d="M540 308 V388" class="line"/>
@@ -47,13 +47,13 @@
 
   <rect x="78" y="152" width="230" height="112" class="note"/>
   <text x="104" y="190" class="label">I18nManager</text>
-  <text x="104" y="222" class="text">注册插件</text>
-  <text x="104" y="246" class="text">同步线程 Culture</text>
+  <text x="104" y="222" class="text">Registers plugin</text>
+  <text x="104" y="246" class="text">Syncs thread Culture</text>
   <path d="M308 208 H392" class="line"/>
 
   <rect x="772" y="152" width="230" height="112" class="note"/>
-  <text x="798" y="190" class="label">消费者</text>
-  <text x="798" y="222" class="text">XAML 标记扩展</text>
-  <text x="798" y="246" class="text">后台 API 调用</text>
+  <text x="798" y="190" class="label">Consumers</text>
+  <text x="798" y="222" class="text">XAML markup extension</text>
+  <text x="798" y="246" class="text">C# API calls</text>
   <path d="M772 208 H688" class="line"/>
 </svg>

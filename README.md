@@ -1,6 +1,6 @@
 # Lang.Avalonia
 
-[简体中文](README.zh-CN.md) | English
+English | [简体中文](README.zh-CN.md)
 
 Lang.Avalonia is a plugin-based localization library for Avalonia UI. The core package provides the XAML markup extension, binding pipeline, converters, `I18nManager`, and the `ILangPlugin` contract. Resource loading is provided by JSON, XML, and RESX plugins, with an optional source generator for type-safe resource keys.
 
@@ -35,34 +35,7 @@ Lang.Avalonia is a plugin-based localization library for Avalonia UI. The core p
 Install the core package and one provider:
 
 ```shell
-dotnet add package Lang.Avalonia
 dotnet add package Lang.Avalonia.Json
-```
-
-Create language files under `I18n` and copy JSON/XML files to the output directory:
-
-```xml
-<ItemGroup>
-  <None Update="I18n\*.json" CopyToOutputDirectory="PreserveNewest" />
-</ItemGroup>
-```
-
-Example JSON resource:
-
-```json
-{
-  "language": "English",
-  "description": "English resources",
-  "cultureName": "en-US",
-  "Localization": {
-    "Main": {
-      "MainView": {
-        "Title": "Lang.Avalonia localization workspace",
-        "ChangeLanguage": "Language"
-      }
-    }
-  }
-}
 ```
 
 Register the plugin during app startup:
@@ -79,7 +52,7 @@ if (!string.IsNullOrWhiteSpace(error))
 }
 ```
 
-Use the generated constants in AXAML:
+Use generated constants in AXAML:
 
 ```xml
 xmlns:c="https://codewf.com"
@@ -102,6 +75,145 @@ Switch language at runtime:
 I18nManager.Instance.Culture = new CultureInfo("zh-CN");
 ```
 
+## JSON Provider
+
+Install:
+
+```shell
+dotnet add package Lang.Avalonia.Json
+```
+
+Use one file per culture and copy JSON files to the output directory:
+
+```text
+I18n/en-US.json
+I18n/zh-CN.json
+I18n/zh-Hant.json
+I18n/ja-JP.json
+```
+
+```xml
+<ItemGroup>
+  <None Update="I18n\*.json" CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+```
+
+Each JSON file must include `language`, `description`, and `cultureName` metadata:
+
+```json
+{
+  "language": "English",
+  "description": "English resources",
+  "cultureName": "en-US",
+  "Localization": {
+    "Main": {
+      "MainView": {
+        "Title": "Lang.Avalonia localization workspace",
+        "ChangeLanguage": "Language"
+      }
+    }
+  }
+}
+```
+
+`JsonLangPlugin.LoadDiagnostics` contains skipped-file diagnostics if invalid JSON files are found.
+
+## XML Provider
+
+Install:
+
+```shell
+dotnet add package Lang.Avalonia.Xml
+```
+
+Use one file per culture and copy XML files to the output directory:
+
+```text
+I18n/en-US.xml
+I18n/zh-CN.xml
+I18n/zh-Hant.xml
+I18n/ja-JP.xml
+```
+
+```xml
+<ItemGroup>
+  <None Update="I18n\*.xml" CopyToOutputDirectory="PreserveNewest" />
+</ItemGroup>
+```
+
+Each XML file must include `language`, `description`, and `cultureName` metadata on the root node:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<Localization language="English" description="English resources" cultureName="en-US">
+  <Main>
+    <MainView>
+      <Title>Lang.Avalonia localization workspace</Title>
+      <ChangeLanguage>Language</ChangeLanguage>
+    </MainView>
+  </Main>
+</Localization>
+```
+
+Leaf-node paths become resource keys. The example above produces `Localization.Main.MainView.Title`.
+`XmlLangPlugin.LoadDiagnostics` contains skipped-file diagnostics if invalid XML files are found.
+
+## RESX Provider
+
+Install:
+
+```shell
+dotnet add package Lang.Avalonia.Resx
+```
+
+Use standard .NET RESX naming:
+
+```text
+I18n/Resources.resx
+I18n/Resources.zh-CN.resx
+I18n/Resources.zh-Hant.resx
+I18n/Resources.ja-JP.resx
+```
+
+Use full resource keys as RESX data names:
+
+```xml
+<data name="Localization.Main.MainView.Title" xml:space="preserve">
+  <value>Lang.Avalonia localization workspace</value>
+</data>
+```
+
+`ResxLangPlugin` syncs resources by culture and exposes them through the same `ILangPlugin` contract used by JSON and XML providers. For trimmed publishing, pass the generated `ResourceManager` explicitly so the app does not need a linker root file for Lang.Avalonia.Resx:
+
+```csharp
+using MyApp.I18n;
+
+I18nManager.Instance.Register(
+    new ResxLangPlugin(Resources.ResourceManager),
+    new CultureInfo("en-US"),
+    out var error);
+```
+
+You can also pass the generated resource designer type:
+
+```csharp
+I18nManager.Instance.Register(
+    new ResxLangPlugin(typeof(Resources)),
+    new CultureInfo("en-US"),
+    out var error);
+```
+
+The default `ResxLangPlugin.Mark` value is `i18n`; keep generated resource designer types under a namespace or folder that contains `I18n`, or set `Mark` explicitly:
+
+```csharp
+I18nManager.Instance.Register(
+    new ResxLangPlugin { Mark = "Resources" },
+    new CultureInfo("en-US"),
+    out var error);
+```
+
+Convention-based discovery is kept for compatibility, but explicit registration is the recommended path for trimmed apps.
+
 ## Type-Safe Keys
 
 Two generation paths are supported:
@@ -109,16 +221,40 @@ Two generation paths are supported:
 - Demo T4 templates generate `I18n/Language.cs` from JSON, XML, or RESX resources.
 - `Lang.Avalonia.Analysis` generates `Language.g.cs` at compile time from `AdditionalFiles`.
 
-Source generator example:
+For application projects, keep `Lang.Avalonia.Analysis` private because it is a build-time analyzer:
+
+```xml
+<PackageReference Include="Lang.Avalonia.Analysis" Version="*" PrivateAssets="all" />
+```
+
+Register JSON, XML, or RESX language files as `AdditionalFiles`:
 
 ```xml
 <ItemGroup>
-  <PackageReference Include="Lang.Avalonia.Analysis" Version="*" PrivateAssets="all" />
   <AdditionalFiles Include="I18n\*.json" />
+  <AdditionalFiles Include="I18n\*.xml" />
+  <AdditionalFiles Include="I18n\*.resx" />
 </ItemGroup>
 ```
 
 Generated field values preserve the original resource keys. Only C# identifier names are sanitized.
+
+For a resource key such as:
+
+```text
+Localization.Main.MainView.Title
+```
+
+the generator emits constants shaped like:
+
+```csharp
+namespace Localization.Main;
+
+public static class MainView
+{
+    public static readonly string Title = "Localization.Main.MainView.Title";
+}
+```
 
 ## Demos And Design Notes
 
@@ -131,7 +267,7 @@ The repository contains four demos:
 | `Lang.Avalonia.Resx.Demo` | RESX resources loaded through `ResourceManager` |
 | `Lang.Avalonia.Analysis.Demo` | JSON resources plus source-generated keys |
 
-Design documentation and SVG diagrams are available in [docs/design.en-US.md](https://github.com/dotnet9/Lang.Avalonia/blob/main/docs/design.en-US.md).
+Design documentation and SVG diagrams are available in [docs/design.md](https://github.com/dotnet9/Lang.Avalonia/blob/main/docs/design.md).
 
 ## Fallback Rules
 
@@ -145,5 +281,5 @@ Resource lookup follows this order:
 
 - JSON and XML providers scan `AppDomain.CurrentDomain.BaseDirectory` by default.
 - JSON and XML providers can also read embedded resources through `AddResource`.
-- RESX provider discovers generated resource designer types by `ResourceManager`; the default type filter mark is `i18n`.
+- RESX provider does not require a Root.xml file for trimmed publishing when registered with an explicit `ResourceManager` or resource designer type.
 - Dynamic Avalonia bindings are supported for keys and format arguments.

@@ -28,7 +28,7 @@ public class I18nConverter(I18nBinding owner) : IMultiValueConverter
             return value;
         }
 
-        value = I18nManager.Instance.GetResource(key, owner.CultureName) ?? key;
+        value = I18nManager.Instance.GetResource(key, owner.CultureName);
 
         if (value is string format && owner.Args.Indexes.Count > 0)
         {
