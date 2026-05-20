@@ -283,3 +283,29 @@ Resource lookup follows this order:
 - JSON and XML providers can also read embedded resources through `AddResource`.
 - RESX provider does not require a Root.xml file for trimmed publishing when registered with an explicit `ResourceManager` or resource designer type.
 - Dynamic Avalonia bindings are supported for keys and format arguments.
+
+## Third-Party Open Source Audit (2026-05-20)
+
+Checked with `dotnet restore Lang.Avalonia.slnx`, `dotnet list package --include-transitive`, NuGet `.nuspec` metadata, NuGet.org, and upstream source repositories. MIT / Apache-2.0 / BSD are preferred; other source-open licenses are explicitly marked when source and transitive dependencies are traceable.
+
+Remediation:
+
+- Removed `AvaloniaUI.DiagnosticsSupport` from the four demo projects.
+- Updated `Avalonia` / `Avalonia.Desktop` from `12.0.2` to `12.0.3`.
+- Pinned `System.Drawing.Common` to `10.0.8`.
+- Updated `System.Text.Json` from `10.0.2` to `10.0.8`.
+- Kept `Prism.Avalonia`, `Prism.DryIoc.Avalonia`, and the matching `Irihi.Ursa.PrismExtension` integration on the existing open-source 8.x-compatible line instead of moving to the Prism 9.x commercial line.
+
+| Package | Usage | License | Source | Status |
+| --- | --- | --- | --- | --- |
+| `Avalonia` / `Avalonia.Desktop` | Demo UI and core Avalonia integration | MIT | https://github.com/AvaloniaUI/Avalonia | Approved, updated to `12.0.3` |
+| `Semi.Avalonia` | Demo theme | MIT | https://github.com/irihitech/Semi.Avalonia | Approved, only the open core package is used |
+| `Irihi.Ursa` / `Irihi.Ursa.PrismExtension` / `Irihi.Ursa.Themes.Semi` | Demo controls and Prism integration | MIT | https://github.com/irihitech/Ursa.Avalonia | Approved, Prism extension kept on the existing 8.x-compatible line |
+| `Prism.Avalonia` / `Prism.DryIoc.Avalonia` `8.1.97.11073` | Demo DI / Prism shell | MIT | https://github.com/AvaloniaCommunity/Prism.Avalonia | Approved, pinned to the 8.x open-source line |
+| `ReactiveUI.Avalonia` | Demo MVVM | MIT | https://github.com/reactiveui/reactiveui | Approved |
+| `Microsoft.CodeAnalysis.*` | `Lang.Avalonia.Analysis` source generation | MIT | https://github.com/dotnet/roslyn | Approved |
+| `System.Drawing.Common` / `System.Text.Json` | RESX and JSON support | MIT | https://github.com/dotnet/dotnet | Approved, pinned to `10.0.8` |
+| `VC-LTL` | Windows compatibility | EPL-2.0 | https://github.com/Chuyu-Team/VC-LTL5 | Source-open; approved under the source-traceable non-preferred license rule |
+| `YY-Thunks` | Windows compatibility | MIT | https://github.com/Chuyu-Team/YY-Thunks | Source-open; approved |
+
+Transitive dependency check: the Avalonia, Ursa, Semi, Prism, ReactiveUI, Roslyn, and .NET runtime/library chains are source-open. Active project files no longer contain `AvaloniaUI.DiagnosticsSupport` or other black-box components.

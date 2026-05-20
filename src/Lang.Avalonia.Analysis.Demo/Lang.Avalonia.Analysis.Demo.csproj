@@ -19,8 +19,6 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" />
         <PackageReference Include="Avalonia.Desktop" />
-        <!--Condition below is needed to remove diagnostics support package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="AvaloniaUI.DiagnosticsSupport" />
         <PackageReference Include="Semi.Avalonia" />
         <PackageReference Include="Irihi.Ursa" />
         <PackageReference Include="Irihi.Ursa.PrismExtension" />

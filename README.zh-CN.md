@@ -283,3 +283,29 @@ public static class MainView
 - JSON 和 XML 提供器也可以通过 `AddResource` 读取嵌入资源。
 - RESX 提供器在显式注册 `ResourceManager` 或资源 Designer 类型时，裁剪发布不需要为 Lang.Avalonia.Resx 配置 Root.xml。
 - 资源 Key 和格式化参数均支持动态 Avalonia Binding。
+
+## 第三方开源组件审计（2026-05-20）
+
+检查方式：`dotnet restore Lang.Avalonia.slnx`、`dotnet list package --include-transitive`、NuGet `.nuspec`、NuGet.org 与源码仓库信息。优先接受 MIT / Apache-2.0 / BSD；其它开源协议在源码与传递依赖均可追溯时单独标注。
+
+整改：
+
+- 四个 Demo 已移除 `AvaloniaUI.DiagnosticsSupport`。
+- `Avalonia` / `Avalonia.Desktop` 从 `12.0.2` 升级到 `12.0.3`。
+- `System.Drawing.Common` 固定到 `10.0.8`。
+- `System.Text.Json` 从 `10.0.2` 升级到 `10.0.8`。
+- `Prism.Avalonia`、`Prism.DryIoc.Avalonia` 以及配套的 `Irihi.Ursa.PrismExtension` 继续保留在当前 8.x 兼容开源线，不升级到 Prism 9.x 商业化版本线。
+
+| 包 | 使用范围 | 协议 | 源码/项目地址 | 结论 |
+| --- | --- | --- | --- | --- |
+| `Avalonia` / `Avalonia.Desktop` | Demo UI 与核心 Avalonia 集成 | MIT | https://github.com/AvaloniaUI/Avalonia | 通过，已升级到 `12.0.3` |
+| `Semi.Avalonia` | Demo 主题 | MIT | https://github.com/irihitech/Semi.Avalonia | 通过，仅使用开源主体包 |
+| `Irihi.Ursa` / `Irihi.Ursa.PrismExtension` / `Irihi.Ursa.Themes.Semi` | Demo 控件与 Prism 扩展 | MIT | https://github.com/irihitech/Ursa.Avalonia | 通过，Prism 扩展保留在当前 8.x 兼容线 |
+| `Prism.Avalonia` / `Prism.DryIoc.Avalonia` `8.1.97.11073` | Demo DI / Prism shell | MIT | https://github.com/AvaloniaCommunity/Prism.Avalonia | 通过，保留 8.x 开源线 |
+| `ReactiveUI.Avalonia` | Demo MVVM | MIT | https://github.com/reactiveui/reactiveui | 通过 |
+| `Microsoft.CodeAnalysis.*` | `Lang.Avalonia.Analysis` 源码生成 | MIT | https://github.com/dotnet/roslyn | 通过 |
+| `System.Drawing.Common` / `System.Text.Json` | RESX 与 JSON 支持 | MIT | https://github.com/dotnet/dotnet | 通过，固定到 `10.0.8` |
+| `VC-LTL` | Windows 兼容 | EPL-2.0 | https://github.com/Chuyu-Team/VC-LTL5 | 源码开放，按“非优先但可追溯”通过 |
+| `YY-Thunks` | Windows 兼容 | MIT | https://github.com/Chuyu-Team/YY-Thunks | 源码开放，通过 |
+
+传递依赖检查结论：Avalonia / Ursa / Semi / Prism / ReactiveUI / Roslyn / .NET 运行时与类库链路均有公开源码；有效项目文件中不再包含 `AvaloniaUI.DiagnosticsSupport` 或其它黑盒组件。

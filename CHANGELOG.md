@@ -1,5 +1,12 @@
 # Changelog
 
+## 12.0.3.1 - 2026-05-20
+
+- 🔨[Optimized]-Updated Avalonia and Avalonia.Desktop to `12.0.3`.
+- 🔨[Optimized]-Updated `System.Text.Json` to the latest stable `10.0.8`.
+- 🔨[Optimized]-Kept Prism.Avalonia and Prism.DryIoc.Avalonia on the open-source `8.1.97.11073` line instead of moving to the commercial 9.x line.
+- 📝[Docs]-Updated the third-party open-source audit notes for the refreshed package versions.
+
 ## 12.0.2.1 - 2026-05-08
 
 - 🔨[Optimized]-Merged package-specific README files into the root `README.md` for easier maintenance.
