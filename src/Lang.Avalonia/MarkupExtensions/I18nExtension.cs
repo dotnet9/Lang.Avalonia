@@ -128,5 +128,6 @@ public class I18nExtension : MarkupExtension
     public string? CultureName { get; set; }
 
     /// <inheritdoc />
-    public override object ProvideValue(IServiceProvider serviceProvider) => new I18nBinding(Key, CultureName, Args);
+    public override object ProvideValue(IServiceProvider serviceProvider) =>
+        new I18nBinding(Key, CultureName, Args).ProvideValue(serviceProvider);
 }

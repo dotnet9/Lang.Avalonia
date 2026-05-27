@@ -10,21 +10,19 @@
 		<SystemDrawingCommonVersion>10.0.8</SystemDrawingCommonVersion>
 		<SystemTextJsonVersion>10.0.8</SystemTextJsonVersion>
 		<UrsaVersion>2.0.0</UrsaVersion>
-		<UrsaPrismExtensionVersion>2.0.0</UrsaPrismExtensionVersion>
 		<YYThunksVersion>1.2.1</YYThunksVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageVersion Include="Avalonia" Version="$(AvaloniaVersion)" />
 		<PackageVersion Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
 		<PackageVersion Include="Irihi.Ursa" Version="$(UrsaVersion)" />
-		<PackageVersion Include="Irihi.Ursa.PrismExtension" Version="$(UrsaPrismExtensionVersion)" />
 		<PackageVersion Include="Irihi.Ursa.Themes.Semi" Version="$(UrsaVersion)" />
+		<PackageVersion Include="Semi.Avalonia" Version="$(SemiAvaloniaVersion)" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="$(CodeAnalysisVersion)" />
 		<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersion)" />
 		<PackageVersion Include="Prism.Avalonia" Version="$(PrismAvaloniaVersion)" />
 		<PackageVersion Include="Prism.DryIoc.Avalonia" Version="$(PrismAvaloniaVersion)" />
 		<PackageVersion Include="ReactiveUI.Avalonia" Version="$(ReactiveUIAvaloniaVersion)" />
-		<PackageVersion Include="Semi.Avalonia" Version="$(SemiAvaloniaVersion)" />
 		<PackageVersion Include="System.Drawing.Common" Version="$(SystemDrawingCommonVersion)" />
 		<PackageVersion Include="System.Text.Json" Version="$(SystemTextJsonVersion)" />
 		<PackageVersion Include="VC-LTL" Version="5.3.1" />
