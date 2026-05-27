@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -8,7 +8,7 @@ using System.Threading;
 namespace Lang.Avalonia;
 
 /// <summary>
-/// 多语言运行时管理器，负责注册资源插件、切换文化并通知 Avalonia 绑定刷新。
+/// Runtime localization manager that registers plugins, switches culture, and refreshes bindings.
 /// </summary>
 public class I18nManager : INotifyPropertyChanged
 {
@@ -18,7 +18,7 @@ public class I18nManager : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>
-    /// 全局多语言管理器实例。
+    /// Global localization manager instance.
     /// </summary>
     public static I18nManager Instance { get; } = new();
 
@@ -27,10 +27,24 @@ public class I18nManager : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// 注册语言插件并加载默认文化资源。
+    /// Registers a plugin and loads resources for the default culture.
+    /// </summary>
+    public void Register(ILangPlugin plugin, CultureInfo? defaultCulture = null)
+    {
+        ArgumentNullException.ThrowIfNull(plugin);
+        var culture = defaultCulture ?? CultureInfo.CurrentUICulture;
+        if (!Register(plugin, culture, out var error))
+        {
+            throw new InvalidOperationException(error);
+        }
+    }
+
+    /// <summary>
+    /// Registers a plugin and loads resources for the default culture.
     /// </summary>
     public bool Register(ILangPlugin plugin, CultureInfo defaultCulture, out string? error)
     {
+        ArgumentNullException.ThrowIfNull(plugin);
         error = null;
         var previousPlugin = _langPlugin;
 
@@ -50,7 +64,7 @@ public class I18nManager : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// 从额外程序集追加资源，常用于模块化应用延迟加载语言包。
+    /// Adds resources from extra assemblies.
     /// </summary>
     public void AddResource(params Assembly[] assemblies)
     {
@@ -58,7 +72,7 @@ public class I18nManager : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// 当前文化。设置后会同步当前线程、默认线程文化，并触发绑定刷新。
+    /// Current culture. Setting it updates thread cultures and refreshes bindings.
     /// </summary>
     public CultureInfo? Culture
     {
@@ -75,17 +89,17 @@ public class I18nManager : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// 获取当前插件提供的语言列表。
+    /// Gets the languages known by the current plugin.
     /// </summary>
     public List<LocalizationLanguage>? GetLanguages() => _langPlugin?.GetLanguages();
 
     /// <summary>
-    /// 按 Key 获取本地化文本。
+    /// Gets localized text by key.
     /// </summary>
     public string GetResource(string key, string? cultureName = null) => _langPlugin?.GetResource(key, cultureName) ?? key;
 
     /// <summary>
-    /// 当前文化变化时触发。
+    /// Raised when the current culture changes.
     /// </summary>
     public event EventHandler<EventArgs>? CultureChanged;
 

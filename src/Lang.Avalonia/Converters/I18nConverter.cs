@@ -4,40 +4,50 @@ using Avalonia.Data.Converters;
 using Lang.Avalonia.MarkupExtensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 
 namespace Lang.Avalonia.Converters;
 
 /// <summary>
-/// 多值绑定转换器：根据当前文化、资源 Key 和格式化参数解析最终文本。
+/// Resolves the current culture, resource key, and format arguments to the final value.
 /// </summary>
-public class I18nConverter(I18nBinding owner) : IMultiValueConverter
+[EditorBrowsable(EditorBrowsableState.Never)]
+public class I18nConverter : IMultiValueConverter
 {
     /// <inheritdoc />
     public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (values.Count < 2 || values[0] is not CultureInfo || IsUnsetValue(values[1]))
+        if (values.Count < 2
+            || values[0] is not CultureInfo
+            || parameter is not I18nBinding owner
+            || IsUnsetValue(values[1]))
         {
             return BindingOperations.DoNothing;
         }
 
         var value = values[1];
-        if (owner.KeyConverter.Convert(value, typeof(string), null, culture) is not string key)
+        if (owner.KeyConverter is { } keyConverter)
+        {
+            value = keyConverter.Convert(value, typeof(string), null, culture);
+        }
+
+        if (value is not string key)
         {
             return value;
         }
 
         value = I18nManager.Instance.GetResource(key, owner.CultureName);
 
-        if (value is string format && owner.Args.Indexes.Count > 0)
+        if (value is string format && owner.Indexes.Count > 0)
         {
-            if (owner.Args.Indexes.Any(item => item.IsBinding && item.Index >= values.Count))
+            if (owner.Indexes.Any(item => item.IsBinding && item.Index >= values.Count))
             {
                 return BindingOperations.DoNothing;
             }
 
-            var args = owner.Args.Indexes
+            var args = owner.Indexes
                 .Select(item => item.IsBinding ? values[item.Index] : owner.Args[item.Index])
                 .ToArray();
 
@@ -56,7 +66,9 @@ public class I18nConverter(I18nBinding owner) : IMultiValueConverter
             }
         }
 
-        return owner.ValueConverter.Convert(value, targetType, null, culture);
+        return owner.ValueConverter is { } valueConverter
+            ? valueConverter.Convert(value, targetType, null, culture)
+            : value;
     }
 
     private static bool IsUnsetValue(object? value)

@@ -7,20 +7,21 @@ using System.Collections.Generic;
 namespace Lang.Avalonia.MarkupExtensions;
 
 /// <summary>
-/// 为标记扩展封装一个内部 MultiBinding，并限制转换器只能由派生类初始化一次。
+/// Wraps a MultiBinding and lets derived extensions initialize converter state once.
 /// </summary>
 public abstract class MultiBindingExtensionBase : MarkupExtension
 {
     private readonly MultiBinding binding = new();
     private bool converterInitialized;
+    private bool converterParameterInitialized;
 
     /// <summary>
-    /// 子绑定集合。
+    /// Child bindings used by the wrapped MultiBinding.
     /// </summary>
     internal IList<BindingBase> Bindings => binding.Bindings;
 
     /// <summary>
-    /// 绑定模式。
+    /// Binding mode used by the wrapped MultiBinding.
     /// </summary>
     protected BindingMode Mode
     {
@@ -29,7 +30,7 @@ public abstract class MultiBindingExtensionBase : MarkupExtension
     }
 
     /// <summary>
-    /// 多值绑定转换器。派生类初始化后不允许外部再次覆盖。
+    /// Multi-value converter. Derived classes can set it during initialization.
     /// </summary>
     protected IMultiValueConverter? Converter
     {
@@ -43,6 +44,24 @@ public abstract class MultiBindingExtensionBase : MarkupExtension
 
             binding.Converter = value;
             converterInitialized = true;
+        }
+    }
+
+    /// <summary>
+    /// Converter parameter. Derived classes can set it during initialization.
+    /// </summary>
+    protected object? ConverterParameter
+    {
+        get => binding.ConverterParameter;
+        set
+        {
+            if (converterParameterInitialized)
+            {
+                throw new InvalidOperationException($"The {GetType().Name}.ConverterParameter property is readonly.");
+            }
+
+            binding.ConverterParameter = value;
+            converterParameterInitialized = true;
         }
     }
 

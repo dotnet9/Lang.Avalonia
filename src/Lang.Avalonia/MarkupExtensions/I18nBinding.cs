@@ -1,79 +1,108 @@
-﻿using Avalonia.Data;
+using Avalonia.Data;
 using Avalonia.Data.Converters;
+using Avalonia.Data.Core;
+using Avalonia.Markup.Xaml.MarkupExtensions;
+using Avalonia.Markup.Xaml.MarkupExtensions.CompiledBindings;
 using Lang.Avalonia.Converters;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 namespace Lang.Avalonia.MarkupExtensions;
 
 /// <summary>
-/// 多值绑定实现：监听当前文化、资源 Key 以及格式化参数，并交给转换器生成文本。
+/// MultiBinding implementation used by I18nExtension.
 /// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
 public class I18nBinding : MultiBindingExtensionBase
 {
     /// <summary>
-    /// 使用资源 Key 创建本地化绑定。
+    /// Creates a localization binding from a resource key or key binding.
     /// </summary>
     [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "I18nBinding intentionally accepts runtime Avalonia bindings for dynamic localization keys.")]
     public I18nBinding(object key)
     {
         Mode = BindingMode.OneWay;
-        Converter = new I18nConverter(this);
+        Converter = new I18nConverter();
+        ConverterParameter = this;
         KeyConverter = new I18nKeyConverter();
-        ValueConverter = new I18nValueConverter();
-        Args = new ArgCollection(this);
 
-        var cultureBinding = new Binding { Source = I18nManager.Instance, Path = nameof(I18nManager.Culture) };
+        var cultureBinding = new CompiledBindingExtension
+        {
+            Source = I18nManager.Instance,
+            Mode = BindingMode.OneWay,
+            Path = new CompiledBindingPathBuilder()
+                .Property(
+                    new ClrPropertyInfo(
+                        nameof(I18nManager.Culture),
+                        target => ((I18nManager)target).Culture,
+                        (target, value) => ((I18nManager)target).Culture = value as CultureInfo,
+                        typeof(CultureInfo)),
+                    PropertyInfoAccessorFactory.CreateInpcPropertyAccessor)
+                .Build()
+        };
+
         Bindings.Add(cultureBinding);
 
         Key = key;
         if (Key is not BindingBase keyBinding)
         {
-            keyBinding = new Binding { Source = key };
+            keyBinding = new CompiledBindingExtension { Source = key };
         }
 
         Bindings.Add(keyBinding);
     }
 
     /// <summary>
-    /// 使用固定文化和格式化参数创建本地化绑定。
+    /// Creates a localization binding with a fixed culture and format arguments.
     /// </summary>
-    public I18nBinding(object key, string? cultureName, List<object> args) : this(key)
+    public I18nBinding(object key, string? cultureName, IReadOnlyCollection<object> args) : this(key)
     {
         CultureName = cultureName;
-        if (args is not { Count: > 0 })
-        {
-            return;
-        }
 
-        foreach (object arg in args)
+        foreach (var arg in args)
         {
-            Args.Add(arg);
+            if (arg is BindingBase binding)
+            {
+                Indexes.Add((true, Bindings.Count));
+                Bindings.Add(binding);
+            }
+            else
+            {
+                Indexes.Add((false, Args.Count));
+                Args.Add(arg);
+            }
         }
     }
 
     /// <summary>
-    /// 资源 Key，可为常量、枚举或 Avalonia Binding。
+    /// Resource key, constant value, enum value, or Avalonia binding.
     /// </summary>
     public object Key { get; }
 
     /// <summary>
-    /// 固定文化名称。设置后该绑定不会跟随当前线程文化取值。
+    /// Fixed culture name. When unset, the binding follows I18nManager.Culture.
     /// </summary>
     public string? CultureName { get; set; }
 
     /// <summary>
-    /// 参与 string.Format 的参数集合。
+    /// Argument indexes. Binding arguments point to MultiBinding indexes; constants point to Args indexes.
     /// </summary>
-    public ArgCollection Args { get; }
+    internal List<(bool IsBinding, int Index)> Indexes { get; } = [];
 
     /// <summary>
-    /// 资源 Key 转换器。
+    /// Constant arguments passed to string.Format.
     /// </summary>
-    public IValueConverter KeyConverter { get; set; }
+    internal List<object> Args { get; } = [];
 
     /// <summary>
-    /// 资源值转换器。
+    /// Converts the resource key to its lookup string.
     /// </summary>
-    public IValueConverter ValueConverter { get; set; }
+    public IValueConverter? KeyConverter { get; set; }
+
+    /// <summary>
+    /// Optional final value converter.
+    /// </summary>
+    public IValueConverter? ValueConverter { get; set; }
 }

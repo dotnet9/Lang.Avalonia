@@ -1,16 +1,16 @@
-﻿using Avalonia.Markup.Xaml;
+using Avalonia.Markup.Xaml;
 using System;
 using System.Collections.Generic;
 
 namespace Lang.Avalonia.MarkupExtensions;
 
 /// <summary>
-/// XAML 标记扩展入口，用于将资源 Key 绑定到当前文化下的本地化文本。
+/// XAML markup extension for localized resource lookup.
 /// </summary>
 public class I18nExtension : MarkupExtension
 {
     /// <summary>
-    /// 使用资源 Key 创建标记扩展。
+    /// Creates the markup extension from a resource key.
     /// </summary>
     public I18nExtension(object key)
     {
@@ -18,7 +18,7 @@ public class I18nExtension : MarkupExtension
     }
 
     /// <summary>
-    /// 使用资源 Key 和 1 个格式化参数创建标记扩展。
+    /// Creates the markup extension with one format argument.
     /// </summary>
     public I18nExtension(object key, object arg0) : this(key)
     {
@@ -26,7 +26,7 @@ public class I18nExtension : MarkupExtension
     }
 
     /// <summary>
-    /// 使用资源 Key 和 2 个格式化参数创建标记扩展。
+    /// Creates the markup extension with two format arguments.
     /// </summary>
     public I18nExtension(object key, object arg0, object arg1) : this(key)
     {
@@ -35,7 +35,7 @@ public class I18nExtension : MarkupExtension
     }
 
     /// <summary>
-    /// 使用资源 Key 和 3 个格式化参数创建标记扩展。
+    /// Creates the markup extension with three format arguments.
     /// </summary>
     public I18nExtension(object key, object arg0, object arg1, object arg2) : this(key)
     {
@@ -45,7 +45,7 @@ public class I18nExtension : MarkupExtension
     }
 
     /// <summary>
-    /// 使用资源 Key 和 4 个格式化参数创建标记扩展。
+    /// Creates the markup extension with four format arguments.
     /// </summary>
     public I18nExtension(object key, object arg0, object arg1, object arg2, object arg3) : this(key)
     {
@@ -56,7 +56,7 @@ public class I18nExtension : MarkupExtension
     }
 
     /// <summary>
-    /// 使用资源 Key 和 5 个格式化参数创建标记扩展。
+    /// Creates the markup extension with five format arguments.
     /// </summary>
     public I18nExtension(object key, object arg0, object arg1, object arg2, object arg3, object arg4) : this(key)
     {
@@ -68,7 +68,7 @@ public class I18nExtension : MarkupExtension
     }
 
     /// <summary>
-    /// 使用资源 Key 和 6 个格式化参数创建标记扩展。
+    /// Creates the markup extension with six format arguments.
     /// </summary>
     public I18nExtension(object key, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5) :
         this(key)
@@ -82,7 +82,7 @@ public class I18nExtension : MarkupExtension
     }
 
     /// <summary>
-    /// 使用资源 Key 和 7 个格式化参数创建标记扩展。
+    /// Creates the markup extension with seven format arguments.
     /// </summary>
     public I18nExtension(object key, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5,
         object arg6) : this(key)
@@ -97,7 +97,7 @@ public class I18nExtension : MarkupExtension
     }
 
     /// <summary>
-    /// 使用资源 Key 和 8 个格式化参数创建标记扩展。
+    /// Creates the markup extension with eight format arguments.
     /// </summary>
     public I18nExtension(object key, object arg0, object arg1, object arg2, object arg3, object arg4, object arg5,
         object arg6, object arg7) : this(key)
@@ -113,21 +113,20 @@ public class I18nExtension : MarkupExtension
     }
 
     /// <summary>
-    /// 资源 Key，可为常量、枚举或 Binding。
+    /// Resource key, constant value, enum value, or binding.
     /// </summary>
     public object Key { get; }
 
     /// <summary>
-    /// 格式化参数。参数可以是常量，也可以是 Avalonia Binding。
+    /// Format arguments. Arguments can be constants or Avalonia bindings.
     /// </summary>
     public List<object> Args { get; } = new();
 
     /// <summary>
-    /// 固定使用指定文化；为空时跟随 <see cref="I18nManager.Culture"/>。
+    /// Fixed culture name. When unset, the binding follows I18nManager.Culture.
     /// </summary>
     public string? CultureName { get; set; }
 
     /// <inheritdoc />
-    public override object ProvideValue(IServiceProvider serviceProvider) =>
-        new I18nBinding(Key, CultureName, Args).ProvideValue(serviceProvider);
+    public override object ProvideValue(IServiceProvider serviceProvider) => new I18nBinding(Key, CultureName, Args);
 }
