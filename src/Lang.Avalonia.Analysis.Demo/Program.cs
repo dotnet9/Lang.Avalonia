@@ -1,5 +1,5 @@
-﻿using Avalonia;
-using Avalonia.ReactiveUI;
+using Avalonia;
+using ReactiveUI.Avalonia;
 using System;
 
 namespace Lang.Avalonia.Analysis.Demo;
@@ -17,6 +17,6 @@ sealed class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .UseReactiveUI()
+            .UseReactiveUI((_) => { })
             .LogToTrace();
 }

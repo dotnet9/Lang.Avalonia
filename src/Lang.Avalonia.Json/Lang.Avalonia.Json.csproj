@@ -1,28 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<Title>Lang.Avalonia.Json</Title>
-		<TargetFrameworks>net8.0;net9.0;net10.0;net11.0</TargetFrameworks>
-		<OutputType>Library</OutputType>
-		<IsPackable>true</IsPackable>
-		<Description>Avalonia UI 国际化解决方案的 Json 插件，提供 Json 格式的多语言资源加载支持</Description>
-		<PackageIcon>logo.png</PackageIcon>
-		<PackageTags>$(PackageTags);Json;Localization</PackageTags>
-		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<RepositoryType>git</RepositoryType>
-		<GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">true</GeneratePackageOnBuild>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<IsAotCompatible>true</IsAotCompatible>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Lang.Avalonia\Lang.Avalonia.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="..\..\README.md" Pack="true" PackagePath="README.md" />
-		<None Include="..\..\README.zh-CN.md" Pack="true" PackagePath="README.zh-CN.md" />
-		<None Include="..\..\logo.png" Pack="true" PackagePath="logo.png" />
-	</ItemGroup>
-
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Title>Lang.Avalonia.Json</Title>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <OutputType>Library</OutputType>
+    <IsPackable>true</IsPackable>
+    <Description>Avalonia UI 国际化解决方案的 Json 插件，提供 Json 格式的多语言资源加载支持</Description>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageTags>$(PackageTags) Json Localization</PackageTags>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">true</GeneratePackageOnBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
+    <ProjectReference Include="..\Lang.Avalonia\Lang.Avalonia.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="README.md" />
+    <None Include="..\..\logo.png" Pack="true" PackagePath="logo.png" Link="logo.png" />
+  </ItemGroup>
 </Project>

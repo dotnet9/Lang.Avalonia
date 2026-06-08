@@ -1,54 +1,53 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-	    <TargetFrameworks>net8.0;net9.0;net10.0;net11.0;net11.0-windows</TargetFrameworks>
-        <Nullable>enable</Nullable>
-        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-        <ApplicationManifest>app.manifest</ApplicationManifest>
-        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    </PropertyGroup>
-    <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net11.0-windows'))">
-        <IsTrimmable>true</IsTrimmable>
-        <PublishTrimmed>true</PublishTrimmed>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <AvaloniaResource Include="Assets\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Avalonia" />
-        <PackageReference Include="Avalonia.Desktop" />
-        <PackageReference Include="Semi.Avalonia" />
-        <PackageReference Include="Irihi.Ursa" />
-        <PackageReference Include="Irihi.Ursa.Themes.Semi" />
-        <PackageReference Include="Prism.Avalonia" />
-        <PackageReference Include="Prism.DryIoc.Avalonia" />
-        <PackageReference Include="ReactiveUI.Avalonia" />
-        <PackageReference Include="VC-LTL" />
-        <PackageReference Include="YY-Thunks" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Lang.Avalonia.Json\Lang.Avalonia.Json.csproj" />
-      <ProjectReference Include="..\Lang.Avalonia\Lang.Avalonia.csproj" />
-      <ProjectReference Include="..\Lang.Avalonia.Analysis\Lang.Avalonia.Analysis.csproj" OutputItemType="Analyzer" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="I18n\*.json" />
-      <None Update="I18n\en-US.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="I18n\ja-JP.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="I18n\zh-CN.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="I18n\zh-Hant.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-    
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworks>net11.0;net11.0-windows</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\..\logo.ico</ApplicationIcon>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net11.0-windows'))">
+    <IsTrimmable>true</IsTrimmable>
+    <PublishTrimmed>true</PublishTrimmed>
+  </PropertyGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+    <AvaloniaResource Include="..\..\logo.ico" Link="Assets\logo.ico" />
+    <AvaloniaResource Include="..\..\logo.png" Link="Assets\logo.png" />
+    <AvaloniaResource Include="..\..\logo.svg" Link="Assets\logo.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Semi.Avalonia" />
+    <PackageReference Include="Irihi.Ursa" />
+    <PackageReference Include="Irihi.Ursa.Themes.Semi" />
+    <PackageReference Include="Prism.Avalonia" />
+    <PackageReference Include="Prism.DryIoc.Avalonia" />
+    <PackageReference Include="ReactiveUI.Avalonia" />
+    <PackageReference Include="VC-LTL" />
+    <PackageReference Include="YY-Thunks" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lang.Avalonia.Json\Lang.Avalonia.Json.csproj" />
+    <ProjectReference Include="..\Lang.Avalonia\Lang.Avalonia.csproj" />
+    <ProjectReference Include="..\Lang.Avalonia.Analysis\Lang.Avalonia.Analysis.csproj" OutputItemType="Analyzer" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="I18n\*.json" />
+    <None Update="I18n\en-US.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="I18n\ja-JP.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="I18n\zh-CN.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="I18n\zh-Hant.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

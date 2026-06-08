@@ -14,7 +14,7 @@
     Height="760"
     MinWidth="860"
     MinHeight="640"
-    Icon="/Assets/avalonia-logo.ico"
+    Icon="/Assets/logo.ico"
     Background="#FFF4F7FB"
     x:DataType="vm:MainWindowViewModel"
     mc:Ignorable="d">

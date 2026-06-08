@@ -1,20 +1,24 @@
 <Project>
-
-	<PropertyGroup>
-		<Authors>沙漠尽头的狼</Authors>
-		<Company>CodeWF</Company>
-		<Copyright>Copyright (c) 2025 https://codewf.com</Copyright>
-		<Version>12.0.3.3</Version>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<LangVersion>preview</LangVersion>
-		<PackageProjectUrl>https://github.com/dotnet9/Lang.Avalonia</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/dotnet9/Lang.Avalonia</RepositoryUrl>
-		<PackageTags>Avalonia;AvaloniaUI</PackageTags>
-		<EnableNETAnalyzers>true</EnableNETAnalyzers>
-		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<Nullable>enable</Nullable>
-		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-		<CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-	</PropertyGroup>
+  <PropertyGroup>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <DebugType>portable</DebugType>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSymbols>true</IncludeSymbols>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <Authors>沙漠尽头的狼</Authors>
+    <Company>CodeWF</Company>
+    <Copyright>Copyright (c) 2026 https://codewf.com</Copyright>
+    <Version>12.0.4.1</Version>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <LangVersion>preview</LangVersion>
+    <PackageProjectUrl>https://github.com/dotnet9/Lang.Avalonia</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/dotnet9/Lang.Avalonia</RepositoryUrl>
+    <PackageTags>Avalonia AvaloniaUI</PackageTags>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <Nullable>enable</Nullable>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
 </Project>
