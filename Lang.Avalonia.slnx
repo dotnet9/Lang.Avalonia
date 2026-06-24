@@ -17,12 +17,7 @@
     <File Path="UpdateAssemblyVersion.ps1" />
   </Folder>
   <Folder Name="/Docs/">
-    <File Path="docs/design.md" />
-    <File Path="docs/assets/architecture.svg" />
-    <File Path="docs/assets/plugin-contract.svg" />
-    <File Path="docs/assets/resource-resolution.svg" />
-    <File Path="docs/assets/source-generation.svg" />
-    <File Path="docs/assets/usage-flow.svg" />
+    <File Path="docs/设计文档.md" />
     <File Path="docs/assets/zh-CN/architecture.svg" />
     <File Path="docs/assets/zh-CN/plugin-contract.svg" />
     <File Path="docs/assets/zh-CN/resource-resolution.svg" />
