@@ -314,3 +314,6 @@ public static class MainView
 | `YY-Thunks` | Windows 兼容 | MIT | https://github.com/Chuyu-Team/YY-Thunks | 源码开放，通过 |
 
 传递依赖检查结论：Avalonia / Ursa / Semi / Prism / ReactiveUI / Roslyn / .NET 运行时与类库链路均有公开源码；有效项目文件中不再包含 `AvaloniaUI.DiagnosticsSupport` 或其它黑盒组件。
+## Package Versioning Convention
+
+Keep NuGet package versions and Central Package Management settings in `Directory.Packages.props`, including shared version properties such as `AvaloniaVersion`. Keep `Directory.Build.props` focused on build, compiler, and NuGet package metadata. When referenced, `VC-LTL` and `YY-Thunks` should use their latest prerelease versions for OS platform compatibility.
