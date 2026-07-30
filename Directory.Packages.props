@@ -2,15 +2,15 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-    <AvaloniaVersion>12.1.0</AvaloniaVersion>
+    <AvaloniaVersion>12.1.1</AvaloniaVersion>
     <CodeAnalysisVersion>5.6.0</CodeAnalysisVersion>
     <PrismAvaloniaVersion>8.1.97.11073</PrismAvaloniaVersion>
-    <ReactiveUIAvaloniaVersion>12.0.3</ReactiveUIAvaloniaVersion>
+    <ReactiveUIAvaloniaVersion>12.1.0</ReactiveUIAvaloniaVersion>
     <SemiAvaloniaVersion>12.1.0</SemiAvaloniaVersion>
-    <SystemDrawingCommonVersion>10.0.9</SystemDrawingCommonVersion>
-    <SystemTextJsonVersion>10.0.9</SystemTextJsonVersion>
+    <SystemDrawingCommonVersion>10.0.10</SystemDrawingCommonVersion>
+    <SystemTextJsonVersion>10.0.10</SystemTextJsonVersion>
     <UrsaVersion>2.1.0</UrsaVersion>
-    <YYThunksVersion>1.2.1</YYThunksVersion>
+    <YYThunksVersion>1.2.2</YYThunksVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Avalonia" Version="$(AvaloniaVersion)" />
@@ -27,6 +27,6 @@
     <PackageVersion Include="System.Text.Json" Version="$(SystemTextJsonVersion)" />
     <PackageVersion Include="VC-LTL" Version="5.3.1" />
     <PackageVersion Include="YY-Thunks" Version="$(YYThunksVersion)" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.300" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.301" />
   </ItemGroup>
 </Project>
