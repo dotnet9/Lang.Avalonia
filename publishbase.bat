@@ -13,7 +13,7 @@ if "%~2"=="" (
     set "platforms=%~2"
 )
 
-set "publish_root=%~dp0publish"
+set "publish_root=%~dp0artifacts\publish"
 set "publish_failed=0"
 
 for %%p in (%platforms%) do (

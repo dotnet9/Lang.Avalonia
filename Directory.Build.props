@@ -5,10 +5,13 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <IncludeSymbols>true</IncludeSymbols>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts\</ArtifactsPath>
+    <PackageOutputPath>$(ArtifactsPath)packages\</PackageOutputPath>
     <Authors>沙漠尽头的狼</Authors>
     <Company>CodeWF</Company>
     <Copyright>Copyright (c) 2026 https://codewf.com</Copyright>
-    <Version>12.1.1.1</Version>
+    <Version>12.1.1.2</Version>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <LangVersion>preview</LangVersion>

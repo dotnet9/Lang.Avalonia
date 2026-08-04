@@ -5,11 +5,11 @@
     <AvaloniaVersion>12.1.1</AvaloniaVersion>
     <CodeAnalysisVersion>5.6.0</CodeAnalysisVersion>
     <PrismAvaloniaVersion>8.1.97.11073</PrismAvaloniaVersion>
-    <ReactiveUIAvaloniaVersion>12.1.0</ReactiveUIAvaloniaVersion>
-    <SemiAvaloniaVersion>12.1.0</SemiAvaloniaVersion>
+    <ReactiveUIAvaloniaVersion>12.1.1</ReactiveUIAvaloniaVersion>
+    <SemiAvaloniaVersion>12.1.0.1</SemiAvaloniaVersion>
     <SystemDrawingCommonVersion>10.0.10</SystemDrawingCommonVersion>
     <SystemTextJsonVersion>10.0.10</SystemTextJsonVersion>
-    <UrsaVersion>2.1.0</UrsaVersion>
+    <UrsaVersion>2.2.0</UrsaVersion>
     <YYThunksVersion>1.2.2</YYThunksVersion>
   </PropertyGroup>
   <ItemGroup>
