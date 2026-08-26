@@ -30,6 +30,8 @@ for %%P in (
     if errorlevel 1 goto :error
 )
 
+for /r "%PACKAGES_DIR%" %%F in (*.pdb) do del /q "%%F" 2>nul
+
 echo.
 echo Packages are available in:
 echo %PACKAGES_DIR%
