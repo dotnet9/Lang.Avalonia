@@ -27,6 +27,6 @@
     <PackageVersion Include="System.Text.Json" Version="$(SystemTextJsonVersion)" />
     <PackageVersion Include="VC-LTL" Version="5.3.1" />
     <PackageVersion Include="YY-Thunks" Version="$(YYThunksVersion)" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.400" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
   </ItemGroup>
 </Project>
