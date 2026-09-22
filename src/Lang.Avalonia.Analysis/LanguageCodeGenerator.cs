@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Lang.Avalonia.Analysis;
 
@@ -26,9 +28,10 @@ internal static class LanguageCodeGenerator
         stringBuilder.AppendLine("//------------------------------------------------------------------------------");
         stringBuilder.AppendLine();
 
-        // 使用第一个culture的资源来分析结构
-        var firstCultureResources = allResources.Values.First();
-        var classStructure = AnalyzeResourceStructure(firstCultureResources.Keys);
+        var resourceKeys = allResources.Values
+            .SelectMany(resources => resources.Keys)
+            .Distinct(StringComparer.Ordinal);
+        var classStructure = AnalyzeResourceStructure(resourceKeys);
 
         // 生成命名空间
         foreach (var namespaceGroup in classStructure)
@@ -80,9 +83,9 @@ internal static class LanguageCodeGenerator
             }
 
             // 找到根命名空间（通常是最长的公共前缀）
-            var namespacePart = parts[0];
-            var modulePart = parts[1];
-            var classPart = parts[2];
+            var namespacePart = SanitizeName(parts[0]);
+            var modulePart = SanitizeName(parts[1]);
+            var classPart = SanitizeName(parts[2]);
             var propertyPart = string.Join(".", parts.Skip(3));
 
             if (string.IsNullOrEmpty(propertyPart))
@@ -115,11 +118,16 @@ internal static class LanguageCodeGenerator
             return "Unnamed";
         }
 
-        // 移除或替换无效字符
-        var sanitized = new string(name.Where(c => char.IsLetterOrDigit(c) || c == '_').ToArray());
+        var sanitized = new string(name.Select(c => char.IsLetterOrDigit(c) || c == '_' ? c : '_').ToArray());
 
         // 确保不以数字开头
         if (sanitized.Length > 0 && char.IsDigit(sanitized[0]))
+        {
+            sanitized = "_" + sanitized;
+        }
+
+        if (SyntaxFacts.GetKeywordKind(sanitized) != SyntaxKind.None
+            || SyntaxFacts.GetContextualKeywordKind(sanitized) != SyntaxKind.None)
         {
             sanitized = "_" + sanitized;
         }
@@ -145,6 +153,13 @@ internal static class LanguageCodeGenerator
 
     private static string EscapeStringLiteral(string value)
     {
-        return value.Replace("\\", "\\\\").Replace("\"", "\\\"");
+        return value
+            .Replace("\\", "\\\\")
+            .Replace("\"", "\\\"")
+            .Replace("\r", "\\r")
+            .Replace("\n", "\\n")
+            .Replace("\t", "\\t")
+            .Replace("\b", "\\b")
+            .Replace("\f", "\\f");
     }
 }

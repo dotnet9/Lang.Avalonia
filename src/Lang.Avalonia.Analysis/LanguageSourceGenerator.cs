@@ -15,6 +15,22 @@ internal record struct LanguageFileInfo(string Path, string Content);
 [Generator]
 public class LanguageSourceGenerator : IIncrementalGenerator
 {
+    private static readonly DiagnosticDescriptor InvalidResourceFile = new(
+        "LAA002",
+        "Invalid language resource",
+        "No valid language resource entries were found in '{0}'",
+        "Lang.Avalonia.Analysis",
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true);
+
+    private static readonly DiagnosticDescriptor InvalidResourceKey = new(
+        "LAA003",
+        "Unsupported language resource key",
+        "Language resource key '{0}' must contain at least three dot-separated segments",
+        "Lang.Avalonia.Analysis",
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true);
+
     /// <inheritdoc />
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -61,6 +77,12 @@ public class LanguageSourceGenerator : IIncrementalGenerator
                     _ => new Dictionary<string, Dictionary<string, string>>()
                 };
 
+                if (fileResources.Count == 0)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(InvalidResourceFile, Location.None, filePath));
+                    continue;
+                }
+
                 foreach (var cultureResources in fileResources)
                 {
                     var cultureName = cultureResources.Key;
@@ -81,6 +103,14 @@ public class LanguageSourceGenerator : IIncrementalGenerator
             if (!allResources.Any())
             {
                 return;
+            }
+
+            foreach (var key in allResources.Values
+                         .SelectMany(resources => resources.Keys)
+                         .Distinct(System.StringComparer.Ordinal)
+                         .Where(key => key.Split('.').Length < 3))
+            {
+                context.ReportDiagnostic(Diagnostic.Create(InvalidResourceKey, Location.None, key));
             }
 
             var generatedCode = LanguageCodeGenerator.GenerateLanguageConstants(allResources);
