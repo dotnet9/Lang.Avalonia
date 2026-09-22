@@ -63,6 +63,18 @@ public class CultureLookupTests
         Assert.Equal(string.Empty, plugin.GetResource("Empty"));
     }
 
+    [Fact]
+    public void JsonEmbeddedResourcesAddedBeforeLoadArePreserved()
+    {
+        using var folder = new TemporaryFolder();
+        var plugin = new JsonLangPlugin { ResourceFolder = folder.Path };
+
+        plugin.AddResource(typeof(CultureLookupTests).Assembly);
+        plugin.Load(new CultureInfo("en-US"));
+
+        Assert.Equal("Embedded title", plugin.GetResource("Embedded.Title"));
+    }
+
     private static void WriteJson(string folder, string fileName, string cultureName, string title)
     {
         File.WriteAllText(Path.Combine(folder, fileName), $$"""

@@ -15,6 +15,7 @@ public class JsonLangPlugin : ILangPlugin
 {
     private CultureInfo _defaultCulture = CultureInfo.InvariantCulture;
     private readonly List<string> _loadDiagnostics = new();
+    private readonly HashSet<Assembly> _resourceAssemblies = new();
 
     /// <summary>
     /// 已加载的语言资源缓存，Key 为文化名称。
@@ -45,13 +46,16 @@ public class JsonLangPlugin : ILangPlugin
         if (!Directory.Exists(ResourceFolder))
         {
             _loadDiagnostics.Add($"Language resource folder not found: {ResourceFolder}");
-            return;
+        }
+        else
+        {
+            foreach (var jsonFile in Directory.GetFiles(ResourceFolder, "*.json", SearchOption.AllDirectories))
+            {
+                TryAddLanguageFile(jsonFile);
+            }
         }
 
-        foreach (var jsonFile in Directory.GetFiles(ResourceFolder, "*.json", SearchOption.AllDirectories))
-        {
-            TryAddLanguageFile(jsonFile);
-        }
+        LoadEmbeddedResources(_resourceAssemblies);
 
         if (Resources.Count == 0)
         {
@@ -62,7 +66,18 @@ public class JsonLangPlugin : ILangPlugin
     /// <inheritdoc />
     public void AddResource(params Assembly[] assemblies)
     {
-        foreach (var assembly in assemblies.Where(assembly => assembly != null).Distinct())
+        var newAssemblies = assemblies
+            .Where(assembly => assembly != null)
+            .Distinct()
+            .Where(assembly => _resourceAssemblies.Add(assembly))
+            .ToArray();
+
+        LoadEmbeddedResources(newAssemblies);
+    }
+
+    private void LoadEmbeddedResources(IEnumerable<Assembly> assemblies)
+    {
+        foreach (var assembly in assemblies)
         {
             foreach (var resourceName in assembly.GetManifestResourceNames()
                          .Where(name => name.EndsWith(".json", StringComparison.OrdinalIgnoreCase)))

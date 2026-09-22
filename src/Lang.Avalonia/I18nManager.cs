@@ -68,7 +68,15 @@ public class I18nManager : INotifyPropertyChanged
     /// </summary>
     public void AddResource(params Assembly[] assemblies)
     {
-        _langPlugin?.AddResource(assemblies);
+        if (_langPlugin == null)
+        {
+            return;
+        }
+
+        _langPlugin.AddResource(assemblies);
+        ResourceVersion++;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ResourceVersion)));
+        ResourcesChanged?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>
@@ -102,6 +110,16 @@ public class I18nManager : INotifyPropertyChanged
     /// Raised when the current culture changes.
     /// </summary>
     public event EventHandler<EventArgs>? CultureChanged;
+
+    /// <summary>
+    /// Monotonically increasing version of the loaded resource set.
+    /// </summary>
+    public int ResourceVersion { get; internal set; }
+
+    /// <summary>
+    /// Raised after resources are added to the current plugin.
+    /// </summary>
+    public event EventHandler<EventArgs>? ResourcesChanged;
 
     private void SetCulture(CultureInfo culture, bool notify)
     {

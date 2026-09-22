@@ -52,6 +52,23 @@ public class I18nBinding : MultiBindingExtensionBase
         }
 
         Bindings.Add(keyBinding);
+
+        var resourceVersionBinding = new CompiledBindingExtension
+        {
+            Source = I18nManager.Instance,
+            Mode = BindingMode.OneWay,
+            Path = new CompiledBindingPathBuilder()
+                .Property(
+                    new ClrPropertyInfo(
+                        nameof(I18nManager.ResourceVersion),
+                        target => ((I18nManager)target).ResourceVersion,
+                        (target, value) => ((I18nManager)target).ResourceVersion = (int)value!,
+                        typeof(int)),
+                    PropertyInfoAccessorFactory.CreateInpcPropertyAccessor)
+                .Build()
+        };
+
+        Bindings.Add(resourceVersionBinding);
     }
 
     /// <summary>

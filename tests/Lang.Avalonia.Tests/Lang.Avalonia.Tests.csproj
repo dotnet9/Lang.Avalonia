@@ -19,4 +19,7 @@
     <ProjectReference Include="..\..\src\Lang.Avalonia.Xml\Lang.Avalonia.Xml.csproj" />
     <ProjectReference Include="..\..\src\Lang.Avalonia.Resx\Lang.Avalonia.Resx.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\embedded.json" />
+  </ItemGroup>
 </Project>
