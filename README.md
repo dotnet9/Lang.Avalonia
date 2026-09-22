@@ -12,8 +12,8 @@ Lang.Avalonia 是面向 Avalonia UI 的插件化多语言库。核心包提供 X
 
 ## 仓库规范
 
-- 当前版本：`12.1.2.8`，版本号统一维护在根目录 `Directory.Build.props` 的 `<Version>` 节点。
-- NuGet 包项目统一支持 `net8.0;net10.0`；Demo、App、测试与内部应用项目统一使用 `net11.0` / `net11.0-windows`。
+- 当前版本：`12.1.2.9`，版本号统一维护在根目录 `Directory.Build.props` 的 `<Version>` 节点。
+- 运行时 NuGet 包统一支持 `net8.0;net10.0;net11.0`；`Lang.Avalonia.Analysis` 源生成器支持 `netstandard2.0`；Demo 和 App 项目使用 `net11.0` / `net11.0-windows`，测试项目使用 `net8.0`。
 - 根目录 `logo.svg`、`logo.png`、`logo.ico` 是唯一图标源，子工程只通过 MSBuild `Link` 引用，不维护图标副本。
 - 运行时帮助、Markdown 示例、内置备忘录、设计说明等业务文档按功能保留；仓库级入口文档使用根目录 `README.md` 和 `UpdateLog.md`。
 
@@ -22,7 +22,7 @@ Lang.Avalonia 是面向 Avalonia UI 的插件化多语言库。核心包提供 X
 - 统一的 XAML 与 C# 多语言入口。
 - 通过 `I18nManager.Instance.Culture` 运行时切换语言。
 - JSON、XML、RESX 资源提供器统一实现 `ILangPlugin`。
-- 支持默认文化回退和原始 Key 回退。
+- 支持父文化、默认文化和原始 Key 回退。
 - 支持 T4 模板或 `Lang.Avalonia.Analysis` 生成强类型资源 Key。
 - 支持固定文化预览、格式化字符串和动态绑定参数。
 
@@ -279,8 +279,9 @@ public static class MainView
 资源查找顺序如下：
 
 1. 显式 `CultureName`；未提供时使用 `I18nManager.Instance.Culture`。
-2. `Register` 时传入的默认文化。
-3. 原始资源 Key。
+2. 第一步文化及其父文化，例如 `zh-Hant-TW`、`zh-Hant`、`zh` 和不变文化。
+3. `Register` 时传入的默认文化及其父文化；已经检查过的文化不会重复检查。
+4. 原始资源 Key。
 
 ## 注意事项
 
@@ -289,27 +290,27 @@ public static class MainView
 - RESX 提供器在显式注册 `ResourceManager` 或资源 Designer 类型时，裁剪发布不需要为 Lang.Avalonia.Resx 配置 Root.xml。
 - 资源 Key 和格式化参数均支持动态 Avalonia Binding。
 
-## 第三方开源组件审计（2026-05-20）
+## 第三方开源组件审计（2026-09-22）
 
 检查方式：`dotnet restore Lang.Avalonia.slnx`、`dotnet list package --include-transitive`、NuGet `.nuspec`、NuGet.org 与源码仓库信息。优先接受 MIT / Apache-2.0 / BSD；其它开源协议在源码与传递依赖均可追溯时单独标注。
 
 整改：
 
 - 四个 Demo 已移除 `AvaloniaUI.DiagnosticsSupport`。
-- `Avalonia` / `Avalonia.Desktop` 从 `12.0.2` 升级到 `12.0.3`。
-- `System.Drawing.Common` 固定到 `10.0.8`。
-- `System.Text.Json` 从 `10.0.2` 升级到 `10.0.8`。
+- `Avalonia` / `Avalonia.Desktop` 当前固定为 `12.1.2`。
+- `System.Drawing.Common` 当前固定为 `10.0.11`。
+- `System.Text.Json` 当前固定为 `10.0.11`。
 - `Prism.Avalonia`、`Prism.DryIoc.Avalonia` 以及配套的 `Irihi.Ursa.PrismExtension` 继续保留在当前 8.x 兼容开源线，不升级到 Prism 9.x 商业化版本线。
 
 | 包 | 使用范围 | 协议 | 源码/项目地址 | 结论 |
 | --- | --- | --- | --- | --- |
-| `Avalonia` / `Avalonia.Desktop` | Demo UI 与核心 Avalonia 集成 | MIT | https://github.com/AvaloniaUI/Avalonia | 通过，已升级到 `12.0.3` |
+| `Avalonia` / `Avalonia.Desktop` | Demo UI 与核心 Avalonia 集成 | MIT | https://github.com/AvaloniaUI/Avalonia | 通过，固定到 `12.1.2` |
 | `Semi.Avalonia` | Demo 主题 | MIT | https://github.com/irihitech/Semi.Avalonia | 通过，仅使用开源主体包 |
 | `Irihi.Ursa` / `Irihi.Ursa.PrismExtension` / `Irihi.Ursa.Themes.Semi` | Demo 控件与 Prism 扩展 | MIT | https://github.com/irihitech/Ursa.Avalonia | 通过，Prism 扩展保留在当前 8.x 兼容线 |
 | `Prism.Avalonia` / `Prism.DryIoc.Avalonia` `8.1.97.11073` | Demo DI / Prism shell | MIT | https://github.com/AvaloniaCommunity/Prism.Avalonia | 通过，保留 8.x 开源线 |
 | `ReactiveUI.Avalonia` | Demo MVVM | MIT | https://github.com/reactiveui/reactiveui | 通过 |
 | `Microsoft.CodeAnalysis.*` | `Lang.Avalonia.Analysis` 源码生成 | MIT | https://github.com/dotnet/roslyn | 通过 |
-| `System.Drawing.Common` / `System.Text.Json` | RESX 与 JSON 支持 | MIT | https://github.com/dotnet/dotnet | 通过，固定到 `10.0.8` |
+| `System.Drawing.Common` / `System.Text.Json` | RESX 与 JSON 支持 | MIT | https://github.com/dotnet/dotnet | 通过，固定到 `10.0.11` |
 | `VC-LTL` | Windows 兼容 | EPL-2.0 | https://github.com/Chuyu-Team/VC-LTL5 | 源码开放，按“非优先但可追溯”通过 |
 | `YY-Thunks` | Windows 兼容 | MIT | https://github.com/Chuyu-Team/YY-Thunks | 源码开放，通过 |
 
