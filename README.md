@@ -12,7 +12,7 @@ Lang.Avalonia 是面向 Avalonia UI 的插件化多语言库。核心包提供 X
 
 ## 仓库规范
 
-- 当前版本：`12.1.2.10`，版本号统一维护在根目录 `Directory.Build.props` 的 `<Version>` 节点。
+- 当前版本：`12.1.2.11`，版本号统一维护在根目录 `Directory.Build.props` 的 `<Version>` 节点。
 - 运行时 NuGet 包统一支持 `net8.0;net10.0;net11.0`；`Lang.Avalonia.Analysis` 源生成器支持 `netstandard2.0`；Demo 和 App 项目使用 `net11.0` / `net11.0-windows`，测试项目使用 `net8.0`。
 - 根目录 `logo.svg`、`logo.png`、`logo.ico` 是唯一图标源，子工程只通过 MSBuild `Link` 引用，不维护图标副本。
 - 运行时帮助、Markdown 示例、内置备忘录、设计说明等业务文档按功能保留；仓库级入口文档使用根目录 `README.md` 和 `UpdateLog.md`。
@@ -300,13 +300,13 @@ public static class MainView
 - `Avalonia` / `Avalonia.Desktop` 当前固定为 `12.1.2`。
 - `System.Drawing.Common` 当前固定为 `10.0.11`。
 - `System.Text.Json` 当前固定为 `10.0.11`。
-- `Prism.Avalonia`、`Prism.DryIoc.Avalonia` 以及配套的 `Irihi.Ursa.PrismExtension` 继续保留在当前 8.x 兼容开源线，不升级到 Prism 9.x 商业化版本线。
+- `Prism.Avalonia`、`Prism.DryIoc.Avalonia` 继续保留在当前 8.x 兼容开源线，不升级到 Prism 9.x 商业化版本线。
 
 | 包 | 使用范围 | 协议 | 源码/项目地址 | 结论 |
 | --- | --- | --- | --- | --- |
 | `Avalonia` / `Avalonia.Desktop` | Demo UI 与核心 Avalonia 集成 | MIT | https://github.com/AvaloniaUI/Avalonia | 通过，固定到 `12.1.2` |
 | `Semi.Avalonia` | Demo 主题 | MIT | https://github.com/irihitech/Semi.Avalonia | 通过，仅使用开源主体包 |
-| `Irihi.Ursa` / `Irihi.Ursa.PrismExtension` / `Irihi.Ursa.Themes.Semi` | Demo 控件与 Prism 扩展 | MIT | https://github.com/irihitech/Ursa.Avalonia | 通过，Prism 扩展保留在当前 8.x 兼容线 |
+| `Irihi.Ursa` / `Irihi.Ursa.Themes.Semi` | Demo 控件与主题 | MIT | https://github.com/irihitech/Ursa.Avalonia | 通过 |
 | `Prism.Avalonia` / `Prism.DryIoc.Avalonia` `8.1.97.11073` | Demo DI / Prism shell | MIT | https://github.com/AvaloniaCommunity/Prism.Avalonia | 通过，保留 8.x 开源线 |
 | `ReactiveUI.Avalonia` | Demo MVVM | MIT | https://github.com/reactiveui/reactiveui | 通过 |
 | `Microsoft.CodeAnalysis.*` | `Lang.Avalonia.Analysis` 源码生成 | MIT | https://github.com/dotnet/roslyn | 通过 |
