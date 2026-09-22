@@ -238,6 +238,7 @@ public class XmlLangPlugin : ILangPlugin
         var cultureName = element.Attribute(Consts.CultureNameKey)?.Value;
         if (string.IsNullOrWhiteSpace(languageName)
             || string.IsNullOrWhiteSpace(description)
+            || string.IsNullOrWhiteSpace(cultureName)
             || !CultureFallback.TryCreateCulture(cultureName, out var culture))
         {
             return false;

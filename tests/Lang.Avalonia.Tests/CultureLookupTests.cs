@@ -119,6 +119,42 @@ public class CultureLookupTests
     }
 
     [Fact]
+    public void JsonRejectsInvalidCultureMetadata()
+    {
+        using var folder = new TemporaryFolder();
+        File.WriteAllText(Path.Combine(folder.Path, "invalid.json"), """
+            {
+              "language": "English",
+              "description": "Invalid",
+              "cultureName": "invalid_culture"
+            }
+            """);
+
+        var plugin = new JsonLangPlugin { ResourceFolder = folder.Path };
+        plugin.Load(new CultureInfo("en-US"));
+
+        Assert.Empty(plugin.GetLanguages()!);
+        Assert.Contains(plugin.LoadDiagnostics, diagnostic => diagnostic.Contains("metadata", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void XmlRejectsInvalidCultureMetadata()
+    {
+        using var folder = new TemporaryFolder();
+        File.WriteAllText(Path.Combine(folder.Path, "invalid.xml"), """
+            <Localization language="English" description="Invalid" cultureName="invalid_culture">
+              <Localization><Title>Invalid</Title></Localization>
+            </Localization>
+            """);
+
+        var plugin = new XmlLangPlugin { ResourceFolder = folder.Path };
+        plugin.Load(new CultureInfo("en-US"));
+
+        Assert.Empty(plugin.GetLanguages()!);
+        Assert.Contains(plugin.LoadDiagnostics, diagnostic => diagnostic.Contains("metadata", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void FixedCultureFormatsArgumentsUsingTheSelectedCulture()
     {
         var plugin = new TestPlugin();

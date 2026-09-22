@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -25,7 +26,7 @@ internal static class LanguageResourceParser
             }
 
             var cultureName = root.GetProperty("cultureName").GetString();
-            if (string.IsNullOrEmpty(cultureName))
+            if (!TryNormalizeCulture(cultureName, out var normalizedCultureName))
             {
                 return result;
             }
@@ -38,7 +39,7 @@ internal static class LanguageResourceParser
                 .Where(kvp => !excludeKeys.Any(k => kvp.Key.Equals(k, StringComparison.OrdinalIgnoreCase)))
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            result[cultureName!] = filteredProperties;
+            result[normalizedCultureName] = filteredProperties;
         }
         catch
         {
@@ -64,7 +65,7 @@ internal static class LanguageResourceParser
             }
 
             var cultureName = root.Attribute("cultureName")?.Value;
-            if (string.IsNullOrEmpty(cultureName))
+            if (!TryNormalizeCulture(cultureName, out var normalizedCultureName))
             {
                 return result;
             }
@@ -80,7 +81,7 @@ internal static class LanguageResourceParser
                 properties[key] = propertyNode.Value;
             }
 
-            result[cultureName!] = properties;
+            result[normalizedCultureName] = properties;
         }
         catch
         {
@@ -176,18 +177,36 @@ internal static class LanguageResourceParser
 
     private static string ExtractCultureFromFileName(string fileName)
     {
-        // 处理类似 "Resources.zh-CN" 的文件名
-        var parts = fileName.Split('.');
-        if (parts.Length > 1)
+        var separatorIndex = fileName.LastIndexOf('.');
+        if (separatorIndex >= 0)
         {
-            var lastPart = parts.Last();
-            if (lastPart.Contains("-") && lastPart.Length >= 2)
+            var candidate = fileName.Substring(separatorIndex + 1);
+            if (TryNormalizeCulture(candidate, out var cultureName))
             {
-                return lastPart;
+                return cultureName;
             }
         }
 
-        return "en-US"; // 默认文化
+        return string.Empty;
+    }
+
+    private static bool TryNormalizeCulture(string? cultureName, out string normalizedCultureName)
+    {
+        normalizedCultureName = string.Empty;
+        if (string.IsNullOrWhiteSpace(cultureName))
+        {
+            return false;
+        }
+
+        try
+        {
+            normalizedCultureName = new CultureInfo(cultureName).Name;
+            return true;
+        }
+        catch (CultureNotFoundException)
+        {
+            return false;
+        }
     }
 
     internal static LanguageFileType DetectFileType(string filePath)

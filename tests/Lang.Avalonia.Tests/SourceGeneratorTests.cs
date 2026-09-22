@@ -58,6 +58,14 @@ public class SourceGeneratorTests
     {
         var result = RunGenerator(
             ("invalid.json", "{}"),
+            ("invalid-culture.json", """
+                {
+                  "language": "English",
+                  "description": "Invalid",
+                  "cultureName": "invalid_culture",
+                  "Localization": { "Title": "Value" }
+                }
+                """),
             ("short.json", """
                 {
                   "language": "English",

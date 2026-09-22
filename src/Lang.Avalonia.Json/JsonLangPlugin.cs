@@ -245,6 +245,7 @@ public class JsonLangPlugin : ILangPlugin
         var cultureName = cultureNameElement.GetString();
         if (string.IsNullOrWhiteSpace(languageName)
             || string.IsNullOrWhiteSpace(description)
+            || string.IsNullOrWhiteSpace(cultureName)
             || !CultureFallback.TryCreateCulture(cultureName, out var culture))
         {
             return false;

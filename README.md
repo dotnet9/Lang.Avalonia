@@ -12,7 +12,7 @@ Lang.Avalonia 是面向 Avalonia UI 的插件化多语言库。核心包提供 X
 
 ## 仓库规范
 
-- 当前版本：`12.1.2.12`，版本号统一维护在根目录 `Directory.Build.props` 的 `<Version>` 节点。
+- 当前版本：`12.1.2.13`，版本号统一维护在根目录 `Directory.Build.props` 的 `<Version>` 节点。
 - 运行时 NuGet 包统一支持 `net8.0;net10.0;net11.0`；`Lang.Avalonia.Analysis` 源生成器支持 `netstandard2.0`；Demo 和 App 项目使用 `net11.0` / `net11.0-windows`，测试项目使用 `net8.0`。
 - 根目录 `logo.svg`、`logo.png`、`logo.ico` 是唯一图标源，子工程只通过 MSBuild `Link` 引用，不维护图标副本。
 - 运行时帮助、Markdown 示例、内置备忘录、设计说明等业务文档按功能保留；仓库级入口文档使用根目录 `README.md` 和 `UpdateLog.md`。
@@ -105,6 +105,8 @@ I18n/ja-JP.json
 
 每个 JSON 文件都必须包含 `language`、`description`、`cultureName` 元数据：
 
+`cultureName` 必须是有效的 .NET `CultureInfo` 名称；插件会规范化文化名称，缺失、空白或非法元数据的文件会被跳过并记录到 `LoadDiagnostics`。
+
 ```json
 {
   "language": "English",
@@ -147,6 +149,8 @@ I18n/ja-JP.xml
 ```
 
 每个 XML 文件都必须在根节点上包含 `language`、`description`、`cultureName` 元数据：
+
+`cultureName` 必须是有效的 .NET `CultureInfo` 名称；插件会规范化文化名称，缺失、空白或非法元数据的文件会被跳过并记录到 `LoadDiagnostics`。
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
