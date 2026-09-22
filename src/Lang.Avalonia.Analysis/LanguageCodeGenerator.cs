@@ -30,11 +30,12 @@ internal static class LanguageCodeGenerator
 
         var resourceKeys = allResources.Values
             .SelectMany(resources => resources.Keys)
-            .Distinct(StringComparer.Ordinal);
+            .Distinct(StringComparer.Ordinal)
+            .OrderBy(key => key, StringComparer.Ordinal);
         var classStructure = AnalyzeResourceStructure(resourceKeys);
 
         // 生成命名空间
-        foreach (var namespaceGroup in classStructure)
+        foreach (var namespaceGroup in classStructure.OrderBy(group => group.Key, StringComparer.Ordinal))
         {
             var namespaceName = namespaceGroup.Key;
             var classes = namespaceGroup.Value;
@@ -43,7 +44,7 @@ internal static class LanguageCodeGenerator
             stringBuilder.AppendLine("{");
 
             // 生成类
-            foreach (var classGroup in classes)
+            foreach (var classGroup in classes.OrderBy(group => group.Key, StringComparer.Ordinal))
             {
                 var className = classGroup.Key;
                 var properties = classGroup.Value;
@@ -53,7 +54,9 @@ internal static class LanguageCodeGenerator
 
                 // 生成属性
                 var usedNames = new HashSet<string>();
-                foreach (var property in properties.OrderBy(p => p.PropertyName))
+                foreach (var property in properties
+                             .OrderBy(p => p.PropertyName, StringComparer.Ordinal)
+                             .ThenBy(p => p.ResourceKey, StringComparer.Ordinal))
                 {
                     var propertyName = GetUniqueName(SanitizeName(property.PropertyName), usedNames);
                     stringBuilder.AppendLine($"        public static readonly string {propertyName} = \"{EscapeStringLiteral(property.ResourceKey)}\";");

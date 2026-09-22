@@ -1,5 +1,10 @@
 # 更新日志
 
+## 12.1.2.12 (2026-09-22)
+
+- 🛠️[修复]-让 Source Generator 按稳定顺序生成 namespace、class 和资源属性，避免 AdditionalFiles 顺序变化导致生成结果漂移。
+- 🧪[新增]-增加 Source Generator 输入顺序稳定性测试。
+
 ## 12.1.2.11 (2026-09-22)
 
 - 🛠️[修复]-移除四个 Demo trimming root 中不存在的程序集声明，并同步清理过时的 Prism 扩展依赖说明。

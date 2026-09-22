@@ -71,6 +71,54 @@ public class SourceGeneratorTests
         Assert.Contains(result.Diagnostics, diagnostic => diagnostic.Id == "LAA003");
     }
 
+    [Fact]
+    public void GeneratorOutputIsStableWhenAdditionalFilesAreReordered()
+    {
+        var first = GenerateText(
+            ("a.json", """
+                {
+                  "language": "English",
+                  "description": "English",
+                  "cultureName": "en-US",
+                  "Localization": { "Main": { "View": { "Foo-Bar": "Dash" } } }
+                }
+                """),
+            ("b.json", """
+                {
+                  "language": "Chinese",
+                  "description": "Chinese",
+                  "cultureName": "zh-CN",
+                  "Localization": { "Main": { "View": { "Foo_Bar": "Underscore" } } }
+                }
+                """));
+
+        var reversed = GenerateText(
+            ("b.json", """
+                {
+                  "language": "Chinese",
+                  "description": "Chinese",
+                  "cultureName": "zh-CN",
+                  "Localization": { "Main": { "View": { "Foo_Bar": "Underscore" } } }
+                }
+                """),
+            ("a.json", """
+                {
+                  "language": "English",
+                  "description": "English",
+                  "cultureName": "en-US",
+                  "Localization": { "Main": { "View": { "Foo-Bar": "Dash" } } }
+                }
+                """));
+
+        Assert.Equal(first, reversed);
+    }
+
+    private static string GenerateText(params (string Path, string Content)[] files)
+    {
+        var result = RunGenerator(files);
+        return Assert.Single(Assert.Single(result.Results).GeneratedSources).SourceText.ToString();
+    }
+
     private static GeneratorDriverRunResult RunGenerator(params (string Path, string Content)[] files)
     {
         var compilation = CSharpCompilation.Create(
