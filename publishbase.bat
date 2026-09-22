@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 if "%~1"=="" (
-    set "project_paths=src\Avalonia.MusicStore src\Todo"
+    set "project_paths=src\Lang.Avalonia.Analysis.Demo src\Lang.Avalonia.Json.Demo src\Lang.Avalonia.Resx.Demo src\Lang.Avalonia.Xml.Demo"
 ) else (
     set "project_paths=%~1"
 )
@@ -71,6 +71,11 @@ set "target_framework="
 set "runtime_identifier="
 set "profile_metadata="
 
+if not exist "%project_path%\*.csproj" (
+    echo Missing project file under: %project_path%
+    exit /b 1
+)
+
 if not exist "%profile_file%" (
     echo Missing publish profile: %profile_file%
     exit /b 1
@@ -96,7 +101,7 @@ if not defined runtime_identifier (
 )
 
 echo   - Using profile %publish_profile%...
-dotnet publish "%project_path%" -f %target_framework% -r %runtime_identifier% -p:PublishProfile=%publish_profile%
+dotnet publish "%project_path%" -f "%target_framework%" -r "%runtime_identifier%" -p:PublishProfile="%publish_profile%"
 if errorlevel 1 exit /b 1
 
 if exist "%publish_root%" (
