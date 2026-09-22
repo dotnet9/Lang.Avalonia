@@ -20,7 +20,7 @@ public class I18nConverter : IMultiValueConverter
     public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
         if (values.Count < 2
-            || values[0] is not CultureInfo
+            || values[0] is not CultureInfo currentCulture
             || parameter is not I18nBinding owner
             || IsUnsetValue(values[1]))
         {
@@ -58,7 +58,14 @@ public class I18nConverter : IMultiValueConverter
 
             try
             {
-                value = string.Format(culture, format, args);
+                var formatCulture = currentCulture;
+                if (!string.IsNullOrWhiteSpace(owner.CultureName)
+                    && CultureFallback.TryCreateCulture(owner.CultureName, out var fixedCulture))
+                {
+                    formatCulture = fixedCulture;
+                }
+
+                value = string.Format(formatCulture, format, args);
             }
             catch (FormatException)
             {

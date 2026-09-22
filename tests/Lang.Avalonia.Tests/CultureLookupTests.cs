@@ -1,9 +1,14 @@
+using Lang.Avalonia;
+using Lang.Avalonia.Converters;
 using Lang.Avalonia.Json;
+using Lang.Avalonia.MarkupExtensions;
 using Lang.Avalonia.Resx;
 using Lang.Avalonia.Xml;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using Xunit;
 
 namespace Lang.Avalonia.Tests;
@@ -89,6 +94,24 @@ public class CultureLookupTests
         Assert.Equal("Original", plugin.GetResource("Localization.Title"));
     }
 
+    [Fact]
+    public void FixedCultureFormatsArgumentsUsingTheSelectedCulture()
+    {
+        var plugin = new TestPlugin();
+        I18nManager.Instance.Register(plugin, new CultureInfo("en-US"), out var error);
+        Assert.Null(error);
+
+        var binding = new I18nBinding("Message", "de-DE", new object[] { 1234.5 });
+        var converter = new I18nConverter();
+        var result = converter.Convert(
+            new List<object?> { new CultureInfo("en-US"), "Message" },
+            typeof(string),
+            binding,
+            new CultureInfo("en-US"));
+
+        Assert.Equal("Value: 1.234,50", result);
+    }
+
     private static void WriteJson(string folder, string fileName, string cultureName, string title)
     {
         File.WriteAllText(Path.Combine(folder, fileName), $$"""
@@ -113,6 +136,27 @@ public class CultureLookupTests
         public void Dispose()
         {
             Directory.Delete(Path, recursive: true);
+        }
+    }
+
+    private sealed class TestPlugin : ILangPlugin
+    {
+        public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
+
+        public void Load(CultureInfo cultureInfo)
+        {
+            Culture = cultureInfo;
+        }
+
+        public void AddResource(params Assembly[] assemblies)
+        {
+        }
+
+        public List<LocalizationLanguage>? GetLanguages() => [];
+
+        public string GetResource(string key, string? cultureName = null)
+        {
+            return key == "Message" ? "Value: {0:N2}" : key;
         }
     }
 }
