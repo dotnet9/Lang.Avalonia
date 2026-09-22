@@ -19,7 +19,7 @@ public class XmlLangPlugin : ILangPlugin
     /// <summary>
     /// 已加载的语言资源缓存，Key 为文化名称。
     /// </summary>
-    public Dictionary<string, LocalizationLanguage> Resources { get; } = new();
+    public Dictionary<string, LocalizationLanguage> Resources { get; } = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// XML 文件扫描目录，默认使用应用程序输出目录。
@@ -78,22 +78,21 @@ public class XmlLangPlugin : ILangPlugin
     /// <inheritdoc />
     public string GetResource(string key, string? cultureName = null)
     {
-        var culture = Culture.Name;
+        var culture = Culture;
         if (!string.IsNullOrWhiteSpace(cultureName))
         {
-            culture = cultureName;
+            culture = CultureFallback.TryCreateCulture(cultureName, out var explicitCulture)
+                ? explicitCulture
+                : _defaultCulture;
         }
 
-        if (Resources.TryGetValue(culture, out var currentLanguages)
-            && currentLanguages.Languages.TryGetValue(key, out var resource))
+        foreach (var candidate in CultureFallback.Enumerate(culture, _defaultCulture))
         {
-            return resource;
-        }
-
-        if (Resources.TryGetValue(_defaultCulture.Name, out currentLanguages)
-            && currentLanguages.Languages.TryGetValue(key, out resource))
-        {
-            return resource;
+            if (Resources.TryGetValue(candidate.Name, out var currentLanguages)
+                && currentLanguages.Languages.TryGetValue(key, out var resource))
+            {
+                return resource;
+            }
         }
 
         return key;
@@ -170,7 +169,7 @@ public class XmlLangPlugin : ILangPlugin
         var cultureName = element.Attribute(Consts.CultureNameKey)?.Value;
         if (string.IsNullOrWhiteSpace(languageName)
             || string.IsNullOrWhiteSpace(description)
-            || string.IsNullOrWhiteSpace(cultureName))
+            || !CultureFallback.TryCreateCulture(cultureName, out var culture))
         {
             return false;
         }
@@ -179,7 +178,7 @@ public class XmlLangPlugin : ILangPlugin
         {
             Language = languageName,
             Description = description,
-            CultureName = cultureName
+            CultureName = culture.Name
         };
         return true;
     }

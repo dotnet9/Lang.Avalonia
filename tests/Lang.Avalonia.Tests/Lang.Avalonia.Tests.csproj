@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Lang.Avalonia\Lang.Avalonia.csproj" />
+    <ProjectReference Include="..\..\src\Lang.Avalonia.Json\Lang.Avalonia.Json.csproj" />
+    <ProjectReference Include="..\..\src\Lang.Avalonia.Xml\Lang.Avalonia.Xml.csproj" />
+    <ProjectReference Include="..\..\src\Lang.Avalonia.Resx\Lang.Avalonia.Resx.csproj" />
+  </ItemGroup>
+</Project>

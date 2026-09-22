@@ -5,6 +5,9 @@
     <Project Path="src/Lang.Avalonia.Resx.Demo/Lang.Avalonia.Resx.Demo.csproj" />
     <Project Path="src/Lang.Avalonia.Xml.Demo/Lang.Avalonia.Xml.Demo.csproj" />
   </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/Lang.Avalonia.Tests/Lang.Avalonia.Tests.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path="UpdateLog.md" />
     <File Path="Directory.Build.props" />

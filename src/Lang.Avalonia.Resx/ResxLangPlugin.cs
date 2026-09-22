@@ -44,7 +44,7 @@ public class ResxLangPlugin : ILangPlugin
     /// <summary>
     /// 已加载的语言资源缓存，Key 为文化名称。
     /// </summary>
-    public Dictionary<string, LocalizationLanguage> Resources { get; } = new();
+    public Dictionary<string, LocalizationLanguage> Resources { get; } = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// 用于筛选资源 Designer 类型的命名标记。
@@ -117,31 +117,24 @@ public class ResxLangPlugin : ILangPlugin
     public string GetResource(string key, string? cultureName = null)
     {
         var culture = Culture;
-        if (!string.IsNullOrWhiteSpace(cultureName) && !TryCreateCulture(cultureName, out culture))
+        if (!string.IsNullOrWhiteSpace(cultureName))
         {
-            return key;
+            culture = CultureFallback.TryCreateCulture(cultureName, out var explicitCulture)
+                ? explicitCulture
+                : _defaultCulture;
         }
 
-        if (TryGetCachedResource(culture.Name, key, out var resource))
+        foreach (var candidate in CultureFallback.Enumerate(culture, _defaultCulture))
         {
-            return resource!;
-        }
+            if (!TryGetCachedResource(candidate.Name, key, out var resource))
+            {
+                Sync(candidate);
+            }
 
-        Sync(culture);
-        if (TryGetCachedResource(culture.Name, key, out resource))
-        {
-            return resource!;
-        }
-
-        if (TryGetCachedResource(_defaultCulture.Name, key, out resource))
-        {
-            return resource!;
-        }
-
-        Sync(_defaultCulture);
-        if (TryGetCachedResource(_defaultCulture.Name, key, out resource))
-        {
-            return resource!;
+            if (TryGetCachedResource(candidate.Name, key, out resource))
+            {
+                return resource!;
+            }
         }
 
         return key;
@@ -183,7 +176,7 @@ public class ResxLangPlugin : ILangPlugin
         resource = null;
         return Resources.TryGetValue(cultureName, out var currentLanguages)
             && currentLanguages.Languages.TryGetValue(key, out resource)
-            && !string.IsNullOrWhiteSpace(resource);
+            && resource is not null;
     }
 
     private void AddResourceManagers(IEnumerable<ResourceManager> resourceManagers)
@@ -268,17 +261,4 @@ public class ResxLangPlugin : ILangPlugin
         }
     }
 
-    private static bool TryCreateCulture(string cultureName, out CultureInfo culture)
-    {
-        try
-        {
-            culture = new CultureInfo(cultureName);
-            return true;
-        }
-        catch (CultureNotFoundException)
-        {
-            culture = CultureInfo.InvariantCulture;
-            return false;
-        }
-    }
 }
