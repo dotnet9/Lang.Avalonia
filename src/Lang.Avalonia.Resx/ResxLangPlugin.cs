@@ -17,6 +17,7 @@ public class ResxLangPlugin : ILangPlugin
     private CultureInfo _culture = CultureInfo.InvariantCulture;
     private CultureInfo _defaultCulture = CultureInfo.InvariantCulture;
     private readonly List<ResourceManager> _resourceManagers = new();
+    private readonly object _syncRoot = new();
 
     /// <summary>
     /// 创建 RESX 语言资源插件。未显式添加资源时会按 <see cref="Mark"/> 扫描已加载程序集。
@@ -54,32 +55,48 @@ public class ResxLangPlugin : ILangPlugin
     /// <inheritdoc />
     public CultureInfo Culture
     {
-        get => _culture;
+        get
+        {
+            lock (_syncRoot)
+            {
+                return _culture;
+            }
+        }
         set
         {
-            _culture = value;
-            Sync(value);
+            lock (_syncRoot)
+            {
+                _culture = value;
+                Sync(value);
+            }
         }
     }
 
     /// <inheritdoc />
     public void Load(CultureInfo cultureInfo)
     {
-        _defaultCulture = cultureInfo;
-        Resources.Clear();
-        if (_resourceManagers.Count == 0)
+        lock (_syncRoot)
         {
-            AddResourceManagers(FindResourceManagers(AppDomain.CurrentDomain.GetAssemblies()));
-        }
+            _defaultCulture = cultureInfo;
+            Resources.Clear();
+            if (_resourceManagers.Count == 0)
+            {
+                AddResourceManagers(FindResourceManagers(AppDomain.CurrentDomain.GetAssemblies()));
+            }
 
-        Culture = cultureInfo;
+            _culture = cultureInfo;
+            Sync(cultureInfo);
+        }
     }
 
     /// <inheritdoc />
     public void AddResource(params Assembly[] assemblies)
     {
-        AddResourceManagers(FindResourceManagers(assemblies));
-        Sync(Culture);
+        lock (_syncRoot)
+        {
+            AddResourceManagers(FindResourceManagers(assemblies));
+            Sync(_culture);
+        }
     }
 
     /// <summary>
@@ -87,8 +104,11 @@ public class ResxLangPlugin : ILangPlugin
     /// </summary>
     public void AddResource(params ResourceManager[] resourceManagers)
     {
-        AddResourceManagers(resourceManagers);
-        Sync(Culture);
+        lock (_syncRoot)
+        {
+            AddResourceManagers(resourceManagers);
+            Sync(_culture);
+        }
     }
 
     /// <summary>
@@ -111,33 +131,42 @@ public class ResxLangPlugin : ILangPlugin
     }
 
     /// <inheritdoc />
-    public List<LocalizationLanguage>? GetLanguages() => Resources.Select(kvp => kvp.Value).ToList();
+    public List<LocalizationLanguage>? GetLanguages()
+    {
+        lock (_syncRoot)
+        {
+            return Resources.Values.Select(language => language.Snapshot()).ToList();
+        }
+    }
 
     /// <inheritdoc />
     public string GetResource(string key, string? cultureName = null)
     {
-        var culture = Culture;
-        if (!string.IsNullOrWhiteSpace(cultureName))
+        lock (_syncRoot)
         {
-            culture = CultureFallback.TryCreateCulture(cultureName, out var explicitCulture)
-                ? explicitCulture
-                : _defaultCulture;
-        }
-
-        foreach (var candidate in CultureFallback.Enumerate(culture, _defaultCulture))
-        {
-            if (!TryGetCachedResource(candidate.Name, key, out var resource))
+            var culture = _culture;
+            if (!string.IsNullOrWhiteSpace(cultureName))
             {
-                Sync(candidate);
+                culture = CultureFallback.TryCreateCulture(cultureName, out var explicitCulture)
+                    ? explicitCulture
+                    : _defaultCulture;
             }
 
-            if (TryGetCachedResource(candidate.Name, key, out resource))
+            foreach (var candidate in CultureFallback.Enumerate(culture, _defaultCulture))
             {
-                return resource!;
-            }
-        }
+                if (!TryGetCachedResource(candidate.Name, key, out var resource))
+                {
+                    Sync(candidate);
+                }
 
-        return key;
+                if (TryGetCachedResource(candidate.Name, key, out resource))
+                {
+                    return resource!;
+                }
+            }
+
+            return key;
+        }
     }
 
     private void Sync(CultureInfo cultureInfo)

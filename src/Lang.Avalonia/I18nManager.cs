@@ -13,6 +13,7 @@ namespace Lang.Avalonia;
 public class I18nManager : INotifyPropertyChanged
 {
     private ILangPlugin? _langPlugin;
+    private readonly object _syncRoot = new();
 
     /// <inheritdoc />
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -46,21 +47,27 @@ public class I18nManager : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(plugin);
         error = null;
-        var previousPlugin = _langPlugin;
 
-        try
+        lock (_syncRoot)
         {
-            plugin.Load(defaultCulture);
-            _langPlugin = plugin;
-            SetCulture(defaultCulture, notify: true);
-            return true;
+            var previousPlugin = _langPlugin;
+
+            try
+            {
+                plugin.Load(defaultCulture);
+                _langPlugin = plugin;
+                SetCulture(defaultCulture);
+            }
+            catch (Exception ex)
+            {
+                _langPlugin = previousPlugin;
+                error = ex.ToString();
+                return false;
+            }
         }
-        catch (Exception ex)
-        {
-            _langPlugin = previousPlugin;
-            error = ex.ToString();
-            return false;
-        }
+
+        NotifyCultureChanged();
+        return true;
     }
 
     /// <summary>
@@ -68,15 +75,18 @@ public class I18nManager : INotifyPropertyChanged
     /// </summary>
     public void AddResource(params Assembly[] assemblies)
     {
-        if (_langPlugin == null)
+        lock (_syncRoot)
         {
-            return;
+            if (_langPlugin == null)
+            {
+                return;
+            }
+
+            _langPlugin.AddResource(assemblies);
+            ResourceVersion++;
         }
 
-        _langPlugin.AddResource(assemblies);
-        ResourceVersion++;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ResourceVersion)));
-        ResourcesChanged?.Invoke(this, EventArgs.Empty);
+        NotifyResourcesChanged();
     }
 
     /// <summary>
@@ -84,27 +94,55 @@ public class I18nManager : INotifyPropertyChanged
     /// </summary>
     public CultureInfo? Culture
     {
-        get => _langPlugin?.Culture;
+        get
+        {
+            lock (_syncRoot)
+            {
+                return _langPlugin?.Culture;
+            }
+        }
         set
         {
-            if (_langPlugin == null || value == null || Equals(_langPlugin.Culture, value))
+            if (value == null)
             {
                 return;
             }
 
-            SetCulture(value, notify: true);
+            lock (_syncRoot)
+            {
+                if (_langPlugin == null || Equals(_langPlugin.Culture, value))
+                {
+                    return;
+                }
+
+                SetCulture(value);
+            }
+
+            NotifyCultureChanged();
         }
     }
 
     /// <summary>
     /// Gets the languages known by the current plugin.
     /// </summary>
-    public List<LocalizationLanguage>? GetLanguages() => _langPlugin?.GetLanguages();
+    public List<LocalizationLanguage>? GetLanguages()
+    {
+        lock (_syncRoot)
+        {
+            return _langPlugin?.GetLanguages();
+        }
+    }
 
     /// <summary>
     /// Gets localized text by key.
     /// </summary>
-    public string GetResource(string key, string? cultureName = null) => _langPlugin?.GetResource(key, cultureName) ?? key;
+    public string GetResource(string key, string? cultureName = null)
+    {
+        lock (_syncRoot)
+        {
+            return _langPlugin?.GetResource(key, cultureName) ?? key;
+        }
+    }
 
     /// <summary>
     /// Raised when the current culture changes.
@@ -114,14 +152,32 @@ public class I18nManager : INotifyPropertyChanged
     /// <summary>
     /// Monotonically increasing version of the loaded resource set.
     /// </summary>
-    public int ResourceVersion { get; internal set; }
+    public int ResourceVersion
+    {
+        get
+        {
+            lock (_syncRoot)
+            {
+                return _resourceVersion;
+            }
+        }
+        internal set
+        {
+            lock (_syncRoot)
+            {
+                _resourceVersion = value;
+            }
+        }
+    }
+
+    private int _resourceVersion;
 
     /// <summary>
     /// Raised after resources are added to the current plugin.
     /// </summary>
     public event EventHandler<EventArgs>? ResourcesChanged;
 
-    private void SetCulture(CultureInfo culture, bool notify)
+    private void SetCulture(CultureInfo culture)
     {
         if (_langPlugin == null)
         {
@@ -134,12 +190,17 @@ public class I18nManager : INotifyPropertyChanged
         CultureInfo.DefaultThreadCurrentCulture = culture;
         CultureInfo.DefaultThreadCurrentUICulture = culture;
 
-        if (!notify)
-        {
-            return;
-        }
+    }
 
+    private void NotifyCultureChanged()
+    {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Culture)));
         CultureChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void NotifyResourcesChanged()
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ResourceVersion)));
+        ResourcesChanged?.Invoke(this, EventArgs.Empty);
     }
 }

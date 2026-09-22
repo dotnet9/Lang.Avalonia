@@ -42,6 +42,23 @@ public class LocalizationLanguage
     /// </summary>
     public string DetailText => string.IsNullOrWhiteSpace(Description) ? DisplayName : Description;
 
+    internal LocalizationLanguage Snapshot()
+    {
+        var snapshot = new LocalizationLanguage
+        {
+            Language = Language,
+            Description = Description,
+            CultureName = CultureName
+        };
+
+        foreach (var (key, value) in Languages)
+        {
+            snapshot.Languages[key] = value;
+        }
+
+        return snapshot;
+    }
+
     /// <inheritdoc />
     public override string ToString() => string.IsNullOrWhiteSpace(CultureName)
         ? DisplayName

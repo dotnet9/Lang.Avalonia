@@ -14,6 +14,8 @@ namespace Lang.Avalonia.Xml;
 public class XmlLangPlugin : ILangPlugin
 {
     private CultureInfo _defaultCulture = CultureInfo.InvariantCulture;
+    private CultureInfo _culture = CultureInfo.InvariantCulture;
+    private readonly object _syncRoot = new();
     private readonly List<string> _loadDiagnostics = new();
     private readonly HashSet<Assembly> _resourceAssemblies = new();
 
@@ -30,49 +32,80 @@ public class XmlLangPlugin : ILangPlugin
     /// <summary>
     /// 最近一次加载资源时产生的诊断信息。
     /// </summary>
-    public IReadOnlyList<string> LoadDiagnostics => _loadDiagnostics;
+    public IReadOnlyList<string> LoadDiagnostics
+    {
+        get
+        {
+            lock (_syncRoot)
+            {
+                return _loadDiagnostics.ToArray();
+            }
+        }
+    }
 
     /// <inheritdoc />
-    public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
+    public CultureInfo Culture
+    {
+        get
+        {
+            lock (_syncRoot)
+            {
+                return _culture;
+            }
+        }
+        set
+        {
+            lock (_syncRoot)
+            {
+                _culture = value;
+            }
+        }
+    }
 
     /// <inheritdoc />
     public void Load(CultureInfo cultureInfo)
     {
-        _defaultCulture = cultureInfo;
-        Culture = cultureInfo;
-        Resources.Clear();
-        _loadDiagnostics.Clear();
+        lock (_syncRoot)
+        {
+            _defaultCulture = cultureInfo;
+            _culture = cultureInfo;
+            Resources.Clear();
+            _loadDiagnostics.Clear();
 
-        if (!Directory.Exists(ResourceFolder))
-        {
-            _loadDiagnostics.Add($"Language resource folder not found: {ResourceFolder}");
-        }
-        else
-        {
-            foreach (var xmlFile in Directory.GetFiles(ResourceFolder, "*.xml", SearchOption.AllDirectories))
+            if (!Directory.Exists(ResourceFolder))
             {
-                TryAddLanguageFile(xmlFile);
+                _loadDiagnostics.Add($"Language resource folder not found: {ResourceFolder}");
             }
-        }
+            else
+            {
+                foreach (var xmlFile in Directory.GetFiles(ResourceFolder, "*.xml", SearchOption.AllDirectories))
+                {
+                    TryAddLanguageFile(xmlFile);
+                }
+            }
 
-        LoadEmbeddedResources(_resourceAssemblies);
+            LoadEmbeddedResources(_resourceAssemblies);
 
-        if (Resources.Count == 0)
-        {
-            _loadDiagnostics.Add("Please provide valid language XML files.");
+            if (Resources.Count == 0)
+            {
+                _loadDiagnostics.Add("Please provide valid language XML files.");
+            }
         }
     }
 
     /// <inheritdoc />
     public void AddResource(params Assembly[] assemblies)
     {
-        var newAssemblies = assemblies
-            .Where(assembly => assembly != null)
-            .Distinct()
-            .Where(assembly => _resourceAssemblies.Add(assembly))
-            .ToArray();
+        lock (_syncRoot)
+        {
+            var newAssemblies = assemblies
+                .Where(assembly => assembly != null)
+                .Distinct()
+                .Where(assembly => _resourceAssemblies.Add(assembly))
+                .ToArray();
 
-        LoadEmbeddedResources(newAssemblies);
+            LoadEmbeddedResources(newAssemblies);
+        }
     }
 
     private void LoadEmbeddedResources(IEnumerable<Assembly> assemblies)
@@ -88,29 +121,38 @@ public class XmlLangPlugin : ILangPlugin
     }
 
     /// <inheritdoc />
-    public List<LocalizationLanguage>? GetLanguages() => Resources.Select(kvp => kvp.Value).ToList();
+    public List<LocalizationLanguage>? GetLanguages()
+    {
+        lock (_syncRoot)
+        {
+            return Resources.Values.Select(language => language.Snapshot()).ToList();
+        }
+    }
 
     /// <inheritdoc />
     public string GetResource(string key, string? cultureName = null)
     {
-        var culture = Culture;
-        if (!string.IsNullOrWhiteSpace(cultureName))
+        lock (_syncRoot)
         {
-            culture = CultureFallback.TryCreateCulture(cultureName, out var explicitCulture)
-                ? explicitCulture
-                : _defaultCulture;
-        }
-
-        foreach (var candidate in CultureFallback.Enumerate(culture, _defaultCulture))
-        {
-            if (Resources.TryGetValue(candidate.Name, out var currentLanguages)
-                && currentLanguages.Languages.TryGetValue(key, out var resource))
+            var culture = _culture;
+            if (!string.IsNullOrWhiteSpace(cultureName))
             {
-                return resource;
+                culture = CultureFallback.TryCreateCulture(cultureName, out var explicitCulture)
+                    ? explicitCulture
+                    : _defaultCulture;
             }
-        }
 
-        return key;
+            foreach (var candidate in CultureFallback.Enumerate(culture, _defaultCulture))
+            {
+                if (Resources.TryGetValue(candidate.Name, out var currentLanguages)
+                    && currentLanguages.Languages.TryGetValue(key, out var resource))
+                {
+                    return resource;
+                }
+            }
+
+            return key;
+        }
     }
 
     private bool TryAddLanguageFile(string filePath)

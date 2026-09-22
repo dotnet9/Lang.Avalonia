@@ -75,6 +75,20 @@ public class CultureLookupTests
         Assert.Equal("Embedded title", plugin.GetResource("Embedded.Title"));
     }
 
+    [Fact]
+    public void JsonLanguageListReturnsIndependentSnapshots()
+    {
+        using var folder = new TemporaryFolder();
+        WriteJson(folder.Path, "default.json", "en-US", "Original");
+
+        var plugin = new JsonLangPlugin { ResourceFolder = folder.Path };
+        plugin.Load(new CultureInfo("en-US"));
+        var snapshot = Assert.Single(plugin.GetLanguages()!);
+        snapshot.Languages["Localization.Title"] = "Mutated";
+
+        Assert.Equal("Original", plugin.GetResource("Localization.Title"));
+    }
+
     private static void WriteJson(string folder, string fileName, string cultureName, string title)
     {
         File.WriteAllText(Path.Combine(folder, fileName), $$"""
