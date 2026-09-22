@@ -159,7 +159,13 @@ public class XmlLangPlugin : ILangPlugin
     {
         try
         {
-            return TryAddLanguage(XDocument.Load(filePath));
+            if (TryAddLanguage(XDocument.Load(filePath)))
+            {
+                return true;
+            }
+
+            _loadDiagnostics.Add($"Invalid language XML metadata skipped: {filePath}");
+            return false;
         }
         catch
         {
@@ -178,7 +184,13 @@ public class XmlLangPlugin : ILangPlugin
                 return false;
             }
 
-            return TryAddLanguage(XDocument.Load(stream));
+            if (TryAddLanguage(XDocument.Load(stream)))
+            {
+                return true;
+            }
+
+            _loadDiagnostics.Add($"Invalid embedded language XML metadata skipped: {assembly.GetName().Name}/{resourceName}");
+            return false;
         }
         catch
         {

@@ -160,7 +160,13 @@ public class JsonLangPlugin : ILangPlugin
         try
         {
             using var doc = JsonDocument.Parse(File.ReadAllText(filePath));
-            return TryAddLanguage(doc.RootElement);
+            if (TryAddLanguage(doc.RootElement))
+            {
+                return true;
+            }
+
+            _loadDiagnostics.Add($"Invalid language JSON metadata skipped: {filePath}");
+            return false;
         }
         catch
         {
@@ -180,7 +186,13 @@ public class JsonLangPlugin : ILangPlugin
             }
 
             using var doc = JsonDocument.Parse(stream);
-            return TryAddLanguage(doc.RootElement);
+            if (TryAddLanguage(doc.RootElement))
+            {
+                return true;
+            }
+
+            _loadDiagnostics.Add($"Invalid embedded language JSON metadata skipped: {assembly.GetName().Name}/{resourceName}");
+            return false;
         }
         catch
         {

@@ -95,6 +95,30 @@ public class CultureLookupTests
     }
 
     [Fact]
+    public void JsonReportsMissingLanguageMetadata()
+    {
+        using var folder = new TemporaryFolder();
+        File.WriteAllText(Path.Combine(folder.Path, "invalid.json"), "{\"language\":\"English\"}");
+
+        var plugin = new JsonLangPlugin { ResourceFolder = folder.Path };
+        plugin.Load(new CultureInfo("en-US"));
+
+        Assert.Contains(plugin.LoadDiagnostics, diagnostic => diagnostic.Contains("metadata", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void XmlReportsMissingLanguageMetadata()
+    {
+        using var folder = new TemporaryFolder();
+        File.WriteAllText(Path.Combine(folder.Path, "invalid.xml"), "<Localization language=\"English\" />");
+
+        var plugin = new XmlLangPlugin { ResourceFolder = folder.Path };
+        plugin.Load(new CultureInfo("en-US"));
+
+        Assert.Contains(plugin.LoadDiagnostics, diagnostic => diagnostic.Contains("metadata", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void FixedCultureFormatsArgumentsUsingTheSelectedCulture()
     {
         var plugin = new TestPlugin();
