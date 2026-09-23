@@ -11,7 +11,7 @@
     <Authors>沙漠尽头的狼</Authors>
     <Company>CodeWF</Company>
     <Copyright>Copyright (c) 2026 https://codewf.com</Copyright>
-    <Version>12.1.2.13</Version>
+    <Version>12.1.2.14</Version>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <LangVersion>preview</LangVersion>
