@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Demo/">
     <Project Path="src/Lang.Avalonia.Analysis.Demo/Lang.Avalonia.Analysis.Demo.csproj" />
+    <Project Path="src/Lang.Avalonia.Json.BrowserDemo/Lang.Avalonia.Json.BrowserDemo.csproj" />
     <Project Path="src/Lang.Avalonia.Json.Demo/Lang.Avalonia.Json.Demo.csproj" />
     <Project Path="src/Lang.Avalonia.Resx.Demo/Lang.Avalonia.Resx.Demo.csproj" />
     <Project Path="src/Lang.Avalonia.Xml.Demo/Lang.Avalonia.Xml.Demo.csproj" />

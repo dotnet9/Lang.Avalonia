@@ -267,11 +267,12 @@ public static class MainView
 
 ## 示例和设计说明
 
-仓库包含四个示例：
+仓库包含五个示例：
 
 | 示例 | 用途 |
 | --- | --- |
 | `Lang.Avalonia.Json.Demo` | JSON 文件复制到输出目录并由 `JsonLangPlugin` 加载 |
+| `Lang.Avalonia.Json.BrowserDemo` | Avalonia Browser (WebAssembly) 示例：嵌入资源模式与文件夹扫描模式对比 |
 | `Lang.Avalonia.Xml.Demo` | XML 文件复制到输出目录并由 `XmlLangPlugin` 加载 |
 | `Lang.Avalonia.Resx.Demo` | 通过 `ResourceManager` 加载 RESX 资源 |
 | `Lang.Avalonia.Analysis.Demo` | JSON 资源加 Source Generator 生成 Key |
@@ -291,6 +292,7 @@ public static class MainView
 
 - JSON 和 XML 提供器默认扫描 `AppDomain.CurrentDomain.BaseDirectory`。
 - JSON 和 XML 提供器也可以通过 `AddResource` 读取嵌入资源。
+- 浏览器（Avalonia Browser / WebAssembly）环境无法使用文件夹扫描模式，必须改用嵌入资源；工程配置（SDK、字体、生命周期等）见 [docs/browser-support.md](docs/browser-support.md)。
 - RESX 提供器在显式注册 `ResourceManager` 或资源 Designer 类型时，裁剪发布不需要为 Lang.Avalonia.Resx 配置 Root.xml。
 - 资源 Key 和格式化参数均支持动态 Avalonia Binding。
 

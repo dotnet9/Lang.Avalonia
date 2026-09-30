@@ -1,0 +1,16 @@
+{
+  "language": "English (United States)",
+  "description": "American English",
+  "cultureName": "en-US",
+  "Localization": {
+    "Main": {
+      "MainView": {
+        "Title": "Lang.Avalonia Browser Localization Demo",
+        "Subtitle": "Running inside Avalonia Browser (WebAssembly) to verify language loading and runtime switching.",
+        "Language": "Language",
+        "DiagnosticsTitle": "Load diagnostics",
+        "Footer": "dotnet9/Lang.Avalonia · Issue #9 browser repro demo"
+      }
+    }
+  }
+}

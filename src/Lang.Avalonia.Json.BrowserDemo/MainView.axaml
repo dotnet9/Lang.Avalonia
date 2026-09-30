@@ -1,0 +1,64 @@
+<UserControl
+    x:Class="Lang.Avalonia.Json.BrowserDemo.MainView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="https://codewf.com"
+    xmlns:lang="clr-namespace:Lang.Avalonia;assembly=Lang.Avalonia"
+    xmlns:mainLangs="clr-namespace:Localization.Main">
+
+    <Grid
+        Margin="24"
+        Background="#FFF4F7FB"
+        RowDefinitions="Auto,Auto,*,Auto"
+        RowSpacing="16">
+        <StackPanel Spacing="8">
+            <TextBlock
+                FontSize="28"
+                FontWeight="Bold"
+                Foreground="#0F172A"
+                Text="{c:I18n {x:Static mainLangs:MainView.Title}}" />
+            <TextBlock FontSize="15" Text="{c:I18n {x:Static mainLangs:MainView.Subtitle}}" />
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="1"
+            Orientation="Horizontal"
+            Spacing="8">
+            <TextBlock VerticalAlignment="Center" Text="{c:I18n {x:Static mainLangs:MainView.Language}}" />
+            <ComboBox
+                x:Name="LanguageSelector"
+                Width="260"
+                MinHeight="36">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="lang:LocalizationLanguage">
+                        <TextBlock Text="{Binding DisplayName}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+
+        <Border
+            Grid.Row="2"
+            Padding="16"
+            Background="White"
+            BorderBrush="#FFE2E8F0"
+            BorderThickness="1"
+            CornerRadius="12">
+            <Grid RowDefinitions="Auto,*">
+                <TextBlock FontWeight="SemiBold" Text="{c:I18n {x:Static mainLangs:MainView.DiagnosticsTitle}}" />
+                <ScrollViewer Grid.Row="1" Margin="0,8,0,0">
+                    <TextBlock
+                        x:Name="DiagnosticsText"
+                        FontFamily="Consolas, Menlo, monospace"
+                        FontSize="12"
+                        TextWrapping="Wrap" />
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <TextBlock
+            Grid.Row="3"
+            Foreground="#64748B"
+            Text="{c:I18n {x:Static mainLangs:MainView.Footer}}" />
+    </Grid>
+</UserControl>

@@ -1,0 +1,16 @@
+{
+  "language": "Chinese (Traditional)",
+  "description": "繁體中文",
+  "cultureName": "zh-Hant",
+  "Localization": {
+    "Main": {
+      "MainView": {
+        "Title": "Lang.Avalonia 瀏覽器在地化示例",
+        "Subtitle": "運行在 Avalonia Browser (WebAssembly) 中，驗證多語言載入與執行時切換。",
+        "Language": "語言",
+        "DiagnosticsTitle": "載入診斷",
+        "Footer": "dotnet9/Lang.Avalonia · Issue #9 瀏覽器復現 Demo"
+      }
+    }
+  }
+}

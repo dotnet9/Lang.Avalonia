@@ -2,6 +2,9 @@
   <PropertyGroup>
     <Title>Lang.Avalonia</Title>
     <TargetFrameworks>net8.0;net10.0;net11.0</TargetFrameworks>
+    <!-- net11.0 需要 .NET 11 SDK：用较低版本 SDK 构建（如 BrowserDemo 通过 global.json 钉定 SDK 10
+         配合 net10.0-browser 的 wasm workload）时自动裁掉，SDK 11+ 构建不受影响。 -->
+    <TargetFrameworks Condition="'$(NETCoreSdkVersion)' != '' and $([MSBuild]::VersionLessThan('$(NETCoreSdkVersion)', '11.0.100'))">net8.0;net10.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <IsPackable>true</IsPackable>
     <Description>Avalonia UI 国际化解决方案，提供多语言支持和资源管理</Description>

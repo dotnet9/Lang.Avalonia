@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <title>Lang.Avalonia.Json.BrowserDemo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" id="webassembly" />
+    <script type="importmap"></script>
+    <script type='module' src="main#[.{fingerprint}].js"></script>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #f4f7fb;
+        }
+
+        #out {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .avalonia-splash {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background: #f4f7fb;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            pointer-events: none;
+            font-family: sans-serif;
+            color: #64748b;
+        }
+
+        .avalonia-splash.splash-close {
+            transition: opacity 200ms, display 200ms;
+            display: none;
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="out">
+        <div class="avalonia-splash">
+            <h2>Loading Lang.Avalonia Browser Demo...</h2>
+        </div>
+    </div>
+</body>
+
+</html>
