@@ -31,8 +31,9 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: |
           $version = $env:TAG.TrimStart('v')
-          if ($version -notmatch '^\d+\.\d+\.\d+(-[\w.\-]+)?$') {
-            throw "Tag 格式应为 v主.次.补（如 v12.1.3），当前为: $env:TAG"
+          # 兼容 3 段（12.1.3）和 4 段（12.1.2.14）版本号，可带预发布后缀
+          if ($version -notmatch '^\d+\.\d+\.\d+(\.\d+)?(-[\w.\-]+)?$') {
+            throw "Tag 格式应为 vX.Y.Z 或 vX.Y.Z.W（可带 -preview 后缀），当前为: $env:TAG"
           }
 
           $projects = @(
