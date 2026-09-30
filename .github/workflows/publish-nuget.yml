@@ -1,0 +1,73 @@
+name: publish-nuget
+
+# 推送 v* 格式 tag 时触发，例如 v12.1.3
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write # 创建 GitHub Release
+  id-token: write # NuGet Trusted Publishing：用 OIDC 令牌换取一次性发布凭据
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          # net11.0 目标需要 .NET 11 SDK（正式版发布后 include-prerelease 可去掉）
+          dotnet-version: 11.0.x
+          include-prerelease: true
+          cache: true
+
+      - name: Pack
+        shell: pwsh
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          $version = $env:TAG.TrimStart('v')
+          if ($version -notmatch '^\d+\.\d+\.\d+(-[\w.\-]+)?$') {
+            throw "Tag 格式应为 v主.次.补（如 v12.1.3），当前为: $env:TAG"
+          }
+
+          $projects = @(
+            'src/Lang.Avalonia/Lang.Avalonia.csproj',
+            'src/Lang.Avalonia.Analysis/Lang.Avalonia.Analysis.csproj',
+            'src/Lang.Avalonia.Json/Lang.Avalonia.Json.csproj',
+            'src/Lang.Avalonia.Resx/Lang.Avalonia.Resx.csproj',
+            'src/Lang.Avalonia.Xml/Lang.Avalonia.Xml.csproj'
+          )
+
+          foreach ($project in $projects) {
+            dotnet pack $project -c Release -p:Version=$version -o artifacts/packages
+            if ($LASTEXITCODE -ne 0) { throw "pack failed: $project" }
+          }
+
+          Get-ChildItem artifacts/packages | ForEach-Object { Write-Host $_.Name }
+
+      - name: NuGet login (Trusted Publishing)
+        uses: nuget/login@v1
+        id: login
+        with:
+          user: dotnet9
+
+      - name: Push to nuget.org
+        shell: pwsh
+        run: |
+          Get-ChildItem artifacts/packages -Filter *.nupkg | ForEach-Object {
+            dotnet nuget push $_.FullName `
+              --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" `
+              --source https://api.nuget.org/v3/index.json `
+              --skip-duplicate
+            if ($LASTEXITCODE -ne 0) { throw "push failed: $($_.Name)" }
+          }
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
