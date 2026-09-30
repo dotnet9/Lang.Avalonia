@@ -80,12 +80,22 @@ jobs:
       - name: Push to nuget.org
         shell: pwsh
         run: |
+          # 主包：失败即中止
           Get-ChildItem artifacts/packages -Filter *.nupkg | ForEach-Object {
             dotnet nuget push $_.FullName `
               --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" `
               --source https://api.nuget.org/v3/index.json `
               --skip-duplicate
             if ($LASTEXITCODE -ne 0) { throw "push failed: $($_.Name)" }
+          }
+
+          # 符号包：不含 pdb 的 snupkg（如源生成器包）会被 nuget.org 拒绝，仅告警不中止
+          Get-ChildItem artifacts/packages -Filter *.snupkg | ForEach-Object {
+            dotnet nuget push $_.FullName `
+              --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" `
+              --source https://api.nuget.org/v3/index.json `
+              --skip-duplicate
+            if ($LASTEXITCODE -ne 0) { Write-Host "warning: symbol package push failed: $($_.Name)" }
           }
 
       - name: Create GitHub Release
