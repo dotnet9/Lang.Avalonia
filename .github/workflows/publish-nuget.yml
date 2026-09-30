@@ -24,7 +24,7 @@ jobs:
           dotnet-version: 11.0.x
           dotnet-quality: preview
 
-      - name: Pack
+      - name: Build
         shell: pwsh
         env:
           TAG: ${{ github.ref_name }}
@@ -44,7 +44,28 @@ jobs:
           )
 
           foreach ($project in $projects) {
-            dotnet pack $project -c Release -p:Version=$version -o artifacts/packages
+            dotnet build $project -c Release -p:Version=$version
+            if ($LASTEXITCODE -ne 0) { throw "build failed: $project" }
+          }
+
+      - name: Pack
+        shell: pwsh
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          $version = $env:TAG.TrimStart('v')
+
+          $projects = @(
+            'src/Lang.Avalonia/Lang.Avalonia.csproj',
+            'src/Lang.Avalonia.Analysis/Lang.Avalonia.Analysis.csproj',
+            'src/Lang.Avalonia.Json/Lang.Avalonia.Json.csproj',
+            'src/Lang.Avalonia.Resx/Lang.Avalonia.Resx.csproj',
+            'src/Lang.Avalonia.Xml/Lang.Avalonia.Xml.csproj'
+          )
+
+          # .NET 11 SDK 的 pack 不再隐式构建，须先 Build 再 --no-build Pack（与 pack.bat 一致）
+          foreach ($project in $projects) {
+            dotnet pack $project -c Release --no-build -p:Version=$version -o artifacts/packages
             if ($LASTEXITCODE -ne 0) { throw "pack failed: $project" }
           }
 
