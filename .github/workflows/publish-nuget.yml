@@ -20,10 +20,9 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          # net11.0 目标需要 .NET 11 SDK（正式版发布后 include-prerelease 可去掉）
+          # net11.0 目标需要 .NET 11 SDK（正式版发布后 dotnet-quality 可去掉）
           dotnet-version: 11.0.x
-          include-prerelease: true
-          cache: true
+          dotnet-quality: preview
 
       - name: Pack
         shell: pwsh
