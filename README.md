@@ -296,6 +296,20 @@ public static class MainView
 - RESX 提供器在显式注册 `ResourceManager` 或资源 Designer 类型时，裁剪发布不需要为 Lang.Avalonia.Resx 配置 Root.xml。
 - 资源 Key 和格式化参数均支持动态 Avalonia Binding。
 
+## CI/CD：自动发布 NuGet 包
+
+推送 `v*` 标签（例如 `v12.1.4`）会触发 [.github/workflows/publish-nuget.yml](.github/workflows/publish-nuget.yml)，构建并发布五个包：`Lang.Avalonia`、`Lang.Avalonia.Analysis`、`Lang.Avalonia.Json`、`Lang.Avalonia.Resx`、`Lang.Avalonia.Xml`，完成后自动创建 GitHub Release。
+
+包版本号直接取自标签（支持 `X.Y.Z` / `X.Y.Z.W`，可带预发布后缀，如 `v12.2.0-preview.1`），不需要改动工程文件。认证使用 NuGet Trusted Publishing：工作流通过 `nuget/login@v1` 以 OIDC 令牌换取一次性发布凭据，仓库不保存任何 secret。nuget.org 侧的 API key 需绑定本仓库与工作流文件名 `publish-nuget.yml`（Scopes 勾选 Push，Glob 建议收窄为 `Lang.*`）；这类 key 创建后 7 天内需成功发布一次才会转永久有效。
+
+手工发布步骤：
+
+```powershell
+git tag -a v12.1.4 -m "Lang.Avalonia v12.1.4"
+git push origin v12.1.4
+# 在 GitHub Actions 观察 publish-nuget 运行，完成后到 nuget.org 核对
+```
+
 ## 第三方开源组件审计（2026-09-22）
 
 检查方式：`dotnet restore Lang.Avalonia.slnx`、`dotnet list package --include-transitive`、NuGet `.nuspec`、NuGet.org 与源码仓库信息。优先接受 MIT / Apache-2.0 / BSD；其它开源协议在源码与传递依赖均可追溯时单独标注。
