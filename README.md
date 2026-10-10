@@ -1,3 +1,18 @@
+> [!WARNING]
+> # ⚠️ 本仓库已停止维护 / This repository is no longer maintained
+>
+> 本仓库已归档：不再接受 Issue 与 Pull Request，NuGet 旧包保留但不再升级。
+>
+> This repository is archived: issues and pull requests are closed, and existing NuGet packages will not receive updates.
+>
+> **替代方案 / Replacement:**
+>
+> | 旧包 / Old packages | 新包 / New packages |
+> |---|---|
+> | Lang.Avalonia(.Json/.Xml/.Resx/.Analysis) | CodeWF.Avalonia.Lang(.Generator)（三插件已内置） |
+>
+> 新仓库 / New repository: **https://github.com/dotnet9/CodeWF.Avalonia**
+
 # Lang.Avalonia
 
 Lang.Avalonia 是面向 Avalonia UI 的插件化多语言库。核心包提供 XAML 标记扩展、绑定刷新流程、转换器、`I18nManager` 和 `ILangPlugin` 契约；资源加载由 JSON、XML、RESX 插件实现，也可以使用 Source Generator 生成强类型资源 Key。
